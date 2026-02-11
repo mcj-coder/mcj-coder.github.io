@@ -15,133 +15,261 @@ For one of our major clients we needed a semi-secure area – you needed credent
 ## The Fix
   To get around this we decided to fool the Ektron API into thinking that everyone using the credentials are in fact the same user by hijacking the ‘***ecm***’ cookie and updating the unique id for the provided user id using a HttpModule (*class definition and event wiring omitted for brevity*) : 
 
-             1: private const string EcmCookie = "ecm";
+```csharp
+private const string EcmCookie = "ecm";
+```
 
-       2: private const string IsMembershipUserKey = "isMembershipUser";
+```csharp
+private const string IsMembershipUserKey = "isMembershipUser";
+```
 
-       3: private const string UserIdKey = "user_id";
+```csharp
+private const string UserIdKey = "user_id";
+```
 
-       4: private const string UsernameKey = "username";
+```csharp
+private const string UsernameKey = "username";
+```
 
-       5: private const string UniqueIdKey = "unique_id";
+```csharp
+private const string UniqueIdKey = "unique_id";
+```
 
-       6: private const string SiteIdKey = "site_id";
+```csharp
+private const string SiteIdKey = "site_id";
+```
 
-       7:  
+```csharp
 
-       8: /// 
 
-       9: /// Called at the begining of the request
 
-      10: /// 
+```csharp
+/// 
+```
 
-      11: /// The sender.
+```csharp
+/// Called at the begining of the request
+```
 
-      12: /// The  instance containing the event data.
+```csharp
+/// 
+```
 
-      13: private void OnBeginRequest(object sender, EventArgs e)
+```csharp
+/// The sender.
+```
 
-      14: {
+```csharp
+/// The  instance containing the event data.
+```
 
-      15:     HttpContext current = HttpContext.Current;
+```csharp
+private void OnBeginRequest(object sender, EventArgs e)
+```
 
-      16:     if (current == null || current.Request == null) return;
+```csharp
+{
+```
 
-      17:     if (current.Request.Cookies.AllKeys.Contains(EcmCookie, StringComparer.OrdinalIgnoreCase))
+```csharp
+HttpContext current = HttpContext.Current;
+```
 
-      18:     {
+```csharp
+if (current == null || current.Request == null) return;
+```
 
-      19:         HttpCookie ecm = current.Request.Cookies[EcmCookie];
+```csharp
+if (current.Request.Cookies.AllKeys.Contains(EcmCookie, StringComparer.OrdinalIgnoreCase))
+```
 
-      20:         if (ecm[IsMembershipUserKey].ToInt(0) != 1) return;
+```csharp
+{
+```
 
-      21:         int userId = ecm[UserIdKey].ToInt(0); // uses extension method from http://bit.ly/bAZrMI
+```csharp
+HttpCookie ecm = current.Request.Cookies[EcmCookie];
+```
 
-      22:         string username = ecm[UsernameKey];
+```csharp
+if (ecm[IsMembershipUserKey].ToInt(0) != 1) return;
+```
 
-      23:         if (userId > 0 && !string.IsNullOrEmpty(username))
+```csharp
+int userId = ecm[UserIdKey].ToInt(0); // uses extension method from http://bit.ly/bAZrMI
+```
 
-      24:         {
+```csharp
+string username = ecm[UsernameKey];
+```
 
-      25:             string loginId = GetLoginId(userId, username); //get unique id
+```csharp
+if (userId > 0 && !string.IsNullOrEmpty(username))
+```
 
-      26:             if (!string.IsNullOrEmpty(loginId))
+```csharp
+{
+```
 
-      27:             {
+```csharp
+string loginId = GetLoginId(userId, username); //get unique id
+```
 
-      28:                 ecm[UniqueIdKey] = loginId;
+```csharp
+if (!string.IsNullOrEmpty(loginId))
+```
 
-      29:                 string[] siteId = ecm[SiteIdKey].Split(',');
+```csharp
+{
+```
 
-      30:                 ecm[SiteIdKey] = string.Concat(siteId[0], ",", loginId);
+```csharp
+ecm[UniqueIdKey] = loginId;
+```
 
-      31:                 current.Response.Cookies.Add(ecm);
+```csharp
+string[] siteId = ecm[SiteIdKey].Split(',');
+```
 
-      32:             }
+```csharp
+ecm[SiteIdKey] = string.Concat(siteId[0], ",", loginId);
+```
 
-      33:         }
+```csharp
+current.Response.Cookies.Add(ecm);
+```
 
-      34:     }
+```csharp
+}
+```
 
-      35: }
+```csharp
+}
+```
 
-      36:  
+```csharp
+}
+```
 
-      37: private static string GetLoginId(int userId, string username)
+```csharp
+}
+```
 
-      38: {
+```csharp
 
-      39:     using (SqlConnection conn = new SqlConnection(EktronConnectionString))
 
-      40:     {
 
-      41:         using (SqlCommand cmd = conn.CreateCommand())
+```csharp
+private static string GetLoginId(int userId, string username)
+```
 
-      42:         {
+```csharp
+{
+```
 
-      43:             cmd.CommandText = LoginQuery;
+```csharp
+using (SqlConnection conn = new SqlConnection(EktronConnectionString))
+```
 
-      44:             cmd.Parameters.AddWithValue(UserIdKey, userId);
+```csharp
+{
+```
 
-      45:             cmd.Parameters.AddWithValue(UsernameKey, username);
+```csharp
+using (SqlCommand cmd = conn.CreateCommand())
+```
 
-      46:             cmd.Connection.Open();
+```csharp
+{
+```
 
-      47:             object result = cmd.ExecuteScalar();
+```csharp
+cmd.CommandText = LoginQuery;
+```
 
-      48:             if (result == null || result == DBNull.Value) return string.Empty;
+```csharp
+cmd.Parameters.AddWithValue(UserIdKey, userId);
+```
 
-      49:             return result.ToString();
+```csharp
+cmd.Parameters.AddWithValue(UsernameKey, username);
+```
 
-      50:  
+```csharp
+cmd.Connection.Open();
+```
 
-      51:         }
+```csharp
+object result = cmd.ExecuteScalar();
+```
 
-      52:     }
+```csharp
+if (result == null || result == DBNull.Value) return string.Empty;
+```
 
-      53: }
+```csharp
+return result.ToString();
+```
 
-      54:  
+```csharp
 
-      55: private const string LoginQuery = "SELECT [login_identification] FROM [dbo].[users] WHERE [user_id] = @user_id AND [user_name] = @username";
 
-      56:  
 
-      57: private static string EktronConnectionString
+```csharp
+}
+```
 
-      58: {
+```csharp
+}
+```
 
-      59:     get
+```csharp
+}
+```
 
-      60:     {
+```csharp
 
-      61:         global::Ektron.Cms.CommonApi capi = new Ektron.Cms.CommonApi();
 
-      62:         return capi.RequestInformationRef.ConnectionString;
 
-      63:     }
+```csharp
+private const string LoginQuery = "SELECT [login_identification] FROM [dbo].[users] WHERE [user_id] = @user_id AND [user_name] = @username";
+```
 
-      64: }
+```csharp
+
+
+
+```csharp
+private static string EktronConnectionString
+```
+
+```csharp
+{
+```
+
+```csharp
+get
+```
+
+```csharp
+{
+```
+
+```csharp
+global::Ektron.Cms.CommonApi capi = new Ektron.Cms.CommonApi();
+```
+
+```csharp
+return capi.RequestInformationRef.ConnectionString;
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 This approach doesn’t impact the level of security offered by Ektron as the secondary ASP.NET Authorization cookie is unaffected and all of these values are in the ‘public domain’ as they’re sent – unencrypted- to the client as a cookie.
 
@@ -156,117 +284,223 @@ Fortunately, this is fairly simple to.
 Firstly, we needed to prepare the database for QUERY NOTIFICATIONS:
 
   
-       1: USE master
+```csharp
+USE master
+```
 
-       2: GO
+```csharp
+GO
+```
 
-       3: ALTER DATABASE [DatabaseName] SET ENABLE_BROKER WITH ROLLBACK IMMEDIATE;
+```csharp
+ALTER DATABASE [DatabaseName] SET ENABLE_BROKER WITH ROLLBACK IMMEDIATE;
+```
 
-       4: GO
+```csharp
+GO
+```
 
-       5: USE [DatabaseName] 
+```csharp
+USE [DatabaseName] 
+```
 
-       6: GO
+```csharp
+GO
+```
 
-       7: GRANT CREATE PROCEDURE to [EktronDatabaseUser] 
+```csharp
+GRANT CREATE PROCEDURE to [EktronDatabaseUser] 
+```
 
-       8: GRANT CREATE QUEUE to [EktronDatabaseUser]
+```csharp
+GRANT CREATE QUEUE to [EktronDatabaseUser]
+```
 
-       9: GRANT CREATE SERVICE to [EktronDatabaseUser]
+```csharp
+GRANT CREATE SERVICE to [EktronDatabaseUser]
+```
 
-      10: GRANT REFERENCES on
+```csharp
+GRANT REFERENCES on
+```
 
-      11: CONTRACT::[http://schemas.microsoft.com/SQL/Notifications/PostQueryNotification] to [EktronDatabaseUser]
+```csharp
+CONTRACT::[http://schemas.microsoft.com/SQL/Notifications/PostQueryNotification] to [EktronDatabaseUser]
+```
 
-      12: GRANT VIEW DEFINITION TO [EktronDatabaseUser]
+```csharp
+GRANT VIEW DEFINITION TO [EktronDatabaseUser]
+```
 
-      13: GRANT SELECT to [EktronDatabaseUser]
+```csharp
+GRANT SELECT to [EktronDatabaseUser]
+```
 
-      14: GRANT SUBSCRIBE QUERY NOTIFICATIONS TO [EktronDatabaseUser]
+```csharp
+GRANT SUBSCRIBE QUERY NOTIFICATIONS TO [EktronDatabaseUser]
+```
 
-      15: GRANT RECEIVE ON QueryNotificationErrorsQueue TO [EktronDatabaseUser]
+```csharp
+GRANT RECEIVE ON QueryNotificationErrorsQueue TO [EktronDatabaseUser]
+```
 
-      16: GRANT REFERENCES on
+```csharp
+GRANT REFERENCES on
+```
 
-      17: CONTRACT::[http://schemas.microsoft.com/SQL/Notifications/PostQueryNotification] to [EktronDatabaseUser]
+```csharp
+CONTRACT::[http://schemas.microsoft.com/SQL/Notifications/PostQueryNotification] to [EktronDatabaseUser]
+```
 
-      18: GO
+```csharp
+GO
+```
 
 Next, we need to ensure the SqlDependency.Start method is called using the Ektron.DbConnection connectionstring.  This is best done in the Global.asax Application_Start event:
 
   
-       1: protected void Application_Start(object sender, EventArgs e)
+```csharp
+protected void Application_Start(object sender, EventArgs e)
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:    SqlDependency.Start(new global::Ektron.Cms.CommonApi().RequestInformationRef.ConnectionString);
+```csharp
+SqlDependency.Start(new global::Ektron.Cms.CommonApi().RequestInformationRef.ConnectionString);
+```
 
-       4: }
+```csharp
+}
+```
 
-       5:  
+```csharp
 
-       6: protected void Application_End(object sender, EventArgs e)
 
-       7: {
 
-       8:    SqlDependency.Stop(new global::Ektron.Cms.CommonApi().RequestInformationRef.ConnectionString);
+```csharp
+protected void Application_End(object sender, EventArgs e)
+```
 
-       9: }
+```csharp
+{
+```
+
+```csharp
+SqlDependency.Stop(new global::Ektron.Cms.CommonApi().RequestInformationRef.ConnectionString);
+```
+
+```csharp
+}
+```
 
 We could then amend our ‘GetLoginId’ method to implement the caching:
 
   
-       1: private static string GetLoginId(int userId, string username)
+```csharp
+private static string GetLoginId(int userId, string username)
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     string cacheKey = string.Format(CultureInfo.InvariantCulture, "LoginId_{0}_{1}", userId, username);
+```csharp
+string cacheKey = string.Format(CultureInfo.InvariantCulture, "LoginId_{0}_{1}", userId, username);
+```
 
-       4:     string cachedValue = null;
+```csharp
+string cachedValue = null;
+```
 
-       5:     if (HttpContext.Current !=null) cachedValue = HttpContext.Current.Cache[cacheKey] as string;
+```csharp
+if (HttpContext.Current !=null) cachedValue = HttpContext.Current.Cache[cacheKey] as string;
+```
 
-       6:     if (!string.IsNullOrEmpty(cachedValue)) return cachedValue;
+```csharp
+if (!string.IsNullOrEmpty(cachedValue)) return cachedValue;
+```
 
-       7:     using (SqlConnection conn = new SqlConnection(EktronConnectionString))
+```csharp
+using (SqlConnection conn = new SqlConnection(EktronConnectionString))
+```
 
-       8:     {
+```csharp
+{
+```
 
-       9:         using (SqlCommand cmd = conn.CreateCommand())
+```csharp
+using (SqlCommand cmd = conn.CreateCommand())
+```
 
-      10:         {
+```csharp
+{
+```
 
-      11:             cmd.CommandText = LoginQuery;
+```csharp
+cmd.CommandText = LoginQuery;
+```
 
-      12:             cmd.Parameters.AddWithValue(UserIdKey, userId);
+```csharp
+cmd.Parameters.AddWithValue(UserIdKey, userId);
+```
 
-      13:             cmd.Parameters.AddWithValue(UsernameKey, username);
+```csharp
+cmd.Parameters.AddWithValue(UsernameKey, username);
+```
 
-      14:             SqlCacheDependency dependency = new SqlCacheDependency(cmd);
+```csharp
+SqlCacheDependency dependency = new SqlCacheDependency(cmd);
+```
 
-      15:             cmd.Connection.Open();
+```csharp
+cmd.Connection.Open();
+```
 
-      16:             object result = cmd.ExecuteScalar();
+```csharp
+object result = cmd.ExecuteScalar();
+```
 
-      17:             if (result == null || result == DBNull.Value) return string.Empty;
+```csharp
+if (result == null || result == DBNull.Value) return string.Empty;
+```
 
-      18:             if (HttpContext.Current !=null)
+```csharp
+if (HttpContext.Current !=null)
+```
 
-      19:             {
+```csharp
+{
+```
 
-      20:                 HttpContext.Current.Cache.Insert(cacheKey, result.ToString(), dependency);
+```csharp
+HttpContext.Current.Cache.Insert(cacheKey, result.ToString(), dependency);
+```
 
-      21:             }
+```csharp
+}
+```
 
-      22:             return result.ToString();
+```csharp
+return result.ToString();
+```
 
-      23:  
+```csharp
 
-      24:         }
 
-      25:     }
 
-      26: }
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 Job’s a good ‘un. (*Until Ektron change the membership user login mechanism*)  
 
@@ -275,4 +509,6 @@ Job’s a good ‘un. (*Until Ektron change the membership user login mechanism*
 It may be worth disabling the Login attempts feature of Ektron to prevent the shared accounts from being locked.  Simply set the ek_loginAttemps value to –1 in appSettings:
 
   
-       1: add key="ek_loginAttempts" value="-1" />
+```csharp
+add key="ek_loginAttempts" value="-1" />
+```

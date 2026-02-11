@@ -17,202 +17,394 @@ An interesting bug came in today from a client that had been uploading content a
 
   With a bit of digging I traced the source of the issue to the EkDavHttpHandlerFactory Handler that’s used for the url rewriting.  More specifically, this block of code:
 
-             1: // Taken from Ektron.ASM.EkHttpDavHandler.EkDavHttpHandlerFactory.GetHandler using Reflector
+```csharp
+// Taken from Ektron.ASM.EkHttpDavHandler.EkDavHttpHandlerFactory.GetHandler using Reflector
+```
 
-       2:  
+```csharp
 
-       3: if (((context.Request.PhysicalPath.ToLower().IndexOf(@"\assets\") >= 0) 
 
-       4:     && (context.Request.PhysicalPath.ToLower().IndexOf(@"\thumb_") 
 
-       5:     && ((context.Request.PhysicalPath.ToLower().IndexOf(@"\orig_") 
+```csharp
+if (((context.Request.PhysicalPath.ToLower().IndexOf(@"\assets\") >= 0) 
+```
 
-       6:     && (context.Request.PhysicalPath.ToLower().IndexOf(@"_indexed\") 
+```csharp
+&& (context.Request.PhysicalPath.ToLower().IndexOf(@"\thumb_") 
+```
 
-       7:   {
+```csharp
+&& ((context.Request.PhysicalPath.ToLower().IndexOf(@"\orig_") 
+```
 
-       8:       return new AssetHttpHandler();
+```csharp
+&& (context.Request.PhysicalPath.ToLower().IndexOf(@"_indexed\") 
+```
 
-       9:   }
+```csharp
+{
+```
+
+```csharp
+return new AssetHttpHandler();
+```
+
+```csharp
+}
+```
 
  D’oh!  The images in question had been uploaded to a folder called assets within the library (not the ~/assets/ folder but ~/uploadedImages/…./assets/….) and the overzealous detection algorithm above was treating them as DMS items.
 
 To fix this I’ve implemented a subclass of the handler which performs extra checking when the AssetHttpHandler IHttpHandler implementation is returned to ensure that it’s only blocking assets within the ~/assets/ folder.
 
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Web;
+```csharp
+using System.Web;
+```
 
-       3: using System.Reflection;
+```csharp
+using System.Reflection;
+```
 
-       4: using global::Ektron.ASM.FileHandler;
+```csharp
+using global::Ektron.ASM.FileHandler;
+```
 
-       5: using global::Ektron.Cms.UrlAliasing;
+```csharp
+using global::Ektron.Cms.UrlAliasing;
+```
 
-       6:  
+```csharp
 
-       7:  
 
-       8: namespace MartinOnDotNet.Ektron.Web
 
-       9: {
+```csharp
 
-      10:     /// 
 
-      11:     /// Correctly handler asset folders named /assets/ that aren't the ektron assets folder
 
-      12:     /// 
+```csharp
+namespace MartinOnDotNet.Ektron.Web
+```
 
-      13:     /// Required assembly references
+```csharp
+{
+```
 
-      14:     /// 
+```csharp
+/// 
+```
 
-      15:     /// Ektron.ASM.EkHttpDavHandler
+```csharp
+/// Correctly handler asset folders named /assets/ that aren't the ektron assets folder
+```
 
-      16:     /// Ektron.ASM.FileHandler
+```csharp
+/// 
+```
 
-      17:     /// Ektron.Cms.URLAliasing
+```csharp
+/// Required assembly references
+```
 
-      18:     /// 
+```csharp
+/// 
+```
 
-      19:     /// 
+```csharp
+/// Ektron.ASM.EkHttpDavHandler
+```
 
-      20:     [CLSCompliant(false)]
+```csharp
+/// Ektron.ASM.FileHandler
+```
 
-      21:     public class EkDavHttpHandlerFactory
+```csharp
+/// Ektron.Cms.URLAliasing
+```
 
-      22:         : global::Ektron.ASM.EkHttpDavHandler.EkDavHttpHandlerFactory
+```csharp
+/// 
+```
 
-      23:     {
+```csharp
+/// 
+```
 
-      24:  
+```csharp
+[CLSCompliant(false)]
+```
 
-      25:         /// 
+```csharp
+public class EkDavHttpHandlerFactory
+```
 
-      26:         /// Gets the handler.
+```csharp
+: global::Ektron.ASM.EkHttpDavHandler.EkDavHttpHandlerFactory
+```
 
-      27:         /// 
+```csharp
+{
+```
 
-      28:         /// The context.
+```csharp
 
-      29:         /// Type of the request.
 
-      30:         /// The URL.
 
-      31:         /// The path translated.
+```csharp
+/// 
+```
 
-      32:         /// The correct request handler
+```csharp
+/// Gets the handler.
+```
 
-      33:         public override System.Web.IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated)
+```csharp
+/// 
+```
 
-      34:         {
+```csharp
+/// The context.
+```
 
-      35:             IHttpHandler handler = base.GetHandler(context, requestType, url, pathTranslated); // inherit other mapping logic
+```csharp
+/// Type of the request.
+```
 
-      36:             if (typeof(AssetHttpHandler).IsInstanceOfType(handler)) // override assets folder handling
+```csharp
+/// The URL.
+```
 
-      37:             {
+```csharp
+/// The path translated.
+```
 
-      38:                 if (!context.Request.PhysicalPath.StartsWith(context.Server.MapPath("~/assets/"), StringComparison.OrdinalIgnoreCase))
+```csharp
+/// The correct request handler
+```
 
-      39:                 {
+```csharp
+public override System.Web.IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated)
+```
 
-      40:                     handler = GetFallbackHandlerForServer(context);
+```csharp
+{
+```
 
-      41:  
+```csharp
+IHttpHandler handler = base.GetHandler(context, requestType, url, pathTranslated); // inherit other mapping logic
+```
 
-      42:                 }
+```csharp
+if (typeof(AssetHttpHandler).IsInstanceOfType(handler)) // override assets folder handling
+```
 
-      43:             }
+```csharp
+{
+```
 
-      44:             return handler;
+```csharp
+if (!context.Request.PhysicalPath.StartsWith(context.Server.MapPath("~/assets/"), StringComparison.OrdinalIgnoreCase))
+```
 
-      45:         }
+```csharp
+{
+```
 
-      46:  
+```csharp
+handler = GetFallbackHandlerForServer(context);
+```
 
-      47:         /// 
+```csharp
 
-      48:         /// Gets the fallback handler for server.
 
-      49:         /// 
 
-      50:         /// The context.
+```csharp
+}
+```
 
-      51:         /// This algorithm was taken from the Ektron implementation using 
+```csharp
+}
+```
 
-      52:         /// Reflector.  As it's reflection based, there's a chance that future releases
+```csharp
+return handler;
+```
 
-      53:         /// will break it.
+```csharp
+}
+```
 
-      54:         private static IHttpHandler GetFallbackHandlerForServer(HttpContext context)
+```csharp
 
-      55:         {
 
-      56:             if (ServerVersion(context) > 6)
 
-      57:             {
+```csharp
+/// 
+```
 
-      58:                 return new StaticFileHandler();
+```csharp
+/// Gets the fallback handler for server.
+```
 
-      59:             }
+```csharp
+/// 
+```
 
-      60:             return new DefaultHttpHandler();
+```csharp
+/// The context.
+```
 
-      61:         }
+```csharp
+/// This algorithm was taken from the Ektron implementation using 
+```
 
-      62:  
+```csharp
+/// Reflector.  As it's reflection based, there's a chance that future releases
+```
 
-      63:         private static int? _serverVersion;
+```csharp
+/// will break it.
+```
 
-      64:  
+```csharp
+private static IHttpHandler GetFallbackHandlerForServer(HttpContext context)
+```
 
-      65:         /// 
+```csharp
+{
+```
 
-      66:         /// Servers the version.
+```csharp
+if (ServerVersion(context) > 6)
+```
 
-      67:         /// 
+```csharp
+{
+```
 
-      68:         /// The current.
+```csharp
+return new StaticFileHandler();
+```
 
-      69:         /// The server version using the ektron implemented algorithm
+```csharp
+}
+```
 
-      70:         public static int ServerVersion(HttpContext current)
+```csharp
+return new DefaultHttpHandler();
+```
 
-      71:         {
+```csharp
+}
+```
 
-      72:             if (!_serverVersion.HasValue)
+```csharp
 
-      73:             {
 
-      74:                 Type t = typeof(global::Ektron.ASM.EkHttpDavHandler.EkDavHttpHandlerFactory);
 
-      75:                 _serverVersion = t.InvokeMember(
+```csharp
+private static int? _serverVersion;
+```
 
-      76:                     "GetServerVersion"
+```csharp
 
-      77:                     , BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Static
 
-      78:                     , null
 
-      79:                     , t
+```csharp
+/// 
+```
 
-      80:                     , new object[] { current }
+```csharp
+/// Servers the version.
+```
 
-      81:                     , System.Globalization.CultureInfo.InvariantCulture) as int?;
+```csharp
+/// 
+```
 
-      82:             }
+```csharp
+/// The current.
+```
 
-      83:             return _serverVersion.GetValueOrDefault(6);
+```csharp
+/// The server version using the ektron implemented algorithm
+```
 
-      84:  
+```csharp
+public static int ServerVersion(HttpContext current)
+```
 
-      85:         }
+```csharp
+{
+```
 
-      86:     }
+```csharp
+if (!_serverVersion.HasValue)
+```
 
-      87: }
+```csharp
+{
+```
+
+```csharp
+Type t = typeof(global::Ektron.ASM.EkHttpDavHandler.EkDavHttpHandlerFactory);
+```
+
+```csharp
+_serverVersion = t.InvokeMember(
+```
+
+```csharp
+"GetServerVersion"
+```
+
+```csharp
+, BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Static
+```
+
+```csharp
+, null
+```
+
+```csharp
+, t
+```
+
+```csharp
+, new object[] { current }
+```
+
+```csharp
+, System.Globalization.CultureInfo.InvariantCulture) as int?;
+```
+
+```csharp
+}
+```
+
+```csharp
+return _serverVersion.GetValueOrDefault(6);
+```
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 Where possible I’ve reused the functionality from the API (even using a nasty bit of reflection to extract the server version according to the Ektron API).  
 

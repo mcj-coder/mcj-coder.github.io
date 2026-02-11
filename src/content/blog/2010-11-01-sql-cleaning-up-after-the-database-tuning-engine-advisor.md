@@ -15,165 +15,323 @@ I’ve recently had to do a quick bit of DB performance analysis work on a 3rd P
 
   First to drop the generated statistics:
 
-             1: DECLARE @dtaStats AS TABLE(Id INT IDENTITY(1,1), StatName VARCHAR(255), TableName VARCHAR(255))
+```csharp
+DECLARE @dtaStats AS TABLE(Id INT IDENTITY(1,1), StatName VARCHAR(255), TableName VARCHAR(255))
+```
 
-       2: DECLARE @currentId AS INT
+```csharp
+DECLARE @currentId AS INT
+```
 
-       3: DECLARE @lastId AS INT
+```csharp
+DECLARE @lastId AS INT
+```
 
-       4:  
+```csharp
 
-       5: DECLARE @statName VARCHAR(255)
 
-       6: DECLARE @tableName VARCHAR(255)
 
-       7:  
+```csharp
+DECLARE @statName VARCHAR(255)
+```
 
-       8: INSERT INTO @dtaStats(StatName,TableName)
+```csharp
+DECLARE @tableName VARCHAR(255)
+```
 
-       9:     SELECT name, OBJECT_NAME(OBJECT_ID) AS TABLENAME
+```csharp
 
-      10:     FROM sys.stats
 
-      11:     WHERE name like '_dta_stat_%'
 
-      12:  
+```csharp
+INSERT INTO @dtaStats(StatName,TableName)
+```
 
-      13: SET @currentId=NULL
+```csharp
+SELECT name, OBJECT_NAME(OBJECT_ID) AS TABLENAME
+```
 
-      14: SET @lastId=0
+```csharp
+FROM sys.stats
+```
 
-      15:  
+```csharp
+WHERE name like '_dta_stat_%'
+```
 
-      16: SELECT @currentId=MIN(Id)
+```csharp
 
-      17: FROM @dtaStats 
 
-      18: WHERE Id>@LastId
 
-      19:  
+```csharp
+SET @currentId=NULL
+```
 
-      20: WHILE (@currentId IS NOT NULL)
+```csharp
+SET @lastId=0
+```
 
-      21: BEGIN
+```csharp
 
-      22:  
 
-      23:     SELECT @statName=StatName, @tableName=TableName FROM @dtaStats WHERE Id=@currentId
 
-      24:     
+```csharp
+SELECT @currentId=MIN(Id)
+```
 
-      25:     PRINT 'DROP STATISTICS ' + @tableName + '.' + @statName
+```csharp
+FROM @dtaStats 
+```
 
-      26:     
+```csharp
+WHERE Id>@LastId
+```
 
-      27:     EXEC('DROP STATISTICS ' + @tableName + '.' + @statName)
+```csharp
 
-      28:     
 
-      29:     SET @lastId = @currentId 
 
-      30:     SET @currentId=null
+```csharp
+WHILE (@currentId IS NOT NULL)
+```
 
-      31:  
+```csharp
+BEGIN
+```
 
-      32:     SELECT @currentId=MIN(Id)
+```csharp
 
-      33:     FROM @dtaStats 
 
-      34:     WHERE Id>@LastId
 
-      35:  
+```csharp
+SELECT @statName=StatName, @tableName=TableName FROM @dtaStats WHERE Id=@currentId
+```
 
-      36: END
+```csharp
 
-      37:  
 
-      38:  
+
+```csharp
+PRINT 'DROP STATISTICS ' + @tableName + '.' + @statName
+```
+
+```csharp
+
+
+
+```csharp
+EXEC('DROP STATISTICS ' + @tableName + '.' + @statName)
+```
+
+```csharp
+
+
+
+```csharp
+SET @lastId = @currentId 
+```
+
+```csharp
+SET @currentId=null
+```
+
+```csharp
+
+
+
+```csharp
+SELECT @currentId=MIN(Id)
+```
+
+```csharp
+FROM @dtaStats 
+```
+
+```csharp
+WHERE Id>@LastId
+```
+
+```csharp
+
+
+
+```csharp
+END
+```
+
+```csharp
+
+
+
+```csharp
+
+
 
 Then drop the generated indexes:
 
   
-       1:  
+```csharp
 
-       2: DECLARE @dtaIndex AS TABLE(Id INT IDENTITY(1,1), IndexName VARCHAR(255), TableName VARCHAR(255))
 
-       3: DECLARE @currentId AS INT
 
-       4: DECLARE @lastId AS INT
+```csharp
+DECLARE @dtaIndex AS TABLE(Id INT IDENTITY(1,1), IndexName VARCHAR(255), TableName VARCHAR(255))
+```
 
-       5:  
+```csharp
+DECLARE @currentId AS INT
+```
 
-       6: DECLARE @IndexName VARCHAR(255)
+```csharp
+DECLARE @lastId AS INT
+```
 
-       7: DECLARE @tableName VARCHAR(255)
+```csharp
 
-       8:  
 
-       9: INSERT INTO @dtaIndex(IndexName,TableName)
 
-      10:     SELECT name, OBJECT_NAME(OBJECT_ID) AS TABLENAME
+```csharp
+DECLARE @IndexName VARCHAR(255)
+```
 
-      11:     FROM sys.indexes
+```csharp
+DECLARE @tableName VARCHAR(255)
+```
 
-      12:     WHERE name like '_dta_index_%'
+```csharp
 
-      13:     
 
-      14: SET @lastId=0
 
-      15: SET @currentId=NULL
+```csharp
+INSERT INTO @dtaIndex(IndexName,TableName)
+```
 
-      16:  
+```csharp
+SELECT name, OBJECT_NAME(OBJECT_ID) AS TABLENAME
+```
 
-      17: SELECT @currentId=MIN(Id)
+```csharp
+FROM sys.indexes
+```
 
-      18: FROM @dtaIndex 
+```csharp
+WHERE name like '_dta_index_%'
+```
 
-      19: WHERE Id>@LastId
+```csharp
 
-      20:  
 
-      21: PRINT @currentId
 
-      22:  
+```csharp
+SET @lastId=0
+```
 
-      23: WHILE (@currentId IS NOT NULL)
+```csharp
+SET @currentId=NULL
+```
 
-      24: BEGIN
+```csharp
 
-      25:  
 
-      26:     SELECT @IndexName=IndexName, @tableName=TableName FROM @dtaIndex WHERE Id=@currentId
 
-      27:     
+```csharp
+SELECT @currentId=MIN(Id)
+```
 
-      28:     PRINT 'DROP INDEX ' + @IndexName + ' ON ' + @tableName
+```csharp
+FROM @dtaIndex 
+```
 
-      29:     
+```csharp
+WHERE Id>@LastId
+```
 
-      30:     EXEC('DROP INDEX ' + @IndexName + ' ON ' + @tableName)
+```csharp
 
-      31:     
 
-      32:     SET @lastId = @currentId 
 
-      33:     SET @currentId=NULL
+```csharp
+PRINT @currentId
+```
 
-      34:  
+```csharp
 
-      35:     SELECT @currentId=MIN(Id)
 
-      36:     FROM @dtaIndex 
 
-      37:     WHERE Id>@LastId
+```csharp
+WHILE (@currentId IS NOT NULL)
+```
 
-      38:  
+```csharp
+BEGIN
+```
 
-      39: END
+```csharp
 
-      40:  
 
-      41:  
+
+```csharp
+SELECT @IndexName=IndexName, @tableName=TableName FROM @dtaIndex WHERE Id=@currentId
+```
+
+```csharp
+
+
+
+```csharp
+PRINT 'DROP INDEX ' + @IndexName + ' ON ' + @tableName
+```
+
+```csharp
+
+
+
+```csharp
+EXEC('DROP INDEX ' + @IndexName + ' ON ' + @tableName)
+```
+
+```csharp
+
+
+
+```csharp
+SET @lastId = @currentId 
+```
+
+```csharp
+SET @currentId=NULL
+```
+
+```csharp
+
+
+
+```csharp
+SELECT @currentId=MIN(Id)
+```
+
+```csharp
+FROM @dtaIndex 
+```
+
+```csharp
+WHERE Id>@LastId
+```
+
+```csharp
+
+
+
+```csharp
+END
+```
+
+```csharp
+
+
+
+```csharp
+
+
 
 The database is now back to a pre-DTA’ed state!

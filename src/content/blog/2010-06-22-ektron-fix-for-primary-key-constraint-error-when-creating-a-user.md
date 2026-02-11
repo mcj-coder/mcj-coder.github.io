@@ -29,58 +29,112 @@ We’ve recently had an issue with creating users in our [Ektron](http://bit.ly/
 
      * Backup database…just incase     * Remove any entries from **[perform_action]** table with an **action_priority** of **–8**     * Get the maximum **PreferenceID** from **[notification_preferences_default] **            SELECT MAX(PreferenceID) FROM [notification_preferences_default]       * If the [max_table_number] value in [max_entries] table for [table_name] notification_preference_default is less than the maximum preference id then update it to the maximum value plus two.   To save any potential issues with this, I’ve written a quick SQL script:
 
-             1: BEGIN TRANSACTION;
+```csharp
+BEGIN TRANSACTION;
+```
 
-       2:  
+```csharp
 
-       3: /* Rows that need deleting */
 
-       4: SELECT * FROM [perform_action] WHERE [Action_priority]=-8
 
-       5:  
+```csharp
+/* Rows that need deleting */
+```
 
-       6: DELETE FROM [perform_action] WHERE [Action_priority]=-8
+```csharp
+SELECT * FROM [perform_action] WHERE [Action_priority]=-8
+```
 
-       7:  
+```csharp
 
-       8: DECLARE @MaxPreferenceId BIGINT
 
-       9:  
 
-      10: SELECT @MaxPreferenceId = MAX([PreferenceId])
+```csharp
+DELETE FROM [perform_action] WHERE [Action_priority]=-8
+```
 
-      11: FROM [dbo].[notification_preference_default]
+```csharp
 
-      12:  
 
-      13: /* Before! */
 
-      14: SELECT [table_name], [max_table_number], @MaxPreferenceId AS MaxValue
+```csharp
+DECLARE @MaxPreferenceId BIGINT
+```
 
-      15: FROM [max_entries]
+```csharp
 
-      16: WHERE [table_name]='notification_preference_default'
 
-      17:  
 
-      18: UPDATE [max_entries] SET [max_table_number] = @MaxPreferenceId + 2
+```csharp
+SELECT @MaxPreferenceId = MAX([PreferenceId])
+```
 
-      19: WHERE [table_name]='notification_preference_default' AND [max_table_number]
+```csharp
+FROM [dbo].[notification_preference_default]
+```
 
-      20:  
+```csharp
 
-      21: /* After! */
 
-      22: SELECT [table_name], [max_table_number], @MaxPreferenceId AS MaxValue
 
-      23: FROM [max_entries]
+```csharp
+/* Before! */
+```
 
-      24: WHERE [table_name]='notification_preference_default'
+```csharp
+SELECT [table_name], [max_table_number], @MaxPreferenceId AS MaxValue
+```
 
-      25:  
+```csharp
+FROM [max_entries]
+```
 
-      26: /*Change To COMMIT TRANSACTION when happy */  
+```csharp
+WHERE [table_name]='notification_preference_default'
+```
 
-      27: ROLLBACK TRANSACTION;
+```csharp
+
+
+
+```csharp
+UPDATE [max_entries] SET [max_table_number] = @MaxPreferenceId + 2
+```
+
+```csharp
+WHERE [table_name]='notification_preference_default' AND [max_table_number]
+```
+
+```csharp
+
+
+
+```csharp
+/* After! */
+```
+
+```csharp
+SELECT [table_name], [max_table_number], @MaxPreferenceId AS MaxValue
+```
+
+```csharp
+FROM [max_entries]
+```
+
+```csharp
+WHERE [table_name]='notification_preference_default'
+```
+
+```csharp
+
+
+
+```csharp
+/*Change To COMMIT TRANSACTION when happy */  
+```
+
+```csharp
+ROLLBACK TRANSACTION;
+```
 
 ***NOTE:** All the changes are performed in a transaction (which is rolled back), you’ll need to change the script so that it Commit the results when you’re happy.*

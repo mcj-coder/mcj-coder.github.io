@@ -9,100 +9,196 @@ originalUrl: "https://martinondotnet.blogspot.com/"
 
 I recently needed a way to replace accented characters with simple english ones to allow more readable friendly urls. I'm sure there are plenty of Danes out there who are sick of seeing their language butchered by UrlEncode.  After bit of reading up, it seems .Net 2.0 does 99% of the heavy lifting for you:
 
-             1: //using System.Text;
+```csharp
+//using System.Text;
+```
 
-       2:  
+```csharp
 
-       3: /// 
 
-       4: /// Replaces Accented Characters with Closest Equivalents
 
-       5: /// 
+```csharp
+/// 
+```
 
-       6: /// The original.
+```csharp
+/// Replaces Accented Characters with Closest Equivalents
+```
 
-       7: /// 
+```csharp
+/// 
+```
 
-       8: /// Based on code from: http://blogs.msdn.com/b/michkap/archive/2007/05/14/2629747.aspx
+```csharp
+/// The original.
+```
 
-       9: public static string ToSimpleCharacters(this string original)
+```csharp
+/// 
+```
 
-      10: {
+```csharp
+/// Based on code from: http://blogs.msdn.com/b/michkap/archive/2007/05/14/2629747.aspx
+```
 
-      11:     if (string.IsNullOrEmpty(original)) return string.Empty;
+```csharp
+public static string ToSimpleCharacters(this string original)
+```
 
-      12:     string stFormD = original.Normalize(NormalizationForm.FormD);
+```csharp
+{
+```
 
-      13:     StringBuilder sb = new StringBuilder();
+```csharp
+if (string.IsNullOrEmpty(original)) return string.Empty;
+```
 
-      14:  
+```csharp
+string stFormD = original.Normalize(NormalizationForm.FormD);
+```
 
-      15:     for (int ich = 0; ich 
+```csharp
+StringBuilder sb = new StringBuilder();
+```
 
-      16:     {
+```csharp
 
-      17:         UnicodeCategory uc = CharUnicodeInfo.GetUnicodeCategory(stFormD[ich]);
 
-      18:         if (uc != UnicodeCategory.NonSpacingMark)
 
-      19:         {
+```csharp
+for (int ich = 0; ich 
+```
 
-      20:             if (Lookup.ContainsKey(stFormD[ich]))
+```csharp
+{
+```
 
-      21:             {
+```csharp
+UnicodeCategory uc = CharUnicodeInfo.GetUnicodeCategory(stFormD[ich]);
+```
 
-      22:                 sb.Append(Lookup[stFormD[ich]]);
+```csharp
+if (uc != UnicodeCategory.NonSpacingMark)
+```
 
-      23:             }
+```csharp
+{
+```
 
-      24:             else
+```csharp
+if (Lookup.ContainsKey(stFormD[ich]))
+```
 
-      25:             {
+```csharp
+{
+```
 
-      26:                 sb.Append(stFormD[ich]);
+```csharp
+sb.Append(Lookup[stFormD[ich]]);
+```
 
-      27:             }
+```csharp
+}
+```
 
-      28:         }
+```csharp
+else
+```
 
-      29:     }
+```csharp
+{
+```
 
-      30:  
+```csharp
+sb.Append(stFormD[ich]);
+```
 
-      31:     return (sb.ToString().Normalize(NormalizationForm.FormC));
+```csharp
+}
+```
 
-      32: }
+```csharp
+}
+```
 
-      33:  
+```csharp
+}
+```
 
-      34: private static Dictionarychar, string> _lookup;
+```csharp
 
-      35: private static Dictionarychar, string> Lookup
 
-      36: {
 
-      37:     get
+```csharp
+return (sb.ToString().Normalize(NormalizationForm.FormC));
+```
 
-      38:     {
+```csharp
+}
+```
 
-      39:         if (_lookup == null)
+```csharp
 
-      40:         {
 
-      41:             _lookup = new Dictionarychar, string>();
 
-      42:             _lookup[char.ConvertFromUtf32(230)[0]] = "ae";//_lookup['æ']="ae";
+```csharp
+private static Dictionarychar, string> _lookup;
+```
 
-      43:             _lookup[char.ConvertFromUtf32(198)[0]] = "Ae";//_lookup['Æ']="Ae";
+```csharp
+private static Dictionarychar, string> Lookup
+```
 
-      44:             _lookup[char.ConvertFromUtf32(240)[0]] = "d";//_lookup['ð']="d";
+```csharp
+{
+```
 
-      45:         }
+```csharp
+get
+```
 
-      46:         return _lookup;
+```csharp
+{
+```
 
-      47:     }
+```csharp
+if (_lookup == null)
+```
 
-      48: }
+```csharp
+{
+```
+
+```csharp
+_lookup = new Dictionarychar, string>();
+```
+
+```csharp
+_lookup[char.ConvertFromUtf32(230)[0]] = "ae";//_lookup['æ']="ae";
+```
+
+```csharp
+_lookup[char.ConvertFromUtf32(198)[0]] = "Ae";//_lookup['Æ']="Ae";
+```
+
+```csharp
+_lookup[char.ConvertFromUtf32(240)[0]] = "d";//_lookup['ð']="d";
+```
+
+```csharp
+}
+```
+
+```csharp
+return _lookup;
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 I’m sure that there must be a few substitutions that don’t get caught by this code.  If you’ve got one just drop me a line!

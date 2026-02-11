@@ -19,33 +19,61 @@ In this series of posts I’ve described a method of keeping your code and the r
 
   These should include any css or js that your templates need, an example entry into the Post-Build Event could be:
 
-             1: "$(SolutionDir)3rd Party\Tools\CodebehindRemover\CodebehindRemover" /i="$(ProjectDir)." /o="$(SolutionDir)web\." /e="ascx,aspx,master,asmx,ascx,svc,htm,html" 
+```csharp
+"$(SolutionDir)3rd Party\Tools\CodebehindRemover\CodebehindRemover" /i="$(ProjectDir)." /o="$(SolutionDir)web\." /e="ascx,aspx,master,asmx,ascx,svc,htm,html" 
+```
 
-       2: xcopy "$(ProjectDir)js" "$(SolutionDir)Web\js" /E /I /R /D /C /Y
+```csharp
+xcopy "$(ProjectDir)js" "$(SolutionDir)Web\js" /E /I /R /D /C /Y
+```
 
-       3: xcopy "$(ProjectDir)ui" "$(SolutionDir)Web\ui" /E /I /R /D /C /Y
+```csharp
+xcopy "$(ProjectDir)ui" "$(SolutionDir)Web\ui" /E /I /R /D /C /Y
+```
 
-       4: xcopy "$(ProjectDir)video" "$(SolutionDir)Web\video" /E /I /R /D /C /Y
+```csharp
+xcopy "$(ProjectDir)video" "$(SolutionDir)Web\video" /E /I /R /D /C /Y
+```
 
-       5: xcopy "$(ProjectDir)Xml" "$(SolutionDir)Web\Xml" /E /I /R /D /C /Y
+```csharp
+xcopy "$(ProjectDir)Xml" "$(SolutionDir)Web\Xml" /E /I /R /D /C /Y
+```
 
-       6: xcopy "$(ProjectDir)Xslt" "$(SolutionDir)Web\Xslt" /E /I /R /D /C /Y 
+```csharp
+xcopy "$(ProjectDir)Xslt" "$(SolutionDir)Web\Xslt" /E /I /R /D /C /Y 
+```
 
-       7:  
+```csharp
 
-       8: xcopy "$(ProjectDir)App_Browsers\*.*" "$(SolutionDir)Web\App_Browsers" /I /R /D /Y
 
-       9: xcopy "$(ProjectDir)Configs\*.config" "$(SolutionDir)Web\Configs" /I /R /D /Y
 
-      10: xcopy "$(ProjectDir)Configs\*.config.*" "$(SolutionDir)Web\Configs" /I /R /D /Y
+```csharp
+xcopy "$(ProjectDir)App_Browsers\*.*" "$(SolutionDir)Web\App_Browsers" /I /R /D /Y
+```
 
-      11: xcopy "$(ProjectDir)bin\*.dll" "$(SolutionDir)Web\bin" /E /I /R /D /C /Y
+```csharp
+xcopy "$(ProjectDir)Configs\*.config" "$(SolutionDir)Web\Configs" /I /R /D /Y
+```
 
-      12: xcopy "$(ProjectDir)bin\*.pdb" "$(SolutionDir)Web\bin" /E /I /R /D /C /Y
+```csharp
+xcopy "$(ProjectDir)Configs\*.config.*" "$(SolutionDir)Web\Configs" /I /R /D /Y
+```
 
-      13: xcopy "$(ProjectDir)bin\*.xml" "$(SolutionDir)Web\bin" /E /I /R /D /C /Y
+```csharp
+xcopy "$(ProjectDir)bin\*.dll" "$(SolutionDir)Web\bin" /E /I /R /D /C /Y
+```
 
-      14: xcopy "$(ProjectDir)App_GlobalResources\*.resx" "$(SolutionDir)Web\App_GlobalResources" /I /R /D /Y 
+```csharp
+xcopy "$(ProjectDir)bin\*.pdb" "$(SolutionDir)Web\bin" /E /I /R /D /C /Y
+```
+
+```csharp
+xcopy "$(ProjectDir)bin\*.xml" "$(SolutionDir)Web\bin" /E /I /R /D /C /Y
+```
+
+```csharp
+xcopy "$(ProjectDir)App_GlobalResources\*.resx" "$(SolutionDir)Web\App_GlobalResources" /I /R /D /Y 
+```
 
 You’ll notice that I’ve not included any of the .Net UI files (aspx, ascx, asmx, ashx, etc)  within the xcopy statements.  That’s because one of the implementation differences between Web Applications and Web Sites is that WAPS refer to their codebehind file using the ***codebehind*** page directive attribute, and websites use ***codefile***.  Usually, when you compile (or precompile) a WS or WAP project those references get ignored as there’s no code file necessary.  However, when you’re trying to get ASP.Net to use a WAP aspx in a website you’ll get a compilation error.  
 

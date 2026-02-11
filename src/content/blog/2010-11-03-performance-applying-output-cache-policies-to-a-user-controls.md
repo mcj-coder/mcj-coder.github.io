@@ -17,186 +17,356 @@ One of the great features in ASP.NET is the rich caching framework.  I particul
 
   As with most of my workarounds, the trick is a new Extension Method to dynamically alter the UserControls Cache Policy:
 
-             1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Linq;
+```csharp
+using System.Linq;
+```
 
-       3: using System.Web.Configuration;
+```csharp
+using System.Web.Configuration;
+```
 
-       4: using System.Web.UI;
+```csharp
+using System.Web.UI;
+```
 
-       5:  
+```csharp
 
-       6:  
 
-       7: namespace MartinOnDotNet.Helpers.UI
 
-       8: {
+```csharp
 
-       9:     /// 
 
-      10:     /// Useful extension methods for Controls
 
-      11:     /// 
+```csharp
+namespace MartinOnDotNet.Helpers.UI
+```
 
-      12:     public static class ControlExtensions
+```csharp
+{
+```
 
-      13:     {
+```csharp
+/// 
+```
 
-      14:  
+```csharp
+/// Useful extension methods for Controls
+```
 
-      15:  
+```csharp
+/// 
+```
 
-      16:         private static OutputCacheSettingsSection _outputCacheSettings = ((OutputCacheSettingsSection)WebConfigurationManager.GetSection(@"system.web/caching/outputCacheSettings"));
+```csharp
+public static class ControlExtensions
+```
 
-      17:  
+```csharp
+{
+```
 
-      18:         /// 
+```csharp
 
-      19:         /// Applies the cache policy.
 
-      20:         /// 
 
-      21:         /// The control.
+```csharp
 
-      22:         /// Name of the cache policy.
 
-      23:         public static void ApplyCachePolicy(this UserControl control, string cachePolicyName)
 
-      24:         {
+```csharp
+private static OutputCacheSettingsSection _outputCacheSettings = ((OutputCacheSettingsSection)WebConfigurationManager.GetSection(@"system.web/caching/outputCacheSettings"));
+```
 
-      25:             if (control == null) throw new ArgumentNullException("control");
+```csharp
 
-      26:             if (string.IsNullOrEmpty(cachePolicyName)) throw new ArgumentNullException("cachePolicyName");
 
-      27:             if (_outputCacheSettings == null) return;
 
-      28:             OutputCacheProfile profile = _outputCacheSettings.OutputCacheProfiles.OfType()
+```csharp
+/// 
+```
 
-      29:                 .Where(p => string.Equals(p.Name, cachePolicyName, StringComparison.OrdinalIgnoreCase))
+```csharp
+/// Applies the cache policy.
+```
 
-      30:                 .FirstOrDefault();
+```csharp
+/// 
+```
 
-      31:             if (profile == null || !profile.Enabled) return;
+```csharp
+/// The control.
+```
 
-      32:             control.CachePolicy.SetExpires(DateTime.Now.AddSeconds(profile.Duration));
+```csharp
+/// Name of the cache policy.
+```
 
-      33:             if (!string.Equals(profile.VaryByParam, "none", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(profile.VaryByParam))
+```csharp
+public static void ApplyCachePolicy(this UserControl control, string cachePolicyName)
+```
 
-      34:                 foreach (string key in profile.VaryByParam.Split(new char[]{';'},  StringSplitOptions.RemoveEmptyEntries))
+```csharp
+{
+```
 
-      35:                     control.CachePolicy.VaryByParams[key] = true;
+```csharp
+if (control == null) throw new ArgumentNullException("control");
+```
 
-      36:             else
+```csharp
+if (string.IsNullOrEmpty(cachePolicyName)) throw new ArgumentNullException("cachePolicyName");
+```
 
-      37:                 control.CachePolicy.VaryByParams.IgnoreParams = true;
+```csharp
+if (_outputCacheSettings == null) return;
+```
 
-      38:             if (!string.IsNullOrEmpty(profile.VaryByCustom)) control.CachePolicy.SetVaryByCustom(profile.VaryByCustom);
+```csharp
+OutputCacheProfile profile = _outputCacheSettings.OutputCacheProfiles.OfType()
+```
 
-      39:             if (!string.IsNullOrEmpty(profile.VaryByControl)) control.CachePolicy.SetVaryByCustom(profile.VaryByControl);
+```csharp
+.Where(p => string.Equals(p.Name, cachePolicyName, StringComparison.OrdinalIgnoreCase))
+```
 
-      40:  
+```csharp
+.FirstOrDefault();
+```
 
-      41:  
+```csharp
+if (profile == null || !profile.Enabled) return;
+```
 
-      42:         }
+```csharp
+control.CachePolicy.SetExpires(DateTime.Now.AddSeconds(profile.Duration));
+```
 
-      43:  
+```csharp
+if (!string.Equals(profile.VaryByParam, "none", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(profile.VaryByParam))
+```
 
-      44:     }
+```csharp
+foreach (string key in profile.VaryByParam.Split(new char[]{';'},  StringSplitOptions.RemoveEmptyEntries))
+```
 
-      45: }
+```csharp
+control.CachePolicy.VaryByParams[key] = true;
+```
+
+```csharp
+else
+```
+
+```csharp
+control.CachePolicy.VaryByParams.IgnoreParams = true;
+```
+
+```csharp
+if (!string.IsNullOrEmpty(profile.VaryByCustom)) control.CachePolicy.SetVaryByCustom(profile.VaryByCustom);
+```
+
+```csharp
+if (!string.IsNullOrEmpty(profile.VaryByControl)) control.CachePolicy.SetVaryByCustom(profile.VaryByControl);
+```
+
+```csharp
+
+
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 To use it each user control will need to have a line added to the OnInit override in the codebehind (*.ascx.cs):
 
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2: using MartinOnDotNet.Helpers.UI;
+```csharp
+using MartinOnDotNet.Helpers.UI;
+```
 
-       3:  
+```csharp
 
-       4: namespace MartinOnDotNet.Helpers.BrandingDemo
 
-       5: {
 
-       6:     /// 
+```csharp
+namespace MartinOnDotNet.Helpers.BrandingDemo
+```
 
-       7:     /// Example of a cached usercontrol
+```csharp
+{
+```
 
-       8:     /// 
+```csharp
+/// 
+```
 
-       9:     public partial class CacheExample : System.Web.UI.UserControl
+```csharp
+/// Example of a cached usercontrol
+```
 
-      10:     {
+```csharp
+/// 
+```
 
-      11:         /// 
+```csharp
+public partial class CacheExample : System.Web.UI.UserControl
+```
 
-      12:         /// Raises the  event.
+```csharp
+{
+```
 
-      13:         /// 
+```csharp
+/// 
+```
 
-      14:         /// An  object that contains the event data.
+```csharp
+/// Raises the  event.
+```
 
-      15:         protected override void OnInit(EventArgs e)
+```csharp
+/// 
+```
 
-      16:         {
+```csharp
+/// An  object that contains the event data.
+```
 
-      17:             base.OnInit(e);
+```csharp
+protected override void OnInit(EventArgs e)
+```
 
-      18:             if (this.CachePolicy.SupportsCaching)
+```csharp
+{
+```
 
-      19:                 this.ApplyCachePolicy("Test");
+```csharp
+base.OnInit(e);
+```
 
-      20:         }
+```csharp
+if (this.CachePolicy.SupportsCaching)
+```
 
-      21:    
+```csharp
+this.ApplyCachePolicy("Test");
+```
 
-      22:     }
+```csharp
+}
+```
 
-      23: }
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 The ascx file will need a place holder @outputcache directive:
 
   
-       1: 
+```csharp
 
-       2:     Inherits="MartinOnDotNet.Helpers.BrandingDemo.CacheExample" %>
 
-       3:  
 
-       4: 
+```csharp
+Inherits="MartinOnDotNet.Helpers.BrandingDemo.CacheExample" %>
+```
 
-       5:  
+```csharp
 
-       6: "G") %>
+
+
+```csharp
+
+
+
+```csharp
+
+
+
+```csharp
+"G") %>
+```
 
 The values in the directive act as defaults and will be overridden by parameters in the matching Cache Policy (Test, in the code above), apart from Shared which isn’t included in the config.
 
 Finally, define you cache policy in the web.config file:
 
   
-       1: system.web>
+```csharp
+system.web>
+```
 
-       2:     caching>
+```csharp
+caching>
+```
 
-       3:         outputCacheSettings>
+```csharp
+outputCacheSettings>
+```
 
-       4:             outputCacheProfiles>
+```csharp
+outputCacheProfiles>
+```
 
-       5:                 add name="Test"
+```csharp
+add name="Test"
+```
 
-       6:                          duration="3600"
+```csharp
+duration="3600"
+```
 
-       7:                          varyByParam="none" varyByCustom="DATE:yyyyMMddHHmm"/>
+```csharp
+varyByParam="none" varyByCustom="DATE:yyyyMMddHHmm"/>
+```
 
-       8:             outputCacheProfiles>
+```csharp
+outputCacheProfiles>
+```
 
-       9:         outputCacheSettings>
+```csharp
+outputCacheSettings>
+```
 
-      10:     caching>
+```csharp
+caching>
+```
 
-      11: system.web>
+```csharp
+system.web>
+```
 
 The varyByCustom attribute in the rule above refers to some custom code in the Global.asax using the GetVaryByCustomString method.  In this case the code will vary by the current date in the given format making the cached version of the control rollover every minute.  This is a bit wasteful, as the cache will hang on to each version of the control for 3600 seconds (an hour) but proves the principle works.
 

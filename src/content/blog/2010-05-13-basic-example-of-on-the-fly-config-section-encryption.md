@@ -11,235 +11,464 @@ I recently answered a question about how you could securely modify a value withi
 
   A quick example page could be:
 
-             1: 
+```csharp
 
-       2:  
 
-       3: DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-       4: html xmlns="http://www.w3.org/1999/xhtml">
+```csharp
 
-       5: head runat="server">
 
-       6:     title>title>
 
-       7: head>
+```csharp
+DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+```
 
-       8: body>
+```csharp
+html xmlns="http://www.w3.org/1999/xhtml">
+```
 
-       9:     form id="form1" runat="server">
+```csharp
+head runat="server">
+```
 
-      10:     div>
+```csharp
+title>title>
+```
 
-      11:         asp:Button ID="EncryptButton" runat="server" Text="Encrypt" OnClick="EncryptButton_Click" />
+```csharp
+head>
+```
 
-      12:         asp:Button ID="DecryptButton" runat="server" Text="Decrypt" OnClick="DecryptButton_Click" />
+```csharp
+body>
+```
 
-      13:         asp:Button ID="IncrementButton" runat="server" Text="Increment" OnClick="IncrementButton_Click" />
+```csharp
+form id="form1" runat="server">
+```
 
-      14:         asp:Label ID="CountLabel" runat="server" Text="0">asp:Label>
+```csharp
+div>
+```
 
-      15:         br />
+```csharp
+asp:Button ID="EncryptButton" runat="server" Text="Encrypt" OnClick="EncryptButton_Click" />
+```
 
-      16:         asp:Label ID="StatusLabel" runat="server" Text="" EnableViewState="false">asp:Label>
+```csharp
+asp:Button ID="DecryptButton" runat="server" Text="Decrypt" OnClick="DecryptButton_Click" />
+```
 
-      17:     div>
+```csharp
+asp:Button ID="IncrementButton" runat="server" Text="Increment" OnClick="IncrementButton_Click" />
+```
 
-      18:     form>
+```csharp
+asp:Label ID="CountLabel" runat="server" Text="0">asp:Label>
+```
 
-      19: body>
+```csharp
+br />
+```
 
-      20: html>
+```csharp
+asp:Label ID="StatusLabel" runat="server" Text="" EnableViewState="false">asp:Label>
+```
 
+```csharp
+div>
+```
+
+```csharp
+form>
+```
+
+```csharp
+body>
+```
+
+```csharp
+html>
+```
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Configuration;
+```csharp
+using System.Configuration;
+```
 
-       3: using System.Linq;
+```csharp
+using System.Linq;
+```
 
-       4: using System.Web.Configuration;
+```csharp
+using System.Web.Configuration;
+```
 
-       5:  
+```csharp
 
-       6: public partial class _Default : System.Web.UI.Page
 
-       7: {
 
-       8:  
+```csharp
+public partial class _Default : System.Web.UI.Page
+```
 
-       9:     /// 
+```csharp
+{
+```
 
-      10:     /// Handles the PreRender event of the Page control.
+```csharp
 
-      11:     /// 
 
-      12:     /// The source of the event.
 
-      13:     /// The  instance containing the event data.
+```csharp
+/// 
+```
 
-      14:     protected void Page_PreRender(object sender, EventArgs e)
+```csharp
+/// Handles the PreRender event of the Page control.
+```
 
-      15:     {
+```csharp
+/// 
+```
 
-      16:         
+```csharp
+/// The source of the event.
+```
 
-      17:         
+```csharp
+/// The  instance containing the event data.
+```
 
-      18:         Configuration confg = WebConfigurationManager.OpenWebConfiguration(Request.ApplicationPath);
+```csharp
+protected void Page_PreRender(object sender, EventArgs e)
+```
 
-      19:         ConfigurationSection confStrSect = confg.GetSection(sectionKey);
+```csharp
+{
+```
 
-      20:         StatusLabel.Text = "No Config Section";
+```csharp
 
-      21:         if (confStrSect != null)
 
-      22:         {
 
-      23:             StatusLabel.Text = "Decrypted";
+```csharp
 
-      24:             if (confStrSect.SectionInformation.IsProtected)
 
-      25:             {
 
-      26:                 StatusLabel.Text = "Encrypted";
+```csharp
+Configuration confg = WebConfigurationManager.OpenWebConfiguration(Request.ApplicationPath);
+```
 
-      27:             }
+```csharp
+ConfigurationSection confStrSect = confg.GetSection(sectionKey);
+```
 
-      28:             int count = 0;
+```csharp
+StatusLabel.Text = "No Config Section";
+```
 
-      29:             int.TryParse(confg.AppSettings.Settings[countKey].Value, out count);
+```csharp
+if (confStrSect != null)
+```
 
-      30:             CountLabel.Text = count.ToString();
+```csharp
+{
+```
 
-      31:         }
+```csharp
+StatusLabel.Text = "Decrypted";
+```
 
-      32:         
+```csharp
+if (confStrSect.SectionInformation.IsProtected)
+```
 
-      33:  
+```csharp
+{
+```
 
-      34:     }
+```csharp
+StatusLabel.Text = "Encrypted";
+```
 
-      35:     
+```csharp
+}
+```
 
-      36:     string providerKey = "RSAProtectedConfigurationProvider";
+```csharp
+int count = 0;
+```
 
-      37:     string sectionKey = "appSettings";
+```csharp
+int.TryParse(confg.AppSettings.Settings[countKey].Value, out count);
+```
 
-      38:     string countKey = "Count";
+```csharp
+CountLabel.Text = count.ToString();
+```
 
-      39:  
+```csharp
+}
+```
 
-      40:     /// 
+```csharp
 
-      41:     /// Handles the Click event of the EncryptButton control.
 
-      42:     /// 
 
-      43:     /// The source of the event.
+```csharp
 
-      44:     /// The  instance containing the event data.
 
-      45:     protected void EncryptButton_Click(object sender, EventArgs e)
 
-      46:     {
+```csharp
+}
+```
 
-      47:         Configuration confg = WebConfigurationManager.OpenWebConfiguration(Request.ApplicationPath);
+```csharp
 
-      48:         ConfigurationSection confStrSect = confg.GetSection(sectionKey);
 
-      49:         if (confStrSect != null)
 
-      50:         {
+```csharp
+string providerKey = "RSAProtectedConfigurationProvider";
+```
 
-      51:             confStrSect.SectionInformation.ProtectSection(providerKey);
+```csharp
+string sectionKey = "appSettings";
+```
 
-      52:             confg.Save();
+```csharp
+string countKey = "Count";
+```
 
-      53:         }
+```csharp
 
-      54:     }
 
-      55:     /// 
 
-      56:     /// Handles the Click event of the DecryptButton control.
+```csharp
+/// 
+```
 
-      57:     /// 
+```csharp
+/// Handles the Click event of the EncryptButton control.
+```
 
-      58:     /// The source of the event.
+```csharp
+/// 
+```
 
-      59:     /// The  instance containing the event data.
+```csharp
+/// The source of the event.
+```
 
-      60:     protected void DecryptButton_Click(object sender, EventArgs e)
+```csharp
+/// The  instance containing the event data.
+```
 
-      61:     {
+```csharp
+protected void EncryptButton_Click(object sender, EventArgs e)
+```
 
-      62:         Configuration confg = WebConfigurationManager.OpenWebConfiguration(Request.ApplicationPath);
+```csharp
+{
+```
 
-      63:         ConfigurationSection confStrSect = confg.GetSection(sectionKey);
+```csharp
+Configuration confg = WebConfigurationManager.OpenWebConfiguration(Request.ApplicationPath);
+```
 
-      64:         if (confStrSect != null && confStrSect.SectionInformation.IsProtected)
+```csharp
+ConfigurationSection confStrSect = confg.GetSection(sectionKey);
+```
 
-      65:         {
+```csharp
+if (confStrSect != null)
+```
 
-      66:             confStrSect.SectionInformation.UnprotectSection();
+```csharp
+{
+```
 
-      67:             confg.Save();
+```csharp
+confStrSect.SectionInformation.ProtectSection(providerKey);
+```
 
-      68:         }
+```csharp
+confg.Save();
+```
 
-      69:     }
+```csharp
+}
+```
 
-      70:     /// 
+```csharp
+}
+```
 
-      71:     /// Handles the Click event of the IncrementButton control.
+```csharp
+/// 
+```
 
-      72:     /// 
+```csharp
+/// Handles the Click event of the DecryptButton control.
+```
 
-      73:     /// The source of the event.
+```csharp
+/// 
+```
 
-      74:     /// The  instance containing the event data.
+```csharp
+/// The source of the event.
+```
 
-      75:     protected void IncrementButton_Click(object sender, EventArgs e)
+```csharp
+/// The  instance containing the event data.
+```
 
-      76:     {
+```csharp
+protected void DecryptButton_Click(object sender, EventArgs e)
+```
 
-      77:         int count = 0;
+```csharp
+{
+```
 
-      78:         int.TryParse(WebConfigurationManager.AppSettings[countKey], out count);
+```csharp
+Configuration confg = WebConfigurationManager.OpenWebConfiguration(Request.ApplicationPath);
+```
 
-      79:         count++;
+```csharp
+ConfigurationSection confStrSect = confg.GetSection(sectionKey);
+```
 
-      80:         
+```csharp
+if (confStrSect != null && confStrSect.SectionInformation.IsProtected)
+```
 
-      81:         Configuration confg = WebConfigurationManager.OpenWebConfiguration(Request.ApplicationPath);
+```csharp
+{
+```
 
-      82:         ConfigurationSection confStrSect = confg.GetSection(sectionKey);
+```csharp
+confStrSect.SectionInformation.UnprotectSection();
+```
 
-      83:         {
+```csharp
+confg.Save();
+```
 
-      84:             if (confg.AppSettings.Settings.AllKeys.Contains(countKey))
+```csharp
+}
+```
 
-      85:             {
+```csharp
+}
+```
 
-      86:                 confg.AppSettings.Settings[countKey].Value = count.ToString();
+```csharp
+/// 
+```
 
-      87:             }
+```csharp
+/// Handles the Click event of the IncrementButton control.
+```
 
-      88:             else
+```csharp
+/// 
+```
 
-      89:             {
+```csharp
+/// The source of the event.
+```
 
-      90:                 confg.AppSettings.Settings.Add(countKey, count.ToString());
+```csharp
+/// The  instance containing the event data.
+```
 
-      91:             }
+```csharp
+protected void IncrementButton_Click(object sender, EventArgs e)
+```
 
-      92:             confg.Save(ConfigurationSaveMode.Modified);
+```csharp
+{
+```
 
-      93:         }
+```csharp
+int count = 0;
+```
 
-      94:     }
+```csharp
+int.TryParse(WebConfigurationManager.AppSettings[countKey], out count);
+```
 
-      95: }
+```csharp
+count++;
+```
+
+```csharp
+
+
+
+```csharp
+Configuration confg = WebConfigurationManager.OpenWebConfiguration(Request.ApplicationPath);
+```
+
+```csharp
+ConfigurationSection confStrSect = confg.GetSection(sectionKey);
+```
+
+```csharp
+{
+```
+
+```csharp
+if (confg.AppSettings.Settings.AllKeys.Contains(countKey))
+```
+
+```csharp
+{
+```
+
+```csharp
+confg.AppSettings.Settings[countKey].Value = count.ToString();
+```
+
+```csharp
+}
+```
+
+```csharp
+else
+```
+
+```csharp
+{
+```
+
+```csharp
+confg.AppSettings.Settings.Add(countKey, count.ToString());
+```
+
+```csharp
+}
+```
+
+```csharp
+confg.Save(ConfigurationSaveMode.Modified);
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 Simples.

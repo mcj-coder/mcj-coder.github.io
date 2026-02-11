@@ -33,25 +33,45 @@ It’s on!  I’ve got 8 days to overhaul the Volkswagen Type 2 Owners Club ([w
 
   Fortunately, n2cms has some excellent deployment scripts already which I can leverage and with a bit of reuse from my [CodeBehindRemover](http://martinondotnet.blogspot.com/2010/03/ektron-compiled-workarea-workaround.html)  (within the ‘Tools’ folder) I can create a compiled template project:
 
-             1: @echo off
+```csharp
+@echo off
+```
 
-       2: cmd /c "%programfiles(x86)%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" &
+```csharp
+cmd /c "%programfiles(x86)%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" &
+```
 
-       3: Echo Updateing Compiled N2CMS
+```csharp
+Echo Updateing Compiled N2CMS
+```
 
-       4: cd "3rd Party\custom\n2cms\build"
+```csharp
+cd "3rd Party\custom\n2cms\build"
+```
 
-       5: cmd /c "build.bat /target:PrepareDependencies" & 
+```csharp
+cmd /c "build.bat /target:PrepareDependencies" & 
+```
 
-       6: cmd /c "build.bat"&
+```csharp
+cmd /c "build.bat"&
+```
 
-       7: cmd /c "..\..\..\..\Tools\CodeBehindRemover\CodeBehindRemover /i:..\src\\wwwroot  /o:..\..\N2.Templates.Compiled /e:ascx,aspx,master,asmx,ashx" &
+```csharp
+cmd /c "..\..\..\..\Tools\CodeBehindRemover\CodeBehindRemover /i:..\src\\wwwroot  /o:..\..\N2.Templates.Compiled /e:ascx,aspx,master,asmx,ashx" &
+```
 
-       8: cmd /c "robocopy ..\src\wwwroot ..\..\N2.Templates.Compiled /XD .svn obj /XF *.cs *.ascx *.aspx *.master *.asmx *.ashx *.csproj *.sln *.suo *.user *.cache /S" &
+```csharp
+cmd /c "robocopy ..\src\wwwroot ..\..\N2.Templates.Compiled /XD .svn obj /XF *.cs *.ascx *.aspx *.master *.asmx *.ashx *.csproj *.sln *.suo *.user *.cache /S" &
+```
 
-       9:  
+```csharp
 
-      10: cmd /c "robocopy ..\..\N2.Templates.Compiled\bin ..\..\N2.Templates.Compiled.bin /XD .svn /MOVE" &
+
+
+```csharp
+cmd /c "robocopy ..\..\N2.Templates.Compiled\bin ..\..\N2.Templates.Compiled.bin /XD .svn /MOVE" &
+```
 
 This results in a new folder in ‘3rd Party\custom’\ called ‘N2.Templates.Compiled’ which contains all the UI parts of the project, the compiled libraries and the example web.config.  All of the c#, and solution files have been removed ready for importing into my new project.
 
@@ -90,62 +110,114 @@ This is needed as the provided N2.dll and N2.Templates.dll are considerably olde
 To get the addon deployed to my base website I updated the build script:
 
   
-       1: @echo off
+```csharp
+@echo off
+```
 
-       2: cmd /c "%programfiles(x86)%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" &
+```csharp
+cmd /c "%programfiles(x86)%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" &
+```
 
-       3: Echo Updateing Compiled N2CMS
+```csharp
+Echo Updateing Compiled N2CMS
+```
 
-       4: cd "3rd Party\custom\n2cms\build"
+```csharp
+cd "3rd Party\custom\n2cms\build"
+```
 
-       5: cmd /c "build.bat /target:PrepareDependencies" & 
+```csharp
+cmd /c "build.bat /target:PrepareDependencies" & 
+```
 
-       6: cmd /c "build.bat"&
+```csharp
+cmd /c "build.bat"&
+```
 
-       7: cmd /c "..\..\..\..\Tools\CodeBehindRemover\CodeBehindRemover /i:..\src\\wwwroot  /o:..\..\N2.Templates.Compiled /e:ascx,aspx,master,asmx,ashx" &
+```csharp
+cmd /c "..\..\..\..\Tools\CodeBehindRemover\CodeBehindRemover /i:..\src\\wwwroot  /o:..\..\N2.Templates.Compiled /e:ascx,aspx,master,asmx,ashx" &
+```
 
-       8: cmd /c "robocopy ..\src\wwwroot ..\..\N2.Templates.Compiled /XD .svn obj /XF *.cs *.ascx *.aspx *.master *.asmx *.ashx *.csproj *.sln *.suo *.user *.cache /S" &
+```csharp
+cmd /c "robocopy ..\src\wwwroot ..\..\N2.Templates.Compiled /XD .svn obj /XF *.cs *.ascx *.aspx *.master *.asmx *.ashx *.csproj *.sln *.suo *.user *.cache /S" &
+```
 
-       9:  
+```csharp
 
-      10: ECHO Deploying Forum to Compiled Template
 
-      11: cmd /c "robocopy ..\src\N2.\wwwroot\bin  ..\..\Forum\lib N2.Dll N2.pdb N2.Templates.*
 
-      12: cd ..\..\Forum\src
+```csharp
+ECHO Deploying Forum to Compiled Template
+```
 
-      13: cmd /c "msbuild Forum.sln" &
+```csharp
+cmd /c "robocopy ..\src\N2.\wwwroot\bin  ..\..\Forum\lib N2.Dll N2.pdb N2.Templates.*
+```
 
-      14: cmd /c "..\..\..\..\Tools\CodeBehindRemover\CodeBehindRemover /i:Forum /o:..\..\N2.Templates.Compiled /e:ascx,aspx,master,asmx,ashx" &
+```csharp
+cd ..\..\Forum\src
+```
 
-      15: cmd /c "robocopy Forum ..\..\N2.Templates.Compiled /XD .svn obj /XF *.cs *.ascx *.aspx *.master *.asmx *.ashx *.csproj *.sln *.suo *.user *.cache /S" &
+```csharp
+cmd /c "msbuild Forum.sln" &
+```
 
-      16:  
+```csharp
+cmd /c "..\..\..\..\Tools\CodeBehindRemover\CodeBehindRemover /i:Forum /o:..\..\N2.Templates.Compiled /e:ascx,aspx,master,asmx,ashx" &
+```
 
-      17: cmd /c "robocopy ..\..\N2.Templates.Compiled\bin ..\..\N2.Templates.Compiled.bin /XD .svn /MOVE" &
+```csharp
+cmd /c "robocopy Forum ..\..\N2.Templates.Compiled /XD .svn obj /XF *.cs *.ascx *.aspx *.master *.asmx *.ashx *.csproj *.sln *.suo *.user *.cache /S" &
+```
 
-      18:  
+```csharp
 
-      19: cd ..\..\..\..\
+
+
+```csharp
+cmd /c "robocopy ..\..\N2.Templates.Compiled\bin ..\..\N2.Templates.Compiled.bin /XD .svn /MOVE" &
+```
+
+```csharp
+
+
+
+```csharp
+cd ..\..\..\..\
+```
 
 This takes care of updating the lib references in the forum project and deploying the contents of the add on into the ‘N2.Templates.Compiled’ folder.  
 
 When then build is complete, commit the ‘3rd Party\custom’ folder and then merge the updates from ‘3rd Party\custom\N2.Templates.Compiled’ into ‘\Website’.  Add the missing references and files to the project and then it’s two quick amendments to the web.config:
 
   
-       1: 
+```csharp
 
-       2: configSections>
 
-       3:     section name="yafnet" type="yaf.SectionHandler,yaf" />
 
-       4: configSections>
+```csharp
+configSections>
+```
 
-       5:  
+```csharp
+section name="yafnet" type="yaf.SectionHandler,yaf" />
+```
 
-       6: 
+```csharp
+configSections>
+```
 
-       7: yafnet configSource="yafnet.config" />
+```csharp
+
+
+
+```csharp
+
+
+
+```csharp
+yafnet configSource="yafnet.config" />
+```
 
 The ‘Forum’ content type should now show up within the Admin interface:
 

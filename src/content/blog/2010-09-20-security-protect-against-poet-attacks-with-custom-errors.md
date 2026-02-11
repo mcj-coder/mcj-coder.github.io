@@ -15,331 +15,657 @@ There’s been a [big](http://bit.ly/adYPvZ) [deal](http://bit.ly/9ANVPs) made o
 
   
 
-             1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Web;
+```csharp
+using System.Web;
+```
 
-       3: using System.Net;
+```csharp
+using System.Net;
+```
 
-       4: using System.Collections.Generic;
+```csharp
+using System.Collections.Generic;
+```
 
-       5: using System.Configuration;
+```csharp
+using System.Configuration;
+```
 
-       6: using System.Web.Configuration;
+```csharp
+using System.Web.Configuration;
+```
 
-       7:  
+```csharp
 
-       8:  
 
-       9: namespace MartinOnDotNet.Website.Support
 
-      10: {
+```csharp
 
-      11:     /// 
 
-      12:     /// Handles errors in an SEO friendly manner
 
-      13:     /// 
+```csharp
+namespace MartinOnDotNet.Website.Support
+```
 
-      14:     public class SeoErrorLoggingModule : IHttpModule
+```csharp
+{
+```
 
-      15:     {
+```csharp
+/// 
+```
 
-      16:  
+```csharp
+/// Handles errors in an SEO friendly manner
+```
 
-      17:         private static System.Random random = new Random((int)DateTime.Now.Ticks);
+```csharp
+/// 
+```
 
-      18:  
+```csharp
+public class SeoErrorLoggingModule : IHttpModule
+```
 
-      19:         private const int MaxDelay = 500;
+```csharp
+{
+```
 
-      20:  
+```csharp
 
-      21:         private static CustomErrorsSection customErrors = WebConfigurationManager.GetSection("system.web/customErrors") as CustomErrorsSection;
 
-      22:  
 
-      23:         /// 
+```csharp
+private static System.Random random = new Random((int)DateTime.Now.Ticks);
+```
 
-      24:         /// Called when [error].
+```csharp
 
-      25:         /// 
 
-      26:         /// The sender.
 
-      27:         /// The  instance containing the event data.
+```csharp
+private const int MaxDelay = 500;
+```
 
-      28:         protected virtual void OnError(object sender, EventArgs e)
+```csharp
 
-      29:         {
 
-      30:             HttpApplication application = (HttpApplication)sender;
 
-      31:             HttpContext context = application.Context;
+```csharp
+private static CustomErrorsSection customErrors = WebConfigurationManager.GetSection("system.web/customErrors") as CustomErrorsSection;
+```
 
-      32:             if (context != null && context.AllErrors != null)
+```csharp
 
-      33:             {
 
-      34:                 foreach (Exception ex in context.AllErrors)
 
-      35:                 {
+```csharp
+/// 
+```
 
-      36:                     ex.Data["RawUrl"] = context.Request.RawUrl;
+```csharp
+/// Called when [error].
+```
 
-      37:                     HttpException hex = ex as HttpException;
+```csharp
+/// 
+```
 
-      38:                     if (hex != null && hex.GetHttpCode() == (int)HttpStatusCode.NotFound)
+```csharp
+/// The sender.
+```
 
-      39:                     {
+```csharp
+/// The  instance containing the event data.
+```
 
-      40:                         Logging.Logger.LogWarning(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Requested File Not Found {0} ({1})", context.Request.RawUrl, context.Request.Url));
+```csharp
+protected virtual void OnError(object sender, EventArgs e)
+```
 
-      41:                     }
+```csharp
+{
+```
 
-      42:                     else
+```csharp
+HttpApplication application = (HttpApplication)sender;
+```
 
-      43:                     {
+```csharp
+HttpContext context = application.Context;
+```
 
-      44:                         Logging.Logger.Log(ex);
+```csharp
+if (context != null && context.AllErrors != null)
+```
 
-      45:                     }
+```csharp
+{
+```
 
-      46:                    
+```csharp
+foreach (Exception ex in context.AllErrors)
+```
 
-      47:                 }
+```csharp
+{
+```
 
-      48:             }
+```csharp
+ex.Data["RawUrl"] = context.Request.RawUrl;
+```
 
-      49:             HttpException httpException = context.Error as HttpException;
+```csharp
+HttpException hex = ex as HttpException;
+```
 
-      50:             context.Response.Clear();
+```csharp
+if (hex != null && hex.GetHttpCode() == (int)HttpStatusCode.NotFound)
+```
 
-      51:             if (httpException != null && !IsResourceRequest(context.CurrentHandler))
+```csharp
+{
+```
 
-      52:                 context.Response.StatusCode = httpException.GetHttpCode();
+```csharp
+Logging.Logger.LogWarning(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Requested File Not Found {0} ({1})", context.Request.RawUrl, context.Request.Url));
+```
 
-      53:             else
+```csharp
+}
+```
 
-      54:                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+```csharp
+else
+```
 
-      55:             if (((context.IsCustomErrorEnabled && !context.Request.Browser.Crawler) || IsResourceRequest(context.CurrentHandler) )
+```csharp
+{
+```
 
-      56:                 && !IsAnErrorPage(context.Request.RawUrl))
+```csharp
+Logging.Logger.Log(ex);
+```
 
-      57:             {
+```csharp
+}
+```
 
-      58:                 System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_random.Next(MaxDelay)));
+```csharp
 
-      59:                 context.ClearError();
 
-      60:                 string path = GetPathForError(context, (HttpStatusCode)context.Response.StatusCode);
 
-      61:                 if (!string.IsNullOrEmpty(path))
+```csharp
+}
+```
 
-      62:                 {
+```csharp
+}
+```
 
-      63:                    if (CustomErrors.RedirectMode == CustomErrorsRedirectMode.ResponseRedirect && !IsResourceRequest(context.CurrentHandler) )
+```csharp
+HttpException httpException = context.Error as HttpException;
+```
 
-      64:                    {
+```csharp
+context.Response.Clear();
+```
 
-      65:                        context.Response.Redirect(path, true);
+```csharp
+if (httpException != null && !IsResourceRequest(context.CurrentHandler))
+```
 
-      66:                    }
+```csharp
+context.Response.StatusCode = httpException.GetHttpCode();
+```
 
-      67:                    else
+```csharp
+else
+```
 
-      68:                    {
+```csharp
+context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+```
 
-      69:                        context.RewritePath(path);
+```csharp
+if (((context.IsCustomErrorEnabled && !context.Request.Browser.Crawler) || IsResourceRequest(context.CurrentHandler) )
+```
 
-      70:                    }
+```csharp
+&& !IsAnErrorPage(context.Request.RawUrl))
+```
 
-      71:                 }
+```csharp
+{
+```
 
-      72:             }
+```csharp
+System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_random.Next(MaxDelay)));
+```
 
-      73:         }
+```csharp
+context.ClearError();
+```
 
-      74:  
+```csharp
+string path = GetPathForError(context, (HttpStatusCode)context.Response.StatusCode);
+```
 
-      75:         /// 
+```csharp
+if (!string.IsNullOrEmpty(path))
+```
 
-      76:         /// Determines whether current request is to a resource handler
+```csharp
+{
+```
 
-      77:         /// 
+```csharp
+if (CustomErrors.RedirectMode == CustomErrorsRedirectMode.ResponseRedirect && !IsResourceRequest(context.CurrentHandler) )
+```
 
-      78:         /// The handler.
+```csharp
+{
+```
 
-      79:         /// 
+```csharp
+context.Response.Redirect(path, true);
+```
 
-      80:         ///     true if [is resource request] [the specified handler]; otherwise, false.
+```csharp
+}
+```
 
-      81:         /// 
+```csharp
+else
+```
 
-      82:         protected virtual bool IsResourceRequest(IHttpHandler handler)
+```csharp
+{
+```
 
-      83:         {
+```csharp
+context.RewritePath(path);
+```
 
-      84:             return handler != null
+```csharp
+}
+```
 
-      85:                 &&
+```csharp
+}
+```
 
-      86:                 (typeof(System.Web.Handlers.AssemblyResourceLoader).IsInstanceOfType(handler)
+```csharp
+}
+```
 
-      87:                 || typeof(System.Web.Handlers.ScriptResourceHandler).IsInstanceOfType(handler));
+```csharp
+}
+```
 
-      88:  
+```csharp
 
-      89:         }
 
-      90:  
 
-      91:         /// 
+```csharp
+/// 
+```
 
-      92:         /// Gets the path for error.
+```csharp
+/// Determines whether current request is to a resource handler
+```
 
-      93:         /// 
+```csharp
+/// 
+```
 
-      94:         /// The current.
+```csharp
+/// The handler.
+```
 
-      95:         /// The status.
+```csharp
+/// 
+```
 
-      96:         /// 
+```csharp
+///     true if [is resource request] [the specified handler]; otherwise, false.
+```
 
-      97:         protected virtual string GetPathForError(HttpContext current, HttpStatusCode status)
+```csharp
+/// 
+```
 
-      98:         {
+```csharp
+protected virtual bool IsResourceRequest(IHttpHandler handler)
+```
 
-      99:             foreach (CustomError ce in customErrors.Errors)
+```csharp
+{
+```
 
-     100:             {
+```csharp
+return handler != null
+```
 
-     101:                 if (ce.StatusCode == (int)status) return ce.Redirect;
+```csharp
+&&
+```
 
-     102:             }
+```csharp
+(typeof(System.Web.Handlers.AssemblyResourceLoader).IsInstanceOfType(handler)
+```
 
-     103:             return customErrors.DefaultRedirect;
+```csharp
+|| typeof(System.Web.Handlers.ScriptResourceHandler).IsInstanceOfType(handler));
+```
 
-     104:         }
+```csharp
 
-     105:  
 
-     106:         /// 
 
-     107:         /// Determines whether the given path (RawUrl) is an error page itself
+```csharp
+}
+```
 
-     108:         /// 
+```csharp
 
-     109:         /// The path.
 
-     110:         /// 
 
-     111:         ///     true if [is an error page] [the specified path]; otherwise, false.
+```csharp
+/// 
+```
 
-     112:         /// 
+```csharp
+/// Gets the path for error.
+```
 
-     113:         protected virtual bool IsAnErrorPage(string path)
+```csharp
+/// 
+```
 
-     114:         {
+```csharp
+/// The current.
+```
 
-     115:             if (ErrorPages != null)
+```csharp
+/// The status.
+```
 
-     116:             {
+```csharp
+/// 
+```
 
-     117:                 foreach (string s in ErrorPages)
+```csharp
+protected virtual string GetPathForError(HttpContext current, HttpStatusCode status)
+```
 
-     118:                 {
+```csharp
+{
+```
 
-     119:                     if (path.IndexOf(s, StringComparison.OrdinalIgnoreCase) > -1) return true;
+```csharp
+foreach (CustomError ce in customErrors.Errors)
+```
 
-     120:                 }
+```csharp
+{
+```
 
-     121:             }
+```csharp
+if (ce.StatusCode == (int)status) return ce.Redirect;
+```
 
-     122:             return false;
+```csharp
+}
+```
 
-     123:         }
+```csharp
+return customErrors.DefaultRedirect;
+```
 
-     124:  
+```csharp
+}
+```
 
-     125:         /// 
+```csharp
 
-     126:         /// Gets the error pages.
 
-     127:         /// 
 
-     128:         /// The error pages.
+```csharp
+/// 
+```
 
-     129:         protected virtual IEnumerablestring> ErrorPages
+```csharp
+/// Determines whether the given path (RawUrl) is an error page itself
+```
 
-     130:         {
+```csharp
+/// 
+```
 
-     131:             get
+```csharp
+/// The path.
+```
 
-     132:             {
+```csharp
+/// 
+```
 
-     133:                 
+```csharp
+///     true if [is an error page] [the specified path]; otherwise, false.
+```
 
-     134:                 foreach (CustomError ce in customErrors.Errors)
+```csharp
+/// 
+```
 
-     135:                 {
+```csharp
+protected virtual bool IsAnErrorPage(string path)
+```
 
-     136:                     yield return ce.Redirect;
+```csharp
+{
+```
 
-     137:                 }
+```csharp
+if (ErrorPages != null)
+```
 
-     138:                 yield return customErrors.DefaultRedirect;
+```csharp
+{
+```
 
-     139:             }
+```csharp
+foreach (string s in ErrorPages)
+```
 
-     140:         }
+```csharp
+{
+```
 
-     141:  
+```csharp
+if (path.IndexOf(s, StringComparison.OrdinalIgnoreCase) > -1) return true;
+```
 
-     142:        /// 
+```csharp
+}
+```
 
-     143:        /// Disposes of the resources (other than memory) used by the module that implements .
+```csharp
+}
+```
 
-     144:        /// 
+```csharp
+return false;
+```
 
-     145:        public void Dispose()
+```csharp
+}
+```
 
-     146:        {
+```csharp
 
-     147:            //clean-up code here.
 
-     148:        }
 
-     149:  
+```csharp
+/// 
+```
 
-     150:        /// 
+```csharp
+/// Gets the error pages.
+```
 
-     151:        /// Initializes a module and prepares it to handle requests.
+```csharp
+/// 
+```
 
-     152:        /// 
+```csharp
+/// The error pages.
+```
 
-     153:        /// An  that provides access to the methods, properties, and events common to all application objects within an ASP.NET application
+```csharp
+protected virtual IEnumerablestring> ErrorPages
+```
 
-     154:        public void Init(HttpApplication context)
+```csharp
+{
+```
 
-     155:        {
+```csharp
+get
+```
 
-     156:            // Below is an example of how you can handle LogRequest event and provide 
+```csharp
+{
+```
 
-     157:            // custom logging implementation for it
+```csharp
 
-     158:            context.Error += new EventHandler(OnError);
 
-     159:        }
 
-     160:  
+```csharp
+foreach (CustomError ce in customErrors.Errors)
+```
 
-     161:  
+```csharp
+{
+```
 
-     162:     }
+```csharp
+yield return ce.Redirect;
+```
 
-     163: }
+```csharp
+}
+```
+
+```csharp
+yield return customErrors.DefaultRedirect;
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+/// 
+```
+
+```csharp
+/// Disposes of the resources (other than memory) used by the module that implements .
+```
+
+```csharp
+/// 
+```
+
+```csharp
+public void Dispose()
+```
+
+```csharp
+{
+```
+
+```csharp
+//clean-up code here.
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+/// 
+```
+
+```csharp
+/// Initializes a module and prepares it to handle requests.
+```
+
+```csharp
+/// 
+```
+
+```csharp
+/// An  that provides access to the methods, properties, and events common to all application objects within an ASP.NET application
+```
+
+```csharp
+public void Init(HttpApplication context)
+```
+
+```csharp
+{
+```
+
+```csharp
+// Below is an example of how you can handle LogRequest event and provide 
+```
+
+```csharp
+// custom logging implementation for it
+```
+
+```csharp
+context.Error += new EventHandler(OnError);
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 The amendments hinge on the fact that the exploit only really affects the WebResource.axd and ScriptResource.axd so any error relating from these handlers is automatically given an 500 status (Internal Server Error) and treated as a normal error.  This is an acceptable compromise for me as all references to these handlers should be programmatically generated and by your site and therefore ‘correct’.
 

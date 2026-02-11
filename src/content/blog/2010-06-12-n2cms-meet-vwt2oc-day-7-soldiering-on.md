@@ -21,35 +21,65 @@ originalUrl: "https://martinondotnet.blogspot.com/"
 
      * A collection of Products    * A collection of Orders    * A collection of Customers    * A collection of reference data    * A payment processing pipeline (shopping basket/checkout)    * Order Reports   To keep all of this data organised it will all be created under a ‘StoreRoot’ container, which may provide for the future possibility of multiple ‘Stores’ per N2CMS installation.  Defining this is as simple as:
 
-             1: using N2.Definitions;
+```csharp
+using N2.Definitions;
+```
 
-       2: using N2.Integrity;
+```csharp
+using N2.Integrity;
+```
 
-       3:  
+```csharp
 
-       4: namespace N2.Store.Items
 
-       5: {
 
-       6:     /// 
+```csharp
+namespace N2.Store.Items
+```
 
-       7:     /// This is a root for all of the store specific types
+```csharp
+{
+```
 
-       8:     /// 
+```csharp
+/// 
+```
 
-       9:     [RestrictParents(typeof(IRootPage), typeof(IStartPage))]
+```csharp
+/// This is a root for all of the store specific types
+```
 
-      10:     [Throwable(AllowInTrash.No)]
+```csharp
+/// 
+```
 
-      11:     [Versionable(AllowVersions.Yes)]
+```csharp
+[RestrictParents(typeof(IRootPage), typeof(IStartPage))]
+```
 
-      12:     public class StoreRoot : ContentItem
+```csharp
+[Throwable(AllowInTrash.No)]
+```
 
-      13:     {
+```csharp
+[Versionable(AllowVersions.Yes)]
+```
 
-      14:     }
+```csharp
+public class StoreRoot : ContentItem
+```
 
-      15: }
+```csharp
+{
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 ***Multilingual Gotcha** – I’ve had a (brief) look at the globalisation implementation for N2CMS and it’s too complex for me to implement at this time and VWT2OC is an English only site.  Usually, I code for a global audience (as far as possible) but for now I don’t have time.  If anyone’s interested I think I’m pretty sure that translations can be implemented in a similar fashion to normal content items.  Or simply hosting the Store Root under a localized start page would probably work as well….just need to make some minor adjustments to the N2.Store.ItemBridge to make sure it finds right version.*
 
@@ -70,723 +100,1421 @@ These are all data sets which once they’re created will mostly be left alone.
 Fortunately, there are good examples on how to manage this type of data in the n2cms code base.  The feature I’ve chosen to model my approach against is the N2.Security Users Items and Edit Screens in N2.Management.   The technique is to create another container content item (for example - SalutationTitleList) and adding each SalutationTitle object to it as a child content item.
 
   
-       1: using N2.Definitions;
+```csharp
+using N2.Definitions;
+```
 
-       2: using N2.Details;
+```csharp
+using N2.Details;
+```
 
-       3: using N2.Integrity;
+```csharp
+using N2.Integrity;
+```
 
-       4:  
+```csharp
 
-       5: namespace N2.Store.Items
 
-       6: {
 
-       7:     /// 
+```csharp
+namespace N2.Store.Items
+```
 
-       8:     /// Defines the container for salutation types
+```csharp
+{
+```
 
-       9:     /// 
+```csharp
+/// 
+```
 
-      10:     [WithEditableTitle("Title", 10)]
+```csharp
+/// Defines the container for salutation types
+```
 
-      11:     [ItemAuthorizedRoles(Roles = new string[0])]
+```csharp
+/// 
+```
 
-      12:     [Throwable(AllowInTrash.No)]
+```csharp
+[WithEditableTitle("Title", 10)]
+```
 
-      13:     [RestrictParents(typeof(StoreRoot))]
+```csharp
+[ItemAuthorizedRoles(Roles = new string[0])]
+```
 
-      14:     [SortChildren(SortBy.Unordered)]
+```csharp
+[Throwable(AllowInTrash.No)]
+```
 
-      15:     public class SalutationTitleList : N2.ContentItem
+```csharp
+[RestrictParents(typeof(StoreRoot))]
+```
 
-      16:     {
+```csharp
+[SortChildren(SortBy.Unordered)]
+```
 
-      17:        
+```csharp
+public class SalutationTitleList : N2.ContentItem
+```
 
-      18:     }
+```csharp
+{
+```
 
-      19: }
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 The actual reference data is defined as a more traditional n2cms ContentItem implementation:
 
   
-       1: using N2.Details;
+```csharp
+using N2.Details;
+```
 
-       2: using N2.Integrity;
+```csharp
+using N2.Integrity;
+```
 
-       3: using N2.Definitions;
+```csharp
+using N2.Definitions;
+```
 
-       4:  
+```csharp
 
-       5: namespace N2.Store.Items
 
-       6: {
 
-       7:     /// 
+```csharp
+namespace N2.Store.Items
+```
 
-       8:     /// Defines the different salutation types
+```csharp
+{
+```
 
-       9:     /// 
+```csharp
+/// 
+```
 
-      10:     [RestrictParents(typeof(SalutationTitleList))]
+```csharp
+/// Defines the different salutation types
+```
 
-      11:     [Throwable(AllowInTrash.No)]
+```csharp
+/// 
+```
 
-      12:     [Versionable(AllowVersions.Yes)]
+```csharp
+[RestrictParents(typeof(SalutationTitleList))]
+```
 
-      13:     public class SalutationTitle : N2.ContentItem
+```csharp
+[Throwable(AllowInTrash.No)]
+```
 
-      14:     {
+```csharp
+[Versionable(AllowVersions.Yes)]
+```
 
-      15:         /// 
+```csharp
+public class SalutationTitle : N2.ContentItem
+```
 
-      16:         /// Gets or sets the item's title. This is used in edit mode and probably in a custom implementation.
+```csharp
+{
+```
 
-      17:         /// 
+```csharp
+/// 
+```
 
-      18:         /// 
+```csharp
+/// Gets or sets the item's title. This is used in edit mode and probably in a custom implementation.
+```
 
-      19:         [EditableTextBox("Title", 20, Required = true)]
+```csharp
+/// 
+```
 
-      20:         public override string Title
+```csharp
+/// 
+```
 
-      21:         {
+```csharp
+[EditableTextBox("Title", 20, Required = true)]
+```
 
-      22:             get { return base.Title; }
+```csharp
+public override string Title
+```
 
-      23:             set { base.Title = value; }
+```csharp
+{
+```
 
-      24:         }
+```csharp
+get { return base.Title; }
+```
 
-      25:  
+```csharp
+set { base.Title = value; }
+```
 
-      26:         /// 
+```csharp
+}
+```
 
-      27:         /// Gets or sets the value.
+```csharp
 
-      28:         /// 
 
-      29:         /// The value.
 
-      30:         [EditableTextBox("Value", 30, Required = false)]
+```csharp
+/// 
+```
 
-      31:         public virtual string Value
+```csharp
+/// Gets or sets the value.
+```
 
-      32:         {
+```csharp
+/// 
+```
 
-      33:             get { return GetDetailstring>("Value", Title); }
+```csharp
+/// The value.
+```
 
-      34:             set { SetDetailstring>("Value", value); }
+```csharp
+[EditableTextBox("Value", 30, Required = false)]
+```
 
-      35:         }
+```csharp
+public virtual string Value
+```
 
-      36:     }
+```csharp
+{
+```
 
-      37: }
+```csharp
+get { return GetDetailstring>("Value", Title); }
+```
+
+```csharp
+set { SetDetailstring>("Value", value); }
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 ## Taking it to the Bridge!
 
 So, now we’ve defined the content model for the Salutation Title content it’s time to actually get some values into the database.  To do this we need to create a bridge between the N2CMS  content model and ASP.NET web controls – I’ve imaginatively called this class ‘N2.Store.ItemBridge’ and based it heavily on ‘N2.Security.ItemBridge’ in the n2cms codebase.  This bridge will need to be instances by the n2cms plugin system so it requires some specific constructors:
 
   
-       1: using System.Collections.Generic;
+```csharp
+using System.Collections.Generic;
+```
 
-       2: using N2.Configuration;
+```csharp
+using N2.Configuration;
+```
 
-       3: using N2.Definitions;
+```csharp
+using N2.Definitions;
+```
 
-       4: using N2.Persistence;
+```csharp
+using N2.Persistence;
+```
 
-       5: using N2.Persistence.Finder;
+```csharp
+using N2.Persistence.Finder;
+```
 
-       6: using N2.Web;
+```csharp
+using N2.Web;
+```
 
-       7:  
+```csharp
 
-       8: namespace N2.Store
 
-       9: {
 
-      10:     /// 
+```csharp
+namespace N2.Store
+```
 
-      11:     /// Provides easy to use methods for manipulating reference data
+```csharp
+{
+```
 
-      12:     /// 
+```csharp
+/// 
+```
 
-      13:     public class ItemBridge
+```csharp
+/// Provides easy to use methods for manipulating reference data
+```
 
-      14:     {
+```csharp
+/// 
+```
 
-      15:  
+```csharp
+public class ItemBridge
+```
 
-      16:         readonly private IDefinitionManager _definitions;
+```csharp
+{
+```
 
-      17:         readonly private IItemFinder _finder;
+```csharp
 
-      18:         readonly private IPersister _persister;
 
-      19:         private readonly IHost _host;
 
-      20:  
+```csharp
+readonly private IDefinitionManager _definitions;
+```
 
-      21:         /// 
+```csharp
+readonly private IItemFinder _finder;
+```
 
-      22:         /// Initializes a new instance of the  class.
+```csharp
+readonly private IPersister _persister;
+```
 
-      23:         /// 
+```csharp
+private readonly IHost _host;
+```
 
-      24:         /// The definitions.
+```csharp
 
-      25:         /// The finder.
 
-      26:         /// The persister.
 
-      27:         /// The host.
+```csharp
+/// 
+```
 
-      28:         /// The config.
+```csharp
+/// Initializes a new instance of the  class.
+```
 
-      29:         public ItemBridge(IDefinitionManager definitions, IItemFinder finder, IPersister persister, IHost host, EditSection config)
+```csharp
+/// 
+```
 
-      30:             : this(definitions, finder, persister, host)
+```csharp
+/// The definitions.
+```
 
-      31:         {
+```csharp
+/// The finder.
+```
 
-      32:  
+```csharp
+/// The persister.
+```
 
-      33:         }
+```csharp
+/// The host.
+```
 
-      34:  
+```csharp
+/// The config.
+```
 
-      35:         /// 
+```csharp
+public ItemBridge(IDefinitionManager definitions, IItemFinder finder, IPersister persister, IHost host, EditSection config)
+```
 
-      36:         /// Initializes a new instance of the  class.
+```csharp
+: this(definitions, finder, persister, host)
+```
 
-      37:         /// 
+```csharp
+{
+```
 
-      38:         /// The definitions.
+```csharp
 
-      39:         /// The finder.
 
-      40:         /// The persister.
 
-      41:         /// The host.
+```csharp
+}
+```
 
-      42:         public ItemBridge(IDefinitionManager definitions, IItemFinder finder, IPersister persister, IHost host)
+```csharp
 
-      43:         {
 
-      44:             this._definitions = definitions;
 
-      45:             this._finder = finder;
+```csharp
+/// 
+```
 
-      46:             this._persister = persister;
+```csharp
+/// Initializes a new instance of the  class.
+```
 
-      47:             this._host = host;
+```csharp
+/// 
+```
 
-      48:         }
+```csharp
+/// The definitions.
+```
 
-      49:  
+```csharp
+/// The finder.
+```
 
-      50:         // Implementation detail
+```csharp
+/// The persister.
+```
 
-      51:     }
+```csharp
+/// The host.
+```
 
-      52: }
+```csharp
+public ItemBridge(IDefinitionManager definitions, IItemFinder finder, IPersister persister, IHost host)
+```
+
+```csharp
+{
+```
+
+```csharp
+this._definitions = definitions;
+```
+
+```csharp
+this._finder = finder;
+```
+
+```csharp
+this._persister = persister;
+```
+
+```csharp
+this._host = host;
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+// Implementation detail
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 The class can now be registered with the n2cms engine for automatic intialization using an IPluginInitializer implementation:
 
   
-       1: using N2.Plugin;
+```csharp
+using N2.Plugin;
+```
 
-       2:  
+```csharp
 
-       3: namespace N2.Store
 
-       4: {
 
-       5:     /// 
+```csharp
+namespace N2.Store
+```
 
-       6:     /// Initializes the Stores Reference Item Bridge
+```csharp
+{
+```
 
-       7:     /// 
+```csharp
+/// 
+```
 
-       8:     [AutoInitialize]
+```csharp
+/// Initializes the Stores Reference Item Bridge
+```
 
-       9:     public class StoreInitializer : IPluginInitializer
+```csharp
+/// 
+```
 
-      10:     {
+```csharp
+[AutoInitialize]
+```
 
-      11:         /// 
+```csharp
+public class StoreInitializer : IPluginInitializer
+```
 
-      12:         /// Invoked after the factory has been initialized.
+```csharp
+{
+```
 
-      13:         /// 
+```csharp
+/// 
+```
 
-      14:         /// The factory that has been initialized.
+```csharp
+/// Invoked after the factory has been initialized.
+```
 
-      15:         public void Initialize(Engine.IEngine engine)
+```csharp
+/// 
+```
 
-      16:         {
+```csharp
+/// The factory that has been initialized.
+```
 
-      17:             engine.AddComponent("n2.storeReferenceProvider", typeof(ItemBridge));
+```csharp
+public void Initialize(Engine.IEngine engine)
+```
 
-      18:         }
+```csharp
+{
+```
 
-      19:     }
+```csharp
+engine.AddComponent("n2.storeReferenceProvider", typeof(ItemBridge));
+```
 
-      20: }
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 Within the Item Bridge I’ve written some basic generic methods that can be used to perform basic CRUD operations:
 
   
-       1: #region Generic Persister Methods
+```csharp
+#region Generic Persister Methods
+```
 
-       2:  
+```csharp
 
-       3:   /// 
 
-       4:   /// Gets the finder.
 
-       5:   /// 
+```csharp
+/// 
+```
 
-       6:   /// The finder.
+```csharp
+/// Gets the finder.
+```
 
-       7:   public IItemFinder Finder
+```csharp
+/// 
+```
 
-       8:   {
+```csharp
+/// The finder.
+```
 
-       9:       get { return _finder; }
+```csharp
+public IItemFinder Finder
+```
 
-      10:   }
+```csharp
+{
+```
 
-      11:  
+```csharp
+get { return _finder; }
+```
 
-      12:   /// 
+```csharp
+}
+```
 
-      13:   /// Gets the container parent ID.
+```csharp
 
-      14:   /// 
 
-      15:   /// The container parent ID.
 
-      16:   protected int ContainerParentID
+```csharp
+/// 
+```
 
-      17:   {
+```csharp
+/// Gets the container parent ID.
+```
 
-      18:       get { return _host.CurrentSite.RootItemID; }
+```csharp
+/// 
+```
 
-      19:   }
+```csharp
+/// The container parent ID.
+```
 
-      20:  
+```csharp
+protected int ContainerParentID
+```
 
-      21:   /// 
+```csharp
+{
+```
 
-      22:   /// Deletes the specified item.
+```csharp
+get { return _host.CurrentSite.RootItemID; }
+```
 
-      23:   /// 
+```csharp
+}
+```
 
-      24:   /// The item.
+```csharp
 
-      25:   public virtual void Delete(ContentItem item)
 
-      26:   {
 
-      27:       _persister.Delete(item);
+```csharp
+/// 
+```
 
-      28:   }
+```csharp
+/// Deletes the specified item.
+```
 
-      29:  
+```csharp
+/// 
+```
 
-      30:   /// 
+```csharp
+/// The item.
+```
 
-      31:   /// Saves the specified item.
+```csharp
+public virtual void Delete(ContentItem item)
+```
 
-      32:   /// 
+```csharp
+{
+```
 
-      33:   /// The item.
+```csharp
+_persister.Delete(item);
+```
 
-      34:   public virtual void Save(ContentItem item)
+```csharp
+}
+```
 
-      35:   {
+```csharp
 
-      36:       _persister.Save(item);
 
-      37:   }
 
-      38:  
+```csharp
+/// 
+```
 
-      39:   /// 
+```csharp
+/// Saves the specified item.
+```
 
-      40:   /// Creates a new item within the specified parent container.
+```csharp
+/// 
+```
 
-      41:   /// 
+```csharp
+/// The item.
+```
 
-      42:   /// 
+```csharp
+public virtual void Save(ContentItem item)
+```
 
-      43:   /// The parent.
+```csharp
+{
+```
 
-      44:   /// The name.
+```csharp
+_persister.Save(item);
+```
 
-      45:   /// 
+```csharp
+}
+```
 
-      46:   protected virtual T Create(ContentItem parent, string name) where T : ContentItem
+```csharp
 
-      47:   {
 
-      48:       T m = Context.Definitions.CreateInstance(parent);
 
-      49:       m.Title = typeof(T).Name;
+```csharp
+/// 
+```
 
-      50:       m.Name = name;
+```csharp
+/// Creates a new item within the specified parent container.
+```
 
-      51:       _persister.Save(m);
+```csharp
+/// 
+```
 
-      52:       return m;
+```csharp
+/// 
+```
 
-      53:   }
+```csharp
+/// The parent.
+```
 
-      54:  
+```csharp
+/// The name.
+```
 
-      55:   /// 
+```csharp
+/// 
+```
 
-      56:   /// Retrieves the specified create.
+```csharp
+protected virtual T Create(ContentItem parent, string name) where T : ContentItem
+```
 
-      57:   /// 
+```csharp
+{
+```
 
-      58:   /// 
+```csharp
+T m = Context.Definitions.CreateInstance(parent);
+```
 
-      59:   /// if set to true [create].
+```csharp
+m.Title = typeof(T).Name;
+```
 
-      60:   /// The name.
+```csharp
+m.Name = name;
+```
 
-      61:   /// The parent.
+```csharp
+_persister.Save(m);
+```
 
-      62:   /// 
+```csharp
+return m;
+```
 
-      63:   protected virtual T Retrieve(ContentItem parent, string name, bool create) where T : ContentItem
+```csharp
+}
+```
 
-      64:   {
+```csharp
 
-      65:       return Retrieve(parent.ID, name, create);
 
-      66:   }
 
-      67:  
+```csharp
+/// 
+```
 
-      68:   /// 
+```csharp
+/// Retrieves the specified create.
+```
 
-      69:   /// Retrieves the specified content item, creating a new item if required.
+```csharp
+/// 
+```
 
-      70:   /// 
+```csharp
+/// 
+```
 
-      71:   /// 
+```csharp
+/// if set to true [create].
+```
 
-      72:   /// if set to true [create].
+```csharp
+/// The name.
+```
 
-      73:   /// The name.
+```csharp
+/// The parent.
+```
 
-      74:   /// The container parent id.
+```csharp
+/// 
+```
 
-      75:   /// 
+```csharp
+protected virtual T Retrieve(ContentItem parent, string name, bool create) where T : ContentItem
+```
 
-      76:   protected virtual T Retrieve(int containerParentId, string name, bool create) where T : ContentItem
+```csharp
+{
+```
 
-      77:   {
+```csharp
+return Retrieve(parent.ID, name, create);
+```
 
-      78:       var q = Finder.Where.Name.Eq(name).And.ParentID.Eq(containerParentId).MaxResults(1);
+```csharp
+}
+```
 
-      79:       foreach (var item in q.Select())
+```csharp
 
-      80:       {
 
-      81:           return item;
 
-      82:       }
+```csharp
+/// 
+```
 
-      83:  
+```csharp
+/// Retrieves the specified content item, creating a new item if required.
+```
 
-      84:       if (!create)
+```csharp
+/// 
+```
 
-      85:           return null;
+```csharp
+/// 
+```
 
-      86:  
+```csharp
+/// if set to true [create].
+```
 
-      87:       ContentItem parent = _persister.Get(containerParentId);
+```csharp
+/// The name.
+```
 
-      88:       return Create(parent, name);
+```csharp
+/// The container parent id.
+```
 
-      89:   }
+```csharp
+/// 
+```
 
-      90:  
+```csharp
+protected virtual T Retrieve(int containerParentId, string name, bool create) where T : ContentItem
+```
 
-      91:   #endregion
+```csharp
+{
+```
+
+```csharp
+var q = Finder.Where.Name.Eq(name).And.ParentID.Eq(containerParentId).MaxResults(1);
+```
+
+```csharp
+foreach (var item in q.Select())
+```
+
+```csharp
+{
+```
+
+```csharp
+return item;
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+if (!create)
+```
+
+```csharp
+return null;
+```
+
+```csharp
+
+
+
+```csharp
+ContentItem parent = _persister.Get(containerParentId);
+```
+
+```csharp
+return Create(parent, name);
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+#endregion
+```
 
 N2CMS promotes a lazy construction methodology to creating structural content items, so the ItemBridge is coded to (optionally) create missing containers.  By following through this pattern you can guarantee that the correct data structure gets created the first time someone attempts to use it.
 
   
-       1: #region Store Root
+```csharp
+#region Store Root
+```
 
-       2:  
+```csharp
 
-       3:  private string _storeContainerName = "Store Settings";
 
-       4:  
 
-       5:  /// 
+```csharp
+private string _storeContainerName = "Store Settings";
+```
 
-       6:  /// Gets or sets the name of the salutation title container.
+```csharp
 
-       7:  /// 
 
-       8:  /// The name of the salutation title container.
 
-       9:  public string StoreContainerName
+```csharp
+/// 
+```
 
-      10:  {
+```csharp
+/// Gets or sets the name of the salutation title container.
+```
 
-      11:      get { return _storeContainerName; }
+```csharp
+/// 
+```
 
-      12:      set { _storeContainerName = value; }
+```csharp
+/// The name of the salutation title container.
+```
 
-      13:  }
+```csharp
+public string StoreContainerName
+```
 
-      14:  
+```csharp
+{
+```
 
-      15:  /// 
+```csharp
+get { return _storeContainerName; }
+```
 
-      16:  /// Gets the store container.
+```csharp
+set { _storeContainerName = value; }
+```
 
-      17:  /// 
+```csharp
+}
+```
 
-      18:  /// if set to true [create].
+```csharp
 
-      19:  /// 
 
-      20:  public virtual Items.StoreRoot GetStoreContainer(bool create)
 
-      21:  {
+```csharp
+/// 
+```
 
-      22:      return Retrieve(ContainerParentID, StoreContainerName, create);
+```csharp
+/// Gets the store container.
+```
 
-      23:  }
+```csharp
+/// 
+```
 
-      24:  
+```csharp
+/// if set to true [create].
+```
 
-      25:  #endregion
+```csharp
+/// 
+```
 
-      26:  
+```csharp
+public virtual Items.StoreRoot GetStoreContainer(bool create)
+```
 
-      27:  #region Salutation Titles
+```csharp
+{
+```
 
-      28:  
+```csharp
+return Retrieve(ContainerParentID, StoreContainerName, create);
+```
 
-      29:  private string _titleContainerName = "TemplateTitles";
+```csharp
+}
+```
 
-      30:  
+```csharp
 
-      31:  /// 
 
-      32:  /// Gets or sets the name of the salutation title container.
 
-      33:  /// 
+```csharp
+#endregion
+```
 
-      34:  /// The name of the salutation title container.
+```csharp
 
-      35:  public string SalutationTitleContainerName
 
-      36:  {
 
-      37:      get { return _titleContainerName; }
+```csharp
+#region Salutation Titles
+```
 
-      38:      set { _titleContainerName = value; }
+```csharp
 
-      39:  }
 
-      40:  
 
-      41:  /// 
+```csharp
+private string _titleContainerName = "TemplateTitles";
+```
 
-      42:  /// Gets the title container.
+```csharp
 
-      43:  /// 
 
-      44:  /// if set to true [create].
 
-      45:  /// 
+```csharp
+/// 
+```
 
-      46:  public virtual Items.SalutationTitleList GetTitleContainer(bool create)
+```csharp
+/// Gets or sets the name of the salutation title container.
+```
 
-      47:  {
+```csharp
+/// 
+```
 
-      48:      Items.StoreRoot store = GetStoreContainer(create);
+```csharp
+/// The name of the salutation title container.
+```
 
-      49:      return Retrieve(store, SalutationTitleContainerName, create);
+```csharp
+public string SalutationTitleContainerName
+```
 
-      50:  }
+```csharp
+{
+```
 
-      51:  
+```csharp
+get { return _titleContainerName; }
+```
 
-      52:  /// 
+```csharp
+set { _titleContainerName = value; }
+```
 
-      53:  /// Creates the title container.
+```csharp
+}
+```
 
-      54:  /// 
+```csharp
 
-      55:  /// The parent.
 
-      56:  /// 
 
-      57:  protected Items.SalutationTitleList CreateTitleContainer(ContentItem parent)
+```csharp
+/// 
+```
 
-      58:  {
+```csharp
+/// Gets the title container.
+```
 
-      59:      return Create(parent, SalutationTitleContainerName);
+```csharp
+/// 
+```
 
-      60:  }
+```csharp
+/// if set to true [create].
+```
 
-      61:  
+```csharp
+/// 
+```
 
-      62:  /// 
+```csharp
+public virtual Items.SalutationTitleList GetTitleContainer(bool create)
+```
 
-      63:  /// Gets all titles.
+```csharp
+{
+```
 
-      64:  /// 
+```csharp
+Items.StoreRoot store = GetStoreContainer(create);
+```
 
-      65:  /// 
+```csharp
+return Retrieve(store, SalutationTitleContainerName, create);
+```
 
-      66:  public virtual IEnumerable GetAllTitles()
+```csharp
+}
+```
 
-      67:  {
+```csharp
 
-      68:      Items.SalutationTitleList titles = GetTitleContainer(true);
 
-      69:      if (titles == null)
 
-      70:          return new List();
+```csharp
+/// 
+```
 
-      71:      return Finder.Where.Parent.Eq(titles)
+```csharp
+/// Creates the title container.
+```
 
-      72:          .And.Type.Eq(typeof(Items.SalutationTitle))
+```csharp
+/// 
+```
 
-      73:          .OrderBy.SortOrder.Asc
+```csharp
+/// The parent.
+```
 
-      74:          .Select();
+```csharp
+/// 
+```
 
-      75:  }
+```csharp
+protected Items.SalutationTitleList CreateTitleContainer(ContentItem parent)
+```
 
-      76:  
+```csharp
+{
+```
 
-      77:  /// 
+```csharp
+return Create(parent, SalutationTitleContainerName);
+```
 
-      78:  /// Adds the title.
+```csharp
+}
+```
 
-      79:  /// 
+```csharp
 
-      80:  /// The title.
 
-      81:  public Items.SalutationTitle CreateTitle(string title)
 
-      82:  {
+```csharp
+/// 
+```
 
-      83:      Items.SalutationTitleList titles = GetTitleContainer(true);
+```csharp
+/// Gets all titles.
+```
 
-      84:      foreach (Items.SalutationTitle tExisting in Finder.Where.Parent.Eq(titles)
+```csharp
+/// 
+```
 
-      85:          .And.Title.Eq(title)
+```csharp
+/// 
+```
 
-      86:          .And.Type.Eq(typeof(Items.SalutationTitle))
+```csharp
+public virtual IEnumerable GetAllTitles()
+```
 
-      87:          .OrderBy.Title.Asc
+```csharp
+{
+```
 
-      88:          .Select())
+```csharp
+Items.SalutationTitleList titles = GetTitleContainer(true);
+```
 
-      89:          return tExisting;
+```csharp
+if (titles == null)
+```
 
-      90:  
+```csharp
+return new List();
+```
 
-      91:      Items.SalutationTitle t = _definitions.CreateInstance(titles);
+```csharp
+return Finder.Where.Parent.Eq(titles)
+```
 
-      92:      t.Title = title;
+```csharp
+.And.Type.Eq(typeof(Items.SalutationTitle))
+```
 
-      93:      t.Value = title.Trim().ToLowerInvariant();
+```csharp
+.OrderBy.SortOrder.Asc
+```
 
-      94:      t.SortOrder = titles.Children.Count;
+```csharp
+.Select();
+```
 
-      95:      _persister.Save(t);
+```csharp
+}
+```
 
-      96:      return t;
+```csharp
 
-      97:  }
 
-      98:  
 
-      99:  #endregion
+```csharp
+/// 
+```
+
+```csharp
+/// Adds the title.
+```
+
+```csharp
+/// 
+```
+
+```csharp
+/// The title.
+```
+
+```csharp
+public Items.SalutationTitle CreateTitle(string title)
+```
+
+```csharp
+{
+```
+
+```csharp
+Items.SalutationTitleList titles = GetTitleContainer(true);
+```
+
+```csharp
+foreach (Items.SalutationTitle tExisting in Finder.Where.Parent.Eq(titles)
+```
+
+```csharp
+.And.Title.Eq(title)
+```
+
+```csharp
+.And.Type.Eq(typeof(Items.SalutationTitle))
+```
+
+```csharp
+.OrderBy.Title.Asc
+```
+
+```csharp
+.Select())
+```
+
+```csharp
+return tExisting;
+```
+
+```csharp
+
+
+
+```csharp
+Items.SalutationTitle t = _definitions.CreateInstance(titles);
+```
+
+```csharp
+t.Title = title;
+```
+
+```csharp
+t.Value = title.Trim().ToLowerInvariant();
+```
+
+```csharp
+t.SortOrder = titles.Children.Count;
+```
+
+```csharp
+_persister.Save(t);
+```
+
+```csharp
+return t;
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+#endregion
+```
 
 The ItemBridge can now be used to create an ObjectDataSource class to allow ASP.NET Databinding:
 
   
-       1: using System.Collections.Generic;
+```csharp
+using System.Collections.Generic;
+```
 
-       2:  
+```csharp
 
-       3: namespace N2.Store
 
-       4: {
 
-       5:     /// 
+```csharp
+namespace N2.Store
+```
 
-       6:     /// An ObjectDataSource accessible wrapper for the ReferenceItemBridge
+```csharp
+{
+```
 
-       7:     /// 
+```csharp
+/// 
+```
 
-       8:     public class ReferenceItemDataSource
+```csharp
+/// An ObjectDataSource accessible wrapper for the ReferenceItemBridge
+```
 
-       9:     {
+```csharp
+/// 
+```
 
-      10:         private ItemBridge _bridge;
+```csharp
+public class ReferenceItemDataSource
+```
 
-      11:  
+```csharp
+{
+```
 
-      12:         /// 
+```csharp
+private ItemBridge _bridge;
+```
 
-      13:         /// Gets the bridge.
+```csharp
 
-      14:         /// 
 
-      15:         /// The bridge.
 
-      16:         protected virtual ItemBridge Bridge
+```csharp
+/// 
+```
 
-      17:         {
+```csharp
+/// Gets the bridge.
+```
 
-      18:             get { return _bridge ?? (_bridge = Context.Current.Resolve()); }
+```csharp
+/// 
+```
 
-      19:         }
+```csharp
+/// The bridge.
+```
 
-      20:  
+```csharp
+protected virtual ItemBridge Bridge
+```
 
-      21:         /// 
+```csharp
+{
+```
 
-      22:         /// Gets all titles.
+```csharp
+get { return _bridge ?? (_bridge = Context.Current.Resolve()); }
+```
 
-      23:         /// 
+```csharp
+}
+```
 
-      24:         /// 
+```csharp
 
-      25:         public IEnumerable GetAllTitles()
 
-      26:         {
 
-      27:             return Bridge.GetAllTitles();
+```csharp
+/// 
+```
 
-      28:         }
+```csharp
+/// Gets all titles.
+```
 
-      29:  
+```csharp
+/// 
+```
 
-      30:     }
+```csharp
+/// 
+```
 
-      31: }
+```csharp
+public IEnumerable GetAllTitles()
+```
+
+```csharp
+{
+```
+
+```csharp
+return Bridge.GetAllTitles();
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 Phew!  Ground work done for the store in general and implemented the SalutationTitle content items.
 
@@ -799,206 +1527,405 @@ My list page is a simple databound gridview implementation with some custom sort
 N2/Store/Titles/Titles.aspx
 
   
-       1: 
+```csharp
 
-       2:     CodeBehind="Titles.aspx.cs" Inherits="N2.Edit.Store.Titles.Titles" %>
 
-       3:  
 
-       4: asp:Content ID="ContentHead" ContentPlaceHolderID="Head" runat="server">
+```csharp
+CodeBehind="Titles.aspx.cs" Inherits="N2.Edit.Store.Titles.Titles" %>
+```
 
-       5: asp:Content>
+```csharp
 
-       6: asp:Content ID="Content2" ContentPlaceHolderID="Toolbar" runat="server">
 
-       7:     asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="New.aspx" CssClass="command">newasp:HyperLink>
 
-       8: asp:Content>
+```csharp
+asp:Content ID="ContentHead" ContentPlaceHolderID="Head" runat="server">
+```
 
-       9: asp:Content ID="Content4" ContentPlaceHolderID="Content" runat="server">
+```csharp
+asp:Content>
+```
 
-      10:     asp:DataGrid ID="TitleList" runat="server" DataSourceID="TitleSource" AutoGenerateColumns="False"
+```csharp
+asp:Content ID="Content2" ContentPlaceHolderID="Toolbar" runat="server">
+```
 
-      11:         UseAccessibleHeader="True" OnItemCommand="TitleList_ItemCommand" DataKeyField="Value"
+```csharp
+asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="New.aspx" CssClass="command">newasp:HyperLink>
+```
 
-      12:         BorderWidth="0px" CssClass="gv">
+```csharp
+asp:Content>
+```
 
-      13:         Columns>
+```csharp
+asp:Content ID="Content4" ContentPlaceHolderID="Content" runat="server">
+```
 
-      14:             asp:HyperLinkColumn DataNavigateUrlField="Value" DataTextField="Title" DataNavigateUrlFormatString="Edit.aspx?title={0}" />
+```csharp
+asp:DataGrid ID="TitleList" runat="server" DataSourceID="TitleSource" AutoGenerateColumns="False"
+```
 
-      15:             asp:TemplateColumn ItemStyle-Width="20px">
+```csharp
+UseAccessibleHeader="True" OnItemCommand="TitleList_ItemCommand" DataKeyField="Value"
+```
 
-      16:                 ItemTemplate>
+```csharp
+BorderWidth="0px" CssClass="gv">
+```
 
-      17:                     asp:ImageButton ID="ImageButton1" AlternateText="Move Up" ImageUrl="~/N2/Resources/icons/arrow_up.png"
+```csharp
+Columns>
+```
 
-      18:                         runat="server" CommandName="up" />
+```csharp
+asp:HyperLinkColumn DataNavigateUrlField="Value" DataTextField="Title" DataNavigateUrlFormatString="Edit.aspx?title={0}" />
+```
 
-      19:                 ItemTemplate>
+```csharp
+asp:TemplateColumn ItemStyle-Width="20px">
+```
 
-      20:             asp:TemplateColumn>
+```csharp
+ItemTemplate>
+```
 
-      21:               asp:TemplateColumn  ItemStyle-Width="20px">
+```csharp
+asp:ImageButton ID="ImageButton1" AlternateText="Move Up" ImageUrl="~/N2/Resources/icons/arrow_up.png"
+```
 
-      22:                 ItemTemplate>
+```csharp
+runat="server" CommandName="up" />
+```
 
-      23:                     asp:ImageButton ID="ImageButton2"  AlternateText="Move Down" ImageUrl="~/N2/Resources/icons/arrow_down.png"
+```csharp
+ItemTemplate>
+```
 
-      24:                         runat="server" CommandName="down" />
+```csharp
+asp:TemplateColumn>
+```
 
-      25:                 ItemTemplate>
+```csharp
+asp:TemplateColumn  ItemStyle-Width="20px">
+```
 
-      26:             asp:TemplateColumn>
+```csharp
+ItemTemplate>
+```
 
-      27:             asp:TemplateColumn  ItemStyle-Width="20px">
+```csharp
+asp:ImageButton ID="ImageButton2"  AlternateText="Move Down" ImageUrl="~/N2/Resources/icons/arrow_down.png"
+```
 
-      28:                 ItemTemplate>
+```csharp
+runat="server" CommandName="down" />
+```
 
-      29:                     asp:ImageButton AlternateText="Delete" ImageUrl="~/N2/Resources/icons/delete.png"
+```csharp
+ItemTemplate>
+```
 
-      30:                         runat="server" CommandName="Delete" />
+```csharp
+asp:TemplateColumn>
+```
 
-      31:                 ItemTemplate>
+```csharp
+asp:TemplateColumn  ItemStyle-Width="20px">
+```
 
-      32:             asp:TemplateColumn>
+```csharp
+ItemTemplate>
+```
 
-      33:             
+```csharp
+asp:ImageButton AlternateText="Delete" ImageUrl="~/N2/Resources/icons/delete.png"
+```
 
-      34:         Columns>
+```csharp
+runat="server" CommandName="Delete" />
+```
 
-      35:     asp:DataGrid>
+```csharp
+ItemTemplate>
+```
 
-      36:     asp:ObjectDataSource ID="TitleSource" runat="server" TypeName="N2.Store.ReferenceItemDataSource"
+```csharp
+asp:TemplateColumn>
+```
 
-      37:         SelectMethod="GetAllTitles" />
+```csharp
 
-      38: asp:Content>
 
+
+```csharp
+Columns>
+```
+
+```csharp
+asp:DataGrid>
+```
+
+```csharp
+asp:ObjectDataSource ID="TitleSource" runat="server" TypeName="N2.Store.ReferenceItemDataSource"
+```
+
+```csharp
+SelectMethod="GetAllTitles" />
+```
+
+```csharp
+asp:Content>
+```
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Collections.Generic;
+```csharp
+using System.Collections.Generic;
+```
 
-       3: using System.Linq;
+```csharp
+using System.Linq;
+```
 
-       4: using System.Web.UI.WebControls;
+```csharp
+using System.Web.UI.WebControls;
+```
 
-       5: using N2.Edit.Web;
+```csharp
+using N2.Edit.Web;
+```
 
-       6: using N2.Store;
+```csharp
+using N2.Store;
+```
 
-       7:  
+```csharp
 
-       8: namespace N2.Edit.Store.Titles
 
-       9: {
 
-      10:     /// 
+```csharp
+namespace N2.Edit.Store.Titles
+```
 
-      11:     /// Editor page for Store titles
+```csharp
+{
+```
 
-      12:     /// 
+```csharp
+/// 
+```
 
-      13:     public partial class Titles : EditPage
+```csharp
+/// Editor page for Store titles
+```
 
-      14:     {
+```csharp
+/// 
+```
 
-      15:         private ItemBridge _bridge;
+```csharp
+public partial class Titles : EditPage
+```
 
-      16:  
+```csharp
+{
+```
 
-      17:         /// 
+```csharp
+private ItemBridge _bridge;
+```
 
-      18:         /// Gets the bridge.
+```csharp
 
-      19:         /// 
 
-      20:         /// The bridge.
 
-      21:         protected virtual ItemBridge Bridge
+```csharp
+/// 
+```
 
-      22:         {
+```csharp
+/// Gets the bridge.
+```
 
-      23:             get { return _bridge ?? (_bridge = N2.Context.Current.Resolve()); }
+```csharp
+/// 
+```
 
-      24:         }
+```csharp
+/// The bridge.
+```
 
-      25:  
+```csharp
+protected virtual ItemBridge Bridge
+```
 
-      26:         /// 
+```csharp
+{
+```
 
-      27:         /// Handles the ItemCommand event of the TitleList control.
+```csharp
+get { return _bridge ?? (_bridge = N2.Context.Current.Resolve()); }
+```
 
-      28:         /// 
+```csharp
+}
+```
 
-      29:         /// The source of the event.
+```csharp
 
-      30:         /// The  instance containing the event data.
 
-      31:         protected void TitleList_ItemCommand(object sender, DataGridCommandEventArgs args)
 
-      32:         {
+```csharp
+/// 
+```
 
-      33:             IList titles = Bridge.GetAllTitles().ToList();
+```csharp
+/// Handles the ItemCommand event of the TitleList control.
+```
 
-      34:             N2.Store.Items.SalutationTitle t = titles
+```csharp
+/// 
+```
 
-      35:                   .Where(title => string.Equals(title.Value, (string)TitleList.DataKeys[args.Item.ItemIndex], StringComparison.OrdinalIgnoreCase))
+```csharp
+/// The source of the event.
+```
 
-      36:                   .First();
+```csharp
+/// The  instance containing the event data.
+```
 
-      37:             if (args.CommandName == "Delete")
+```csharp
+protected void TitleList_ItemCommand(object sender, DataGridCommandEventArgs args)
+```
 
-      38:             {
+```csharp
+{
+```
 
-      39:                 Bridge.Delete(t);
+```csharp
+IList titles = Bridge.GetAllTitles().ToList();
+```
 
-      40:             }
+```csharp
+N2.Store.Items.SalutationTitle t = titles
+```
 
-      41:             else if (args.CommandName == "up" && args.Item.ItemIndex > 0)
+```csharp
+.Where(title => string.Equals(title.Value, (string)TitleList.DataKeys[args.Item.ItemIndex], StringComparison.OrdinalIgnoreCase))
+```
 
-      42:             {
+```csharp
+.First();
+```
 
-      43:                 titles.Remove(t);
+```csharp
+if (args.CommandName == "Delete")
+```
 
-      44:                 titles.Insert(args.Item.ItemIndex - 1, t);
+```csharp
+{
+```
 
-      45:             }
+```csharp
+Bridge.Delete(t);
+```
 
-      46:             else if (args.CommandName == "down" && args.Item.ItemIndex 
+```csharp
+}
+```
 
-      47:             {
+```csharp
+else if (args.CommandName == "up" && args.Item.ItemIndex > 0)
+```
 
-      48:                 titles.Remove(t);
+```csharp
+{
+```
 
-      49:                 titles.Insert(args.Item.ItemIndex + 1, t);
+```csharp
+titles.Remove(t);
+```
 
-      50:             }
+```csharp
+titles.Insert(args.Item.ItemIndex - 1, t);
+```
 
-      51:             if (args.CommandName == "up" || args.CommandName == "down")
+```csharp
+}
+```
 
-      52:             {
+```csharp
+else if (args.CommandName == "down" && args.Item.ItemIndex 
+```
 
-      53:                 foreach (N2.Store.Items.SalutationTitle t2 in titles)
+```csharp
+{
+```
 
-      54:                 {
+```csharp
+titles.Remove(t);
+```
 
-      55:                     t2.SortOrder = titles.IndexOf(t2);
+```csharp
+titles.Insert(args.Item.ItemIndex + 1, t);
+```
 
-      56:                     Bridge.Save(t2);
+```csharp
+}
+```
 
-      57:                 }
+```csharp
+if (args.CommandName == "up" || args.CommandName == "down")
+```
 
-      58:             }
+```csharp
+{
+```
 
-      59:             TitleList.DataBind();
+```csharp
+foreach (N2.Store.Items.SalutationTitle t2 in titles)
+```
 
-      60:         }
+```csharp
+{
+```
 
-      61:     }
+```csharp
+t2.SortOrder = titles.IndexOf(t2);
+```
 
-      62: }
+```csharp
+Bridge.Save(t2);
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+TitleList.DataBind();
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 As you can see it leverages the existing master pages and edit functionality from the N2.Management project to promote a more consistent look and feel.
 
@@ -1007,372 +1934,732 @@ Creating the New.aspx and Edit.aspx pages are just as simple.
 N2/Store/Titles/New.aspx
 
   
-       1: 
+```csharp
 
-       2:     CodeBehind="New.aspx.cs" Inherits="N2.Edit.Store.Titles.New" %>
 
-       3:  
 
-       4: asp:Content ID="ContentHead" ContentPlaceHolderID="Head" runat="server">
+```csharp
+CodeBehind="New.aspx.cs" Inherits="N2.Edit.Store.Titles.New" %>
+```
 
-       5: asp:Content>
+```csharp
 
-       6: asp:Content ID="Content2" ContentPlaceHolderID="Toolbar" runat="server">
 
-       7:     asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="Titles.aspx" CssClass="command">backasp:HyperLink>
 
-       8: asp:Content>
+```csharp
+asp:Content ID="ContentHead" ContentPlaceHolderID="Head" runat="server">
+```
 
-       9: asp:Content ID="Content4" ContentPlaceHolderID="Content" runat="server">
+```csharp
+asp:Content>
+```
 
-      10:     asp:ValidationSummary ID="NewTitleSummary" runat="server" ValidationGroup="NewTitle"
+```csharp
+asp:Content ID="Content2" ContentPlaceHolderID="Toolbar" runat="server">
+```
 
-      11:         DisplayMode="BulletList" HeaderText="Please fix the following issues:" />
+```csharp
+asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="Titles.aspx" CssClass="command">backasp:HyperLink>
+```
 
-      12:     p>
+```csharp
+asp:Content>
+```
 
-      13:         asp:Label ID="NewTitleLabel" runat="server" Text="New Title" AssociatedControlID="NewTitle">asp:Label>
+```csharp
+asp:Content ID="Content4" ContentPlaceHolderID="Content" runat="server">
+```
 
-      14:         asp:TextBox ID="NewTitle" runat="server">asp:TextBox>
+```csharp
+asp:ValidationSummary ID="NewTitleSummary" runat="server" ValidationGroup="NewTitle"
+```
 
-      15:         asp:RequiredFieldValidator
+```csharp
+DisplayMode="BulletList" HeaderText="Please fix the following issues:" />
+```
 
-      16:             ID="NewTitleRequired" ControlToValidate="NewTitle" Text="*" ValidationGroup="NewTitle"
+```csharp
+p>
+```
 
-      17:             runat="server" ErrorMessage="You must enter title text">asp:RequiredFieldValidator>
+```csharp
+asp:Label ID="NewTitleLabel" runat="server" Text="New Title" AssociatedControlID="NewTitle">asp:Label>
+```
 
-      18:             asp:CustomValidator
+```csharp
+asp:TextBox ID="NewTitle" runat="server">asp:TextBox>
+```
 
-      19:                 ID="TitleIsUnique" runat="server" Text="*"  ControlToValidate="NewTitle" OnServerValidate="OnTitleIsUniqueServerValidate"  ValidationGroup="NewTitle" ErrorMessage="This title already exists">asp:CustomValidator>
+```csharp
+asp:RequiredFieldValidator
+```
 
-      20:             
+```csharp
+ID="NewTitleRequired" ControlToValidate="NewTitle" Text="*" ValidationGroup="NewTitle"
+```
 
-      21:     p>
+```csharp
+runat="server" ErrorMessage="You must enter title text">asp:RequiredFieldValidator>
+```
 
-      22:     p>
+```csharp
+asp:CustomValidator
+```
 
-      23:         asp:Button ID="Create" OnClick="CreateOnClick" runat="server" Text="Create" />
+```csharp
+ID="TitleIsUnique" runat="server" Text="*"  ControlToValidate="NewTitle" OnServerValidate="OnTitleIsUniqueServerValidate"  ValidationGroup="NewTitle" ErrorMessage="This title already exists">asp:CustomValidator>
+```
 
-      24:     p>
+```csharp
 
-      25: asp:Content>
 
+
+```csharp
+p>
+```
+
+```csharp
+p>
+```
+
+```csharp
+asp:Button ID="Create" OnClick="CreateOnClick" runat="server" Text="Create" />
+```
+
+```csharp
+p>
+```
+
+```csharp
+asp:Content>
+```
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Linq;
+```csharp
+using System.Linq;
+```
 
-       3: using System.Web.UI;
+```csharp
+using System.Web.UI;
+```
 
-       4: using System.Web.UI.WebControls;
+```csharp
+using System.Web.UI.WebControls;
+```
 
-       5: using N2.Edit.Web;
+```csharp
+using N2.Edit.Web;
+```
 
-       6: using N2.Store;
+```csharp
+using N2.Store;
+```
 
-       7:  
+```csharp
 
-       8: namespace N2.Edit.Store.Titles
 
-       9: {
 
-      10:     /// 
+```csharp
+namespace N2.Edit.Store.Titles
+```
 
-      11:     /// Editor page for Store titles
+```csharp
+{
+```
 
-      12:     /// 
+```csharp
+/// 
+```
 
-      13:     public partial class New : EditPage
+```csharp
+/// Editor page for Store titles
+```
 
-      14:     {
+```csharp
+/// 
+```
 
-      15:  
+```csharp
+public partial class New : EditPage
+```
 
-      16:         private ItemBridge _bridge;
+```csharp
+{
+```
 
-      17:  
+```csharp
 
-      18:         /// 
 
-      19:         /// Gets the bridge.
 
-      20:         /// 
+```csharp
+private ItemBridge _bridge;
+```
 
-      21:         /// The bridge.
+```csharp
 
-      22:         protected virtual ItemBridge Bridge
 
-      23:         {
 
-      24:             get { return _bridge ?? (_bridge = N2.Context.Current.Resolve()); }
+```csharp
+/// 
+```
 
-      25:         }
+```csharp
+/// Gets the bridge.
+```
 
-      26:  
+```csharp
+/// 
+```
 
-      27:        
+```csharp
+/// The bridge.
+```
 
-      28:  
+```csharp
+protected virtual ItemBridge Bridge
+```
 
-      29:         /// 
+```csharp
+{
+```
 
-      30:         /// Called when validating the new title is unique
+```csharp
+get { return _bridge ?? (_bridge = N2.Context.Current.Resolve()); }
+```
 
-      31:         /// 
+```csharp
+}
+```
 
-      32:         /// The source.
+```csharp
 
-      33:         /// The  instance containing the event data.
 
-      34:         protected void OnTitleIsUniqueServerValidate(object source, ServerValidateEventArgs args)
 
-      35:         {
+```csharp
 
-      36:            args.IsValid = !Bridge.GetAllTitles()
 
-      37:                .Where(title => string.Equals(title.Value, args.Value, StringComparison.OrdinalIgnoreCase)
 
-      38:                     || string.Equals(title.Title, args.Value, StringComparison.OrdinalIgnoreCase))
+```csharp
 
-      39:                .Any();
 
-      40:         }
 
-      41:  
+```csharp
+/// 
+```
 
-      42:         /// 
+```csharp
+/// Called when validating the new title is unique
+```
 
-      43:         /// Creates the on click.
+```csharp
+/// 
+```
 
-      44:         /// 
+```csharp
+/// The source.
+```
 
-      45:         /// The sender.
+```csharp
+/// The  instance containing the event data.
+```
 
-      46:         /// The  instance containing the event data.
+```csharp
+protected void OnTitleIsUniqueServerValidate(object source, ServerValidateEventArgs args)
+```
 
-      47:         protected void CreateOnClick(object sender, EventArgs e)
+```csharp
+{
+```
 
-      48:         {
+```csharp
+args.IsValid = !Bridge.GetAllTitles()
+```
 
-      49:             if (Page.IsValid)
+```csharp
+.Where(title => string.Equals(title.Value, args.Value, StringComparison.OrdinalIgnoreCase)
+```
 
-      50:             {
+```csharp
+|| string.Equals(title.Title, args.Value, StringComparison.OrdinalIgnoreCase))
+```
 
-      51:                 Bridge.CreateTitle(NewTitle.Text);
+```csharp
+.Any();
+```
 
-      52:                 Response.Redirect("Titles.aspx");
+```csharp
+}
+```
 
-      53:             }
+```csharp
 
-      54:         }
 
-      55:     }
 
-      56: }
+```csharp
+/// 
+```
+
+```csharp
+/// Creates the on click.
+```
+
+```csharp
+/// 
+```
+
+```csharp
+/// The sender.
+```
+
+```csharp
+/// The  instance containing the event data.
+```
+
+```csharp
+protected void CreateOnClick(object sender, EventArgs e)
+```
+
+```csharp
+{
+```
+
+```csharp
+if (Page.IsValid)
+```
+
+```csharp
+{
+```
+
+```csharp
+Bridge.CreateTitle(NewTitle.Text);
+```
+
+```csharp
+Response.Redirect("Titles.aspx");
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 N2/Store/Titles/Edit.aspx
 
   
-       1: 
+```csharp
 
-       2:     CodeBehind="Edit.aspx.cs" Inherits="N2.Edit.Store.Titles.Edit" %>
 
-       3:  
 
-       4: asp:Content ID="ContentHead" ContentPlaceHolderID="Head" runat="server">
+```csharp
+CodeBehind="Edit.aspx.cs" Inherits="N2.Edit.Store.Titles.Edit" %>
+```
 
-       5: asp:Content>
+```csharp
 
-       6: asp:Content ID="Content2" ContentPlaceHolderID="Toolbar" runat="server">
 
-       7:     asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="Titles.aspx" CssClass="command">backasp:HyperLink>
 
-       8: asp:Content>
+```csharp
+asp:Content ID="ContentHead" ContentPlaceHolderID="Head" runat="server">
+```
 
-       9: asp:Content ID="Content4" ContentPlaceHolderID="Content" runat="server">
+```csharp
+asp:Content>
+```
 
-      10:     asp:ValidationSummary ID="NewTitleSummary" runat="server" ValidationGroup="NewTitle"
+```csharp
+asp:Content ID="Content2" ContentPlaceHolderID="Toolbar" runat="server">
+```
 
-      11:         DisplayMode="BulletList" HeaderText="Please fix the following issues:" />
+```csharp
+asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="Titles.aspx" CssClass="command">backasp:HyperLink>
+```
 
-      12:     p>
+```csharp
+asp:Content>
+```
 
-      13:         asp:Label ID="NewTitleLabel" runat="server" Text="New Title" AssociatedControlID="NewTitle">asp:Label>
+```csharp
+asp:Content ID="Content4" ContentPlaceHolderID="Content" runat="server">
+```
 
-      14:         asp:TextBox ID="NewTitle" runat="server">asp:TextBox>
+```csharp
+asp:ValidationSummary ID="NewTitleSummary" runat="server" ValidationGroup="NewTitle"
+```
 
-      15:         asp:RequiredFieldValidator
+```csharp
+DisplayMode="BulletList" HeaderText="Please fix the following issues:" />
+```
 
-      16:             ID="NewTitleRequired" ControlToValidate="NewTitle" Text="*" ValidationGroup="NewTitle"
+```csharp
+p>
+```
 
-      17:             runat="server" ErrorMessage="You must enter title text">asp:RequiredFieldValidator>
+```csharp
+asp:Label ID="NewTitleLabel" runat="server" Text="New Title" AssociatedControlID="NewTitle">asp:Label>
+```
 
-      18:             asp:CustomValidator
+```csharp
+asp:TextBox ID="NewTitle" runat="server">asp:TextBox>
+```
 
-      19:                 ID="TitleIsUnique" runat="server" Text="*"  ControlToValidate="NewTitle" OnServerValidate="OnTitleIsUniqueServerValidate"  ValidationGroup="NewTitle" ErrorMessage="This title already exists">asp:CustomValidator>
+```csharp
+asp:RequiredFieldValidator
+```
 
-      20:             
+```csharp
+ID="NewTitleRequired" ControlToValidate="NewTitle" Text="*" ValidationGroup="NewTitle"
+```
 
-      21:     p>
+```csharp
+runat="server" ErrorMessage="You must enter title text">asp:RequiredFieldValidator>
+```
 
-      22:     p>
+```csharp
+asp:CustomValidator
+```
 
-      23:         asp:Button ID="Amend" OnClick="AmendOnClick" runat="server" Text="Amend" />
+```csharp
+ID="TitleIsUnique" runat="server" Text="*"  ControlToValidate="NewTitle" OnServerValidate="OnTitleIsUniqueServerValidate"  ValidationGroup="NewTitle" ErrorMessage="This title already exists">asp:CustomValidator>
+```
 
-      24:     p>
+```csharp
 
-      25: asp:Content>
 
+
+```csharp
+p>
+```
+
+```csharp
+p>
+```
+
+```csharp
+asp:Button ID="Amend" OnClick="AmendOnClick" runat="server" Text="Amend" />
+```
+
+```csharp
+p>
+```
+
+```csharp
+asp:Content>
+```
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Linq;
+```csharp
+using System.Linq;
+```
 
-       3: using System.Web.UI;
+```csharp
+using System.Web.UI;
+```
 
-       4: using System.Web.UI.WebControls;
+```csharp
+using System.Web.UI.WebControls;
+```
 
-       5: using N2.Edit.Web;
+```csharp
+using N2.Edit.Web;
+```
 
-       6: using N2.Store;
+```csharp
+using N2.Store;
+```
 
-       7:  
+```csharp
 
-       8: namespace N2.Edit.Store.Titles
 
-       9: {
 
-      10:     /// 
+```csharp
+namespace N2.Edit.Store.Titles
+```
 
-      11:     /// Editor page for Store titles
+```csharp
+{
+```
 
-      12:     /// 
+```csharp
+/// 
+```
 
-      13:     public partial class Edit : EditPage
+```csharp
+/// Editor page for Store titles
+```
 
-      14:     {
+```csharp
+/// 
+```
 
-      15:  
+```csharp
+public partial class Edit : EditPage
+```
 
-      16:         private ItemBridge _bridge;
+```csharp
+{
+```
 
-      17:  
+```csharp
 
-      18:         /// 
 
-      19:         /// Gets the bridge.
 
-      20:         /// 
+```csharp
+private ItemBridge _bridge;
+```
 
-      21:         /// The bridge.
+```csharp
 
-      22:         protected virtual ItemBridge Bridge
 
-      23:         {
 
-      24:             get { return _bridge ?? (_bridge = N2.Context.Current.Resolve()); }
+```csharp
+/// 
+```
 
-      25:         }
+```csharp
+/// Gets the bridge.
+```
 
-      26:  
+```csharp
+/// 
+```
 
-      27:  
+```csharp
+/// The bridge.
+```
 
-      28:         /// 
+```csharp
+protected virtual ItemBridge Bridge
+```
 
-      29:         /// Raises the  event.
+```csharp
+{
+```
 
-      30:         /// 
+```csharp
+get { return _bridge ?? (_bridge = N2.Context.Current.Resolve()); }
+```
 
-      31:         /// The  object that contains the event data.
+```csharp
+}
+```
 
-      32:         protected override void OnLoad(EventArgs e)
+```csharp
 
-      33:         {
 
-      34:             base.OnLoad(e);
 
-      35:             if (!Page.IsPostBack)
+```csharp
 
-      36:             {
 
-      37:                 N2.Store.Items.SalutationTitle t = Bridge.GetAllTitles()
 
-      38:                     .Where(title => string.Equals(title.Value, Request.QueryString["title"], StringComparison.OrdinalIgnoreCase))
+```csharp
+/// 
+```
 
-      39:                     .First();
+```csharp
+/// Raises the  event.
+```
 
-      40:                 NewTitle.Text = t.Title;
+```csharp
+/// 
+```
 
-      41:             }
+```csharp
+/// The  object that contains the event data.
+```
 
-      42:         }
+```csharp
+protected override void OnLoad(EventArgs e)
+```
 
-      43:  
+```csharp
+{
+```
 
-      44:         /// 
+```csharp
+base.OnLoad(e);
+```
 
-      45:         /// Called when validating the new title is unique
+```csharp
+if (!Page.IsPostBack)
+```
 
-      46:         /// 
+```csharp
+{
+```
 
-      47:         /// The source.
+```csharp
+N2.Store.Items.SalutationTitle t = Bridge.GetAllTitles()
+```
 
-      48:         /// The  instance containing the event data.
+```csharp
+.Where(title => string.Equals(title.Value, Request.QueryString["title"], StringComparison.OrdinalIgnoreCase))
+```
 
-      49:         protected void OnTitleIsUniqueServerValidate(object source, ServerValidateEventArgs args)
+```csharp
+.First();
+```
 
-      50:         {
+```csharp
+NewTitle.Text = t.Title;
+```
 
-      51:             args.IsValid = !Bridge.GetAllTitles()
+```csharp
+}
+```
 
-      52:                 .Where(title => string.Equals(title.Value, args.Value, StringComparison.OrdinalIgnoreCase) 
+```csharp
+}
+```
 
-      53:                     || string.Equals(title.Title, args.Value, StringComparison.OrdinalIgnoreCase))
+```csharp
 
-      54:                 .Any();
 
-      55:         }
 
-      56:  
+```csharp
+/// 
+```
 
-      57:         /// 
+```csharp
+/// Called when validating the new title is unique
+```
 
-      58:         /// Creates the on click.
+```csharp
+/// 
+```
 
-      59:         /// 
+```csharp
+/// The source.
+```
 
-      60:         /// The sender.
+```csharp
+/// The  instance containing the event data.
+```
 
-      61:         /// The  instance containing the event data.
+```csharp
+protected void OnTitleIsUniqueServerValidate(object source, ServerValidateEventArgs args)
+```
 
-      62:         protected void AmendOnClick(object sender, EventArgs e)
+```csharp
+{
+```
 
-      63:         {
+```csharp
+args.IsValid = !Bridge.GetAllTitles()
+```
 
-      64:             if (Page.IsValid)
+```csharp
+.Where(title => string.Equals(title.Value, args.Value, StringComparison.OrdinalIgnoreCase) 
+```
 
-      65:             {
+```csharp
+|| string.Equals(title.Title, args.Value, StringComparison.OrdinalIgnoreCase))
+```
 
-      66:                 N2.Store.Items.SalutationTitle t = Bridge.GetAllTitles()
+```csharp
+.Any();
+```
 
-      67:                     .Where(title => string.Equals(title.Value, Request.QueryString["title"], StringComparison.OrdinalIgnoreCase))
+```csharp
+}
+```
 
-      68:                         .First();
+```csharp
 
-      69:                 t.Title = NewTitle.Text;
 
-      70:                 Bridge.Save(t);
 
-      71:                 Response.Redirect("Titles.aspx");
+```csharp
+/// 
+```
 
-      72:             }
+```csharp
+/// Creates the on click.
+```
 
-      73:         }
+```csharp
+/// 
+```
 
-      74:     }
+```csharp
+/// The sender.
+```
 
-      75: }
+```csharp
+/// The  instance containing the event data.
+```
+
+```csharp
+protected void AmendOnClick(object sender, EventArgs e)
+```
+
+```csharp
+{
+```
+
+```csharp
+if (Page.IsValid)
+```
+
+```csharp
+{
+```
+
+```csharp
+N2.Store.Items.SalutationTitle t = Bridge.GetAllTitles()
+```
+
+```csharp
+.Where(title => string.Equals(title.Value, Request.QueryString["title"], StringComparison.OrdinalIgnoreCase))
+```
+
+```csharp
+.First();
+```
+
+```csharp
+t.Title = NewTitle.Text;
+```
+
+```csharp
+Bridge.Save(t);
+```
+
+```csharp
+Response.Redirect("Titles.aspx");
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 The final admin page now looks like:
 

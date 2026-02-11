@@ -11,188 +11,372 @@ Now that I’m blogging more code snippet heavy content it’s becoming apparent
 
   To install simply copy the snippet below into your Blogger Template just above the  tag.
 
-             1: 'text/javascript'>
+```csharp
+'text/javascript'>
+```
 
-       2:         var ChildText = function(nodeList) {
+```csharp
+var ChildText = function(nodeList) {
+```
 
-       3:             var text = &#39;&#39;;
+```csharp
+var text = &#39;&#39;;
+```
 
-       4:             for (var j = nodeList.length - 1; j &gt;= 0; --j) {
+```csharp
+for (var j = nodeList.length - 1; j &gt;= 0; --j) {
+```
 
-       5:                 if (nodeList[j].childNodes.length &gt; 0) {
+```csharp
+if (nodeList[j].childNodes.length &gt; 0) {
+```
 
-       6:                     text = ChildText(nodeList[j].childNodes) + text;
+```csharp
+text = ChildText(nodeList[j].childNodes) + text;
+```
 
-       7:                 } else if (nodeList[j].nodeType == 3) {
+```csharp
+} else if (nodeList[j].nodeType == 3) {
+```
 
-       8:                     var local= &#39;&#39;;
+```csharp
+var local= &#39;&#39;;
+```
 
-       9:                     if (nodeList[j].textContent) {
+```csharp
+if (nodeList[j].textContent) {
+```
 
-      10:                         local = nodeList[j].textContent;
+```csharp
+local = nodeList[j].textContent;
+```
 
-      11:                     } else {
+```csharp
+} else {
+```
 
-      12:                         local = nodeList[j].nodeValue;
+```csharp
+local = nodeList[j].nodeValue;
+```
 
-      13:                     }
+```csharp
+}
+```
 
-      14:                       var div = document.createElement(&quot;div&quot;);
+```csharp
+var div = document.createElement(&quot;div&quot;);
+```
 
-      15:                        var dt = document.createTextNode(local);
+```csharp
+var dt = document.createTextNode(local);
+```
 
-      16:                        div.appendChild(dt);
+```csharp
+div.appendChild(dt);
+```
 
-      17:                        text = div.innerHTML + text;
+```csharp
+text = div.innerHTML + text;
+```
 
-      18:                 }
+```csharp
+}
+```
 
-      19:             }
+```csharp
+}
+```
 
-      20:             return text;
+```csharp
+return text;
+```
 
-      21:         }
+```csharp
+}
+```
 
-      22:     
+```csharp
 
-      23:         var divs = document.getElementsByTagName(&quot;div&quot;);
 
-      24:         for (var i = 0; i &lt; divs.length; i++) {
 
-      25:             if (divs[i].id === &quot;codeSnippetWrapper&quot;) {
+```csharp
+var divs = document.getElementsByTagName(&quot;div&quot;);
+```
 
-      26:  
+```csharp
+for (var i = 0; i &lt; divs.length; i++) {
+```
 
-      27:                 divs[i].style[&quot;position&quot;] = &quot;relative&quot;;
+```csharp
+if (divs[i].id === &quot;codeSnippetWrapper&quot;) {
+```
 
-      28:  
+```csharp
 
-      29:                 var dtxt = document.createElement(&quot;div&quot;);
 
-      30:                 dtxt.setAttribute(&quot;id&quot;, &quot;plaintext&quot;);
 
-      31:                 dtxt.setAttribute(&quot;style&quot;, &quot;display:none;&quot;);
+```csharp
+divs[i].style[&quot;position&quot;] = &quot;relative&quot;;
+```
 
-      32:                 var txt = document.createElement(&quot;pre&quot;);
+```csharp
 
-      33:                 dtxt.appendChild(txt);
 
-      34:                 divs[i].appendChild(dtxt);
 
-      35:                 var text = &#39;&#39;;
+```csharp
+var dtxt = document.createElement(&quot;div&quot;);
+```
 
-      36:                 var lines = divs[i].getElementsByTagName(&quot;pre&quot;);
+```csharp
+dtxt.setAttribute(&quot;id&quot;, &quot;plaintext&quot;);
+```
 
-      37:                 for (var j = lines.length - 1; j &gt;= 0; --j) {
+```csharp
+dtxt.setAttribute(&quot;style&quot;, &quot;display:none;&quot;);
+```
 
-      38:                     var cns = lines[j].childNodes;
+```csharp
+var txt = document.createElement(&quot;pre&quot;);
+```
 
-      39:                     var chd = [];
+```csharp
+dtxt.appendChild(txt);
+```
 
-      40:                     for (var k = 1; k &lt; cns.length; k++)
+```csharp
+divs[i].appendChild(dtxt);
+```
 
-      41:                         chd[k - 1] = cns[k];
+```csharp
+var text = &#39;&#39;;
+```
 
-      42:  
+```csharp
+var lines = divs[i].getElementsByTagName(&quot;pre&quot;);
+```
 
-      43:                     text = ChildText(chd) + text;
+```csharp
+for (var j = lines.length - 1; j &gt;= 0; --j) {
+```
 
-      44:                     if (j &gt; 0) text = &quot;&lt;br /&gt;&quot; + text;
+```csharp
+var cns = lines[j].childNodes;
+```
 
-      45:                 }
+```csharp
+var chd = [];
+```
 
-      46:  
+```csharp
+for (var k = 1; k &lt; cns.length; k++)
+```
 
-      47:                 txt.innerHTML = text;
+```csharp
+chd[k - 1] = cns[k];
+```
 
-      48:  
+```csharp
 
-      49:  
 
-      50:                 var link = document.createElement(&quot;span&quot;);
 
-      51:                 link.setAttribute(&quot;id&quot;, &quot;ptlink&quot;);
+```csharp
+text = ChildText(chd) + text;
+```
 
-      52:                 link.innerHTML = &quot;Plain Text&quot;;
+```csharp
+if (j &gt; 0) text = &quot;&lt;br /&gt;&quot; + text;
+```
 
-      53:                 link.setAttribute(&quot;style&quot;, &quot;width:10em;height:1.5em;position:absolute;padding:2px;top:-2px;right:10px;border:1px;border-color:#000;background-color:#fff;font-size:0.9em;display:block;color:#000;&quot;);
+```csharp
+}
+```
 
-      54:                 divs[i].appendChild(link);
+```csharp
 
-      55:  
 
-      56:                 link.onclick = function(e) {
 
-      57:                     //If &quot;e&quot; is undefined use the global &quot;event&quot; variable
+```csharp
+txt.innerHTML = text;
+```
 
-      58:                     e = e || event;
+```csharp
 
-      59:  
 
-      60:                     var target = (e.srcElement || e.currentTarget).parentNode;
 
-      61:                     var ptxt;
+```csharp
 
-      62:                     var phtml;
 
-      63:                     var plink;
 
-      64:                     var pres = target.childNodes;
+```csharp
+var link = document.createElement(&quot;span&quot;);
+```
 
-      65:                     for (var i = 0; i &lt; pres.length; i++) {
+```csharp
+link.setAttribute(&quot;id&quot;, &quot;ptlink&quot;);
+```
 
-      66:                         if (pres[i].id === &quot;plaintext&quot;) {
+```csharp
+link.innerHTML = &quot;Plain Text&quot;;
+```
 
-      67:                             ptxt = pres[i];
+```csharp
+link.setAttribute(&quot;style&quot;, &quot;width:10em;height:1.5em;position:absolute;padding:2px;top:-2px;right:10px;border:1px;border-color:#000;background-color:#fff;font-size:0.9em;display:block;color:#000;&quot;);
+```
 
-      68:                         } else if (pres[i].id === &quot;codeSnippet&quot;) {
+```csharp
+divs[i].appendChild(link);
+```
 
-      69:                             phtml = pres[i];
+```csharp
 
-      70:                         } else if (pres[i].id === &quot;ptlink&quot;) {
 
-      71:                             plink = pres[i];
 
-      72:                         }
+```csharp
+link.onclick = function(e) {
+```
 
-      73:                     }
+```csharp
+//If &quot;e&quot; is undefined use the global &quot;event&quot; variable
+```
 
-      74:  
+```csharp
+e = e || event;
+```
 
-      75:                     if (ptxt.style[&quot;display&quot;] === &quot;none&quot;) {
+```csharp
 
-      76:                         ptxt.style[&quot;display&quot;] = &quot;block&quot;;
 
-      77:                         phtml.style[&quot;display&quot;] = &quot;none&quot;;
 
-      78:                         plink.innerHTML = &quot;Formatted&quot;;
+```csharp
+var target = (e.srcElement || e.currentTarget).parentNode;
+```
 
-      79:                     }
+```csharp
+var ptxt;
+```
 
-      80:                     else {
+```csharp
+var phtml;
+```
 
-      81:                         ptxt.style[&quot;display&quot;] = &quot;none&quot;;
+```csharp
+var plink;
+```
 
-      82:                         phtml.style[&quot;display&quot;] = &quot;block&quot;;
+```csharp
+var pres = target.childNodes;
+```
 
-      83:                         plink.innerHTML = &quot;Plain Text&quot;;
+```csharp
+for (var i = 0; i &lt; pres.length; i++) {
+```
 
-      84:                         
+```csharp
+if (pres[i].id === &quot;plaintext&quot;) {
+```
 
-      85:                     };
+```csharp
+ptxt = pres[i];
+```
 
-      86:  
+```csharp
+} else if (pres[i].id === &quot;codeSnippet&quot;) {
+```
 
-      87:  
+```csharp
+phtml = pres[i];
+```
 
-      88:                 };
+```csharp
+} else if (pres[i].id === &quot;ptlink&quot;) {
+```
 
-      89:             }
+```csharp
+plink = pres[i];
+```
 
-      90:         }
+```csharp
+}
+```
 
-      91: 
+```csharp
+}
+```
 
-      92:  
+```csharp
+
+
+
+```csharp
+if (ptxt.style[&quot;display&quot;] === &quot;none&quot;) {
+```
+
+```csharp
+ptxt.style[&quot;display&quot;] = &quot;block&quot;;
+```
+
+```csharp
+phtml.style[&quot;display&quot;] = &quot;none&quot;;
+```
+
+```csharp
+plink.innerHTML = &quot;Formatted&quot;;
+```
+
+```csharp
+}
+```
+
+```csharp
+else {
+```
+
+```csharp
+ptxt.style[&quot;display&quot;] = &quot;none&quot;;
+```
+
+```csharp
+phtml.style[&quot;display&quot;] = &quot;block&quot;;
+```
+
+```csharp
+plink.innerHTML = &quot;Plain Text&quot;;
+```
+
+```csharp
+
+
+
+```csharp
+};
+```
+
+```csharp
+
+
+
+```csharp
+
+
+
+```csharp
+};
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+
+
 
 Enjoy!

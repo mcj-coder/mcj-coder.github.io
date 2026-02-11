@@ -13,34 +13,66 @@ Whilst uploading a large (70MB) file to an IIS 7 website I got a 404 error….wh
 
   To fix this I needed to add some additional configuration to the  element on top of the  modifications – not the subtle change of units!
 
-             1: xml version="1.0" encoding="utf-8"?>
+```csharp
+xml version="1.0" encoding="utf-8"?>
+```
 
-       2: configuration>
+```csharp
+configuration>
+```
 
-       3:     system.web>
+```csharp
+system.web>
+```
 
-       4:         
+```csharp
 
-       5:         httpRuntime maxRequestLength="204800"
 
-       6:                      requestLengthDiskThreshold="204800" />
 
-       7:     system.web>
+```csharp
+httpRuntime maxRequestLength="204800"
+```
 
-       8:     system.webServer>
+```csharp
+requestLengthDiskThreshold="204800" />
+```
 
-       9:         security>
+```csharp
+system.web>
+```
 
-      10:             
+```csharp
+system.webServer>
+```
 
-      11:             requestFiltering>
+```csharp
+security>
+```
 
-      12:                 requestLimits maxAllowedContentLength="204800000" />
+```csharp
 
-      13:             requestFiltering>
 
-      14:         security>
 
-      15:     system.webServer>
+```csharp
+requestFiltering>
+```
 
-      16: configuration>
+```csharp
+requestLimits maxAllowedContentLength="204800000" />
+```
+
+```csharp
+requestFiltering>
+```
+
+```csharp
+security>
+```
+
+```csharp
+system.webServer>
+```
+
+```csharp
+configuration>
+```

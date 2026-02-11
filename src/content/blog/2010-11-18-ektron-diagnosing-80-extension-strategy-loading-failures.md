@@ -13,110 +13,204 @@ I’ve recently hit a problem with deploying  [Ektron](http://bit.ly/d0YHh7) Ex
 
    Fortunately, in the Application Event log (for the CMS400 Source) there’s a bit more information:
 
-             1: Timestamp: 18/11/2010 18:43:01
+```csharp
+Timestamp: 18/11/2010 18:43:01
+```
 
-       2: Message: Could not load the MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring.UserMonitoringStrategy, MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring implementation from the configuration file
+```csharp
+Message: Could not load the MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring.UserMonitoringStrategy, MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring implementation from the configuration file
+```
 
-       3: Category: Error
+```csharp
+Category: Error
+```
 
-       4: Priority: -1
+```csharp
+Priority: -1
+```
 
-       5: EventId: 0
+```csharp
+EventId: 0
+```
 
-       6: Severity: Error
+```csharp
+Severity: Error
+```
 
 This shows that the declaration in the web.config is correct:
 
   
-       1: objectFactory>
+```csharp
+objectFactory>
+```
 
-       2:     objectStrategies>
+```csharp
+objectStrategies>
+```
 
-       3:         add name="User">
+```csharp
+add name="User">
+```
 
-       4:             strategies>
+```csharp
+strategies>
+```
 
-       5:                 add name="UserMonitoringStrategy"
+```csharp
+add name="UserMonitoringStrategy"
+```
 
-       6:                          type="MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring.UserMonitoringStrategy, MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring"/>
+```csharp
+type="MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring.UserMonitoringStrategy, MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring"/>
+```
 
-       7:             strategies>
+```csharp
+strategies>
+```
 
-       8:         add>
+```csharp
+add>
+```
 
-       9:     objectStrategies>
+```csharp
+objectStrategies>
+```
 
-      10:     objectImplementations>
+```csharp
+objectImplementations>
+```
 
-      11:     objectImplementations>
+```csharp
+objectImplementations>
+```
 
-      12: objectFactory>
+```csharp
+objectFactory>
+```
 
 Fortunately, the next logged error reveals another vital clue:
 
   
-       1: Timestamp: 18/11/2010 18:43:22
+```csharp
+Timestamp: 18/11/2010 18:43:22
+```
 
-       2: Message: Exception thrown from: /WorkArea/login.aspx
+```csharp
+Message: Exception thrown from: /WorkArea/login.aspx
+```
 
-       3: Value cannot be null.
+```csharp
+Value cannot be null.
+```
 
-       4: Parameter name: type   at System.Activator.CreateInstance(Type type, Boolean nonPublic)
+```csharp
+Parameter name: type   at System.Activator.CreateInstance(Type type, Boolean nonPublic)
+```
 
-       5:    at Ektron.Cms.ObjectFactory.GetStrategyList[T](String objectName)
+```csharp
+at Ektron.Cms.ObjectFactory.GetStrategyList[T](String objectName)
+```
 
-       6:    at Ektron.Cms.User.EkUser.get_StrategyList()
+```csharp
+at Ektron.Cms.User.EkUser.get_StrategyList()
+```
 
-       7:    at Ektron.Cms.User.EkUser.OnBeforeLogin(UserData userData)
+```csharp
+at Ektron.Cms.User.EkUser.OnBeforeLogin(UserData userData)
+```
 
-       8:    at Ektron.Cms.User.EkUser.logIn(String username, String Password, String ServerName, String Domain, String Protocol, Boolean autologin, AutoAddUserTypes AutoAddType, Boolean ForceLogin)    at System.Activator.CreateInstance(Type type, Boolean nonPublic)
+```csharp
+at Ektron.Cms.User.EkUser.logIn(String username, String Password, String ServerName, String Domain, String Protocol, Boolean autologin, AutoAddUserTypes AutoAddType, Boolean ForceLogin)    at System.Activator.CreateInstance(Type type, Boolean nonPublic)
+```
 
-       9:    at Ektron.Cms.ObjectFactory.GetStrategyList[T](String objectName)
+```csharp
+at Ektron.Cms.ObjectFactory.GetStrategyList[T](String objectName)
+```
 
-      10:    at Ektron.Cms.User.EkUser.get_StrategyList()
+```csharp
+at Ektron.Cms.User.EkUser.get_StrategyList()
+```
 
-      11:    at Ektron.Cms.User.EkUser.OnBeforeLogin(UserData userData)
+```csharp
+at Ektron.Cms.User.EkUser.OnBeforeLogin(UserData userData)
+```
 
-      12:    at Ektron.Cms.User.EkUser.logIn(String username, String Password, String ServerName, String Domain, String Protocol, Boolean autologin, AutoAddUserTypes AutoAddType, Boolean ForceLogin)
+```csharp
+at Ektron.Cms.User.EkUser.logIn(String username, String Password, String ServerName, String Domain, String Protocol, Boolean autologin, AutoAddUserTypes AutoAddType, Boolean ForceLogin)
+```
 
-      13: Last 1 events
+```csharp
+Last 1 events
+```
 
-      14: [EventName]: [Timestamp] - ([UserID],[VisitorID])
+```csharp
+[EventName]: [Timestamp] - ([UserID],[VisitorID])
+```
 
-      15: OnBeforeUserLogin: 18/11/2010 18:43:01 - (0, b7461b16-72f8-4631-b180-29e128d87184)
+```csharp
+OnBeforeUserLogin: 18/11/2010 18:43:01 - (0, b7461b16-72f8-4631-b180-29e128d87184)
+```
 
-      16:  
+```csharp
 
-      17: Category: Error
 
-      18: Priority: -1
 
-      19: EventId: 0
+```csharp
+Category: Error
+```
 
-      20: Severity: Error
+```csharp
+Priority: -1
+```
+
+```csharp
+EventId: 0
+```
+
+```csharp
+Severity: Error
+```
 
 The reference to ‘Activator’ means that the issue is the .Net cannot find the referenced strategy through the type description. 
 
 This is a bit puzzling as the declaration is correct, so I need a bit more information on what’s causing the problem and why I can’t see it in the log, so that means  breaking out [Reflector](http://bit.ly/cUbyio) and digging into the API.  Fortunately, the problem method (GetStrategyList) is easy to find and fairly simple to understand.  Here’s the code that’s failing:
 
   
-       1: try
+```csharp
+try
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     type = Type.GetType(element2.Type, true);
+```csharp
+type = Type.GetType(element2.Type, true);
+```
 
-       4: }
+```csharp
+}
+```
 
-       5: catch (TypeLoadException)
+```csharp
+catch (TypeLoadException)
+```
 
-       6: {
+```csharp
+{
+```
 
-       7:     EkException.WriteToEventLog(string.Format("Could not load the {0} implementation from the configuration file", element2.Type), EventLogEntryType.Error);
+```csharp
+EkException.WriteToEventLog(string.Format("Could not load the {0} implementation from the configuration file", element2.Type), EventLogEntryType.Error);
+```
 
-       8: }
+```csharp
+}
+```
 
-       9: strategy = (T) Activator.CreateInstance(type);    
+```csharp
+strategy = (T) Activator.CreateInstance(type);    
+```
 
 Essentially, the first log entry is written in response to the actual problem (but doesn’t record it!) and the second, more detailed error is caused by the failure to assign the **type** variable.
 
@@ -129,181 +223,351 @@ What we really need to get hold of is the original **TypeLoadException** and cap
 My first brush attempt was using Option 1, but I found that it was a bit unreliable and would be limited to debugging my development machine.  The second option is more work, but is reusable and direct.  My weapon of choice for this type of report is a custom HttpHandler which can be added/removed through a simple configuration change:
 
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Configuration;
+```csharp
+using System.Configuration;
+```
 
-       3: using System.Web;
+```csharp
+using System.Web;
+```
 
-       4: using global::Ektron.Cms;
+```csharp
+using global::Ektron.Cms;
+```
 
-       5:  
+```csharp
 
-       6: namespace MartinOnDotNet.Helpers.Ektron.Extensibilty
 
-       7: {
 
-       8:     /// 
+```csharp
+namespace MartinOnDotNet.Helpers.Ektron.Extensibilty
+```
 
-       9:     /// Diagnostic handler to test loading Extensions
+```csharp
+{
+```
 
-      10:     /// 
+```csharp
+/// 
+```
 
-      11:     public class ValidateStrategiesHandler : IHttpHandler
+```csharp
+/// Diagnostic handler to test loading Extensions
+```
 
-      12:     {
+```csharp
+/// 
+```
 
-      13:  
+```csharp
+public class ValidateStrategiesHandler : IHttpHandler
+```
 
-      14:         /// 
+```csharp
+{
+```
 
-      15:         /// Enables processing of HTTP Web requests by a custom HttpHandler that implements the  interface.
+```csharp
 
-      16:         /// 
 
-      17:         /// An  object that provides references to the intrinsic server objects (for example, Request, Response, Session, and Server) used to service HTTP requests.
 
-      18:         public void ProcessRequest(HttpContext context)
+```csharp
+/// 
+```
 
-      19:         {
+```csharp
+/// Enables processing of HTTP Web requests by a custom HttpHandler that implements the  interface.
+```
 
-      20:             context.Response.ContentType = "text/plain";
+```csharp
+/// 
+```
 
-      21:             System.IO.TextWriter output = context.Response.Output;
+```csharp
+/// An  object that provides references to the intrinsic server objects (for example, Request, Response, Session, and Server) used to service HTTP requests.
+```
 
-      22:             output.WriteLine("Configured Extension Strategy Test\n");
+```csharp
+public void ProcessRequest(HttpContext context)
+```
 
-      23:             ObjectFactorySection factorySection = (ObjectFactorySection)ConfigurationManager.GetSection("objectFactory");
+```csharp
+{
+```
 
-      24:             foreach (ObjectStrategyConfigElement strategies in factorySection.ObjectStrategies)
+```csharp
+context.Response.ContentType = "text/plain";
+```
 
-      25:             {
+```csharp
+System.IO.TextWriter output = context.Response.Output;
+```
 
-      26:                 output.WriteLine("{0} (found {1})", strategies.Name, strategies.Strategies.Count);
+```csharp
+output.WriteLine("Configured Extension Strategy Test\n");
+```
 
-      27:                 foreach (StrategyConfigElement strategy in strategies.Strategies)
+```csharp
+ObjectFactorySection factorySection = (ObjectFactorySection)ConfigurationManager.GetSection("objectFactory");
+```
 
-      28:                 {
+```csharp
+foreach (ObjectStrategyConfigElement strategies in factorySection.ObjectStrategies)
+```
 
-      29:                     RenderStrategyLoadingOutcome(output, strategy);
+```csharp
+{
+```
 
-      30:                 }
+```csharp
+output.WriteLine("{0} (found {1})", strategies.Name, strategies.Strategies.Count);
+```
 
-      31:             }
+```csharp
+foreach (StrategyConfigElement strategy in strategies.Strategies)
+```
 
-      32:             output.WriteLine("\nLoaded Assemblies");
+```csharp
+{
+```
 
-      33:             foreach (System.Reflection.Assembly ass in System.AppDomain.CurrentDomain.GetAssemblies())
+```csharp
+RenderStrategyLoadingOutcome(output, strategy);
+```
 
-      34:             {
+```csharp
+}
+```
 
-      35:                 output.WriteLine(ass.FullName);
+```csharp
+}
+```
 
-      36:             }
+```csharp
+output.WriteLine("\nLoaded Assemblies");
+```
 
-      37:  
+```csharp
+foreach (System.Reflection.Assembly ass in System.AppDomain.CurrentDomain.GetAssemblies())
+```
 
-      38:         }
+```csharp
+{
+```
 
-      39:  
+```csharp
+output.WriteLine(ass.FullName);
+```
 
-      40:         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals", MessageId = "type")]
+```csharp
+}
+```
 
-      41:         private void RenderStrategyLoadingOutcome(System.IO.TextWriter output, StrategyConfigElement strategy)
+```csharp
 
-      42:         {
 
-      43:             output.Write("\t{0,-20}\t{1,-40}\t", strategy.Name, strategy.Type);
 
-      44:             try
+```csharp
+}
+```
 
-      45:             {
+```csharp
 
-      46:                 Type type = Type.GetType(strategy.Type, true);
 
-      47:                 Type baseType = type.BaseType;
 
-      48:                 output.WriteLine("{0}\tOK!", baseType.Name);
+```csharp
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals", MessageId = "type")]
+```
 
-      49:             }
+```csharp
+private void RenderStrategyLoadingOutcome(System.IO.TextWriter output, StrategyConfigElement strategy)
+```
 
-      50:             catch (Exception tle)
+```csharp
+{
+```
 
-      51:             {
+```csharp
+output.Write("\t{0,-20}\t{1,-40}\t", strategy.Name, strategy.Type);
+```
 
-      52:                 output.WriteLine("Failed! ({0}:{1})", tle.GetType().Name, tle.Message);
+```csharp
+try
+```
 
-      53:                 System.Diagnostics.Trace.TraceError("Failed to Load Strategy '{0}'\n{1}", strategy.Type, tle.ToString());
+```csharp
+{
+```
 
-      54:             }
+```csharp
+Type type = Type.GetType(strategy.Type, true);
+```
 
-      55:         }
+```csharp
+Type baseType = type.BaseType;
+```
 
-      56:  
+```csharp
+output.WriteLine("{0}\tOK!", baseType.Name);
+```
 
-      57:        /// 
+```csharp
+}
+```
 
-      58:        /// Gets a value indicating whether another request can use the  instance.
+```csharp
+catch (Exception tle)
+```
 
-      59:        /// 
+```csharp
+{
+```
 
-      60:        /// 
+```csharp
+output.WriteLine("Failed! ({0}:{1})", tle.GetType().Name, tle.Message);
+```
 
-      61:        /// true if the  instance is reusable; otherwise, false.
+```csharp
+System.Diagnostics.Trace.TraceError("Failed to Load Strategy '{0}'\n{1}", strategy.Type, tle.ToString());
+```
 
-      62:        /// 
+```csharp
+}
+```
 
-      63:        public bool IsReusable
+```csharp
+}
+```
 
-      64:        {
+```csharp
 
-      65:            // Return false in case your Managed Handler cannot be reused for another request.
 
-      66:            // Usually this would be false in case you have some state information preserved per request.
 
-      67:            get { return true; }
+```csharp
+/// 
+```
 
-      68:        }
+```csharp
+/// Gets a value indicating whether another request can use the  instance.
+```
 
-      69:     }
+```csharp
+/// 
+```
 
-      70: }
+```csharp
+/// 
+```
+
+```csharp
+/// true if the  instance is reusable; otherwise, false.
+```
+
+```csharp
+/// 
+```
+
+```csharp
+public bool IsReusable
+```
+
+```csharp
+{
+```
+
+```csharp
+// Return false in case your Managed Handler cannot be reused for another request.
+```
+
+```csharp
+// Usually this would be false in case you have some state information preserved per request.
+```
+
+```csharp
+get { return true; }
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 This can simply be registered in the system.webServer/handlers section of the web.config (assuming IIS 7 and Integrated Pipeline):
 
   
-       1: add name="Verify Strategy Handler"
+```csharp
+add name="Verify Strategy Handler"
+```
 
-       2:      verb="GET"
+```csharp
+verb="GET"
+```
 
-       3:      path="secure/validatestrategies.ashx"
+```csharp
+path="secure/validatestrategies.ashx"
+```
 
-       4:      type="MartinOnDotNet.Helpers.Ektron.Extensibilty.ValidateStrategiesHandler"
+```csharp
+type="MartinOnDotNet.Helpers.Ektron.Extensibilty.ValidateStrategiesHandler"
+```
 
-       5:      preCondition="integratedMode,runtimeVersionv2.0" />
+```csharp
+preCondition="integratedMode,runtimeVersionv2.0" />
+```
 
 This report can now be called using [/secure/validatestrategies.ashx">http:///secure/validatestrategies.ashx](http:///secure/validatestrategies.ashx) and will render a report similar to:
 
   
-       1: Configured Extension Strategy Test
+```csharp
+Configured Extension Strategy Test
+```
 
-       2:  
+```csharp
 
-       3: Content (found 1)
 
-       4:     LoggingStrategy          MartinOnDotNet.Helpers.Ektron.Extensibilty.LoggingContentStrategy, MartinOnDotNet.Helpers.Ektron    ContentStrategy    OK!
 
-       5:  
+```csharp
+Content (found 1)
+```
 
-       6: User (found 1)
+```csharp
+LoggingStrategy          MartinOnDotNet.Helpers.Ektron.Extensibilty.LoggingContentStrategy, MartinOnDotNet.Helpers.Ektron    ContentStrategy    OK!
+```
 
-       7:     UserMonitoringStrategy    MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring.UserMonitoringStrategy, MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring    Failed! (TypeLoadException:Could not load type MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring.UserMonitoringStrategy' from assembly MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring'.)
+```csharp
 
-       8:  
 
-       9: Loaded Assemblies
 
-      10: ** Ommitted as there's hundreds **
+```csharp
+User (found 1)
+```
+
+```csharp
+UserMonitoringStrategy    MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring.UserMonitoringStrategy, MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring    Failed! (TypeLoadException:Could not load type MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring.UserMonitoringStrategy' from assembly MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring'.)
+```
+
+```csharp
+
+
+
+```csharp
+Loaded Assemblies
+```
+
+```csharp
+** Ommitted as there's hundreds **
+```
 
 With the full exception logged to Trace.   
 
@@ -312,22 +576,40 @@ What the report immediately showed was that the Extensions that had worked were 
 This is odd as the library was definitely in the websites /bin folder, and a little more digging and investigation revealed that the one of the class libraries dependencies couldn’t be resolved correctly due to version number mismatch.  When that was fixed, the Strategies were loaded as expected!  *Result*.
 
   
-       1: Configured Extension Strategy Test
+```csharp
+Configured Extension Strategy Test
+```
 
-       2:  
+```csharp
 
-       3: Content (found 1)
 
-       4:     LoggingStrategy          MartinOnDotNet.Helpers.Ektron.Extensibilty.LoggingContentStrategy, MartinOnDotNet.Helpers.Ektron    ContentStrategy    OK!
 
-       5: User (found 1)
+```csharp
+Content (found 1)
+```
 
-       6:     UserMonitoringStrategy    MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring.UserMonitoringStrategy, MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring    UserStrategy    OK!
+```csharp
+LoggingStrategy          MartinOnDotNet.Helpers.Ektron.Extensibilty.LoggingContentStrategy, MartinOnDotNet.Helpers.Ektron    ContentStrategy    OK!
+```
 
-       7:  
+```csharp
+User (found 1)
+```
 
-       8: Loaded Assemblies
+```csharp
+UserMonitoringStrategy    MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring.UserMonitoringStrategy, MartinOnDotNet.Helpers.Ektron.Extensions.Monitoring    UserStrategy    OK!
+```
 
-       9: ** Ommitted as there's hundreds **
+```csharp
+
+
+
+```csharp
+Loaded Assemblies
+```
+
+```csharp
+** Ommitted as there's hundreds **
+```
 
 Hopefully, this report/test bench handler will help others with similar issues.

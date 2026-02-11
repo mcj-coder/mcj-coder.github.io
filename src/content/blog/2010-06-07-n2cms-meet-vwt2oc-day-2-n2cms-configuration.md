@@ -15,380 +15,750 @@ originalUrl: "https://martinondotnet.blogspot.com/"
 
      * Provide all required features for n2cms and forum add-on     * Ensure that all of the user credentials from the existing site can work with the new one – I don’t want all the members to have to reset their passwords!    The major difference between the provided N2.Security.ContentMembershipProvider and the VWt2OC legacy implementation is that the n2 version stores passwords in clear text where VWT2OC uses hashes.  As a has is a one-way operation I can’t retrieve the existing passwords (only reset them), so I need to override several methods to implement hashing.
 
-             1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Web.Security;
+```csharp
+using System.Web.Security;
+```
 
-       3:  
+```csharp
 
-       4: namespace VWT2OC.Website.Support.Security
 
-       5: {
 
-       6:     /// 
+```csharp
+namespace VWT2OC.Website.Support.Security
+```
 
-       7:     /// Overrides the N2 MembershipProvider to support hashed passwords
+```csharp
+{
+```
 
-       8:     /// 
+```csharp
+/// 
+```
 
-       9:     public class CustomMembershipProvider : N2.Security.ContentMembershipProvider 
+```csharp
+/// Overrides the N2 MembershipProvider to support hashed passwords
+```
 
-      10:     {
+```csharp
+/// 
+```
 
-      11:  
+```csharp
+public class CustomMembershipProvider : N2.Security.ContentMembershipProvider 
+```
 
-      12:         /// 
+```csharp
+{
+```
 
-      13:         /// Hashes the password.
+```csharp
 
-      14:         /// 
 
-      15:         /// The password.
 
-      16:         /// 
+```csharp
+/// 
+```
 
-      17:         internal string HashPassword(string password)
+```csharp
+/// Hashes the password.
+```
 
-      18:         {
+```csharp
+/// 
+```
 
-      19:             return HashPassword(password, Utility.GetSaltFromAssembly());
+```csharp
+/// The password.
+```
 
-      20:         }
+```csharp
+/// 
+```
 
-      21:         /// 
+```csharp
+internal string HashPassword(string password)
+```
 
-      22:         /// Hashes the password.
+```csharp
+{
+```
 
-      23:         /// 
+```csharp
+return HashPassword(password, Utility.GetSaltFromAssembly());
+```
 
-      24:         /// The password.
+```csharp
+}
+```
 
-      25:         /// The salt.
+```csharp
+/// 
+```
 
-      26:         /// 
+```csharp
+/// Hashes the password.
+```
 
-      27:         internal string HashPassword(string password, byte[] salt)
+```csharp
+/// 
+```
 
-      28:         {
+```csharp
+/// The password.
+```
 
-      29:             string sResult = password;
+```csharp
+/// The salt.
+```
 
-      30:             switch (PasswordFormat)
+```csharp
+/// 
+```
 
-      31:             {
+```csharp
+internal string HashPassword(string password, byte[] salt)
+```
 
-      32:                 case MembershipPasswordFormat.Hashed:
+```csharp
+{
+```
 
-      33:                     sResult = Security.SimpleHash.ComputeHash(password, Security.HashType.SHA256, salt); //custom hashing wrapper
+```csharp
+string sResult = password;
+```
 
-      34:                     break;
+```csharp
+switch (PasswordFormat)
+```
 
-      35:                 case MembershipPasswordFormat.Encrypted:
+```csharp
+{
+```
 
-      36:                     throw new NotImplementedException("Encrypted Passwords Not Implemented");
+```csharp
+case MembershipPasswordFormat.Hashed:
+```
 
-      37:             }
+```csharp
+sResult = Security.SimpleHash.ComputeHash(password, Security.HashType.SHA256, salt); //custom hashing wrapper
+```
 
-      38:             return sResult;
+```csharp
+break;
+```
 
-      39:         }
+```csharp
+case MembershipPasswordFormat.Encrypted:
+```
 
-      40:  
+```csharp
+throw new NotImplementedException("Encrypted Passwords Not Implemented");
+```
 
-      41:         /// 
+```csharp
+}
+```
 
-      42:         /// Gets the password format.
+```csharp
+return sResult;
+```
 
-      43:         /// 
+```csharp
+}
+```
 
-      44:         /// The password format.
+```csharp
 
-      45:         public override MembershipPasswordFormat PasswordFormat
 
-      46:         {
 
-      47:             get
+```csharp
+/// 
+```
 
-      48:             {
+```csharp
+/// Gets the password format.
+```
 
-      49:                 return MembershipPasswordFormat.Hashed;
+```csharp
+/// 
+```
 
-      50:             }
+```csharp
+/// The password format.
+```
 
-      51:         }
+```csharp
+public override MembershipPasswordFormat PasswordFormat
+```
 
-      52:  
+```csharp
+{
+```
 
-      53:         /// 
+```csharp
+get
+```
 
-      54:         /// Changes the password.
+```csharp
+{
+```
 
-      55:         /// 
+```csharp
+return MembershipPasswordFormat.Hashed;
+```
 
-      56:         /// The username.
+```csharp
+}
+```
 
-      57:         /// The old password.
+```csharp
+}
+```
 
-      58:         /// The new password.
+```csharp
 
-      59:         /// 
 
-      60:         public override bool ChangePassword(string username, string oldPassword, string newPassword)
 
-      61:         {
+```csharp
+/// 
+```
 
-      62:             N2.Security.Items.User u = Bridge.GetUser(username);
+```csharp
+/// Changes the password.
+```
 
-      63:             if (u == null || u.Password != HashPassword(oldPassword))
+```csharp
+/// 
+```
 
-      64:                 return false;
+```csharp
+/// The username.
+```
 
-      65:             u.Password = newPassword;
+```csharp
+/// The old password.
+```
 
-      66:             Bridge.Save(u);
+```csharp
+/// The new password.
+```
 
-      67:             return true;
+```csharp
+/// 
+```
 
-      68:         }
+```csharp
+public override bool ChangePassword(string username, string oldPassword, string newPassword)
+```
 
-      69:  
+```csharp
+{
+```
 
-      70:         /// 
+```csharp
+N2.Security.Items.User u = Bridge.GetUser(username);
+```
 
-      71:         /// Changes the password question and answer.
+```csharp
+if (u == null || u.Password != HashPassword(oldPassword))
+```
 
-      72:         /// 
+```csharp
+return false;
+```
 
-      73:         /// The username.
+```csharp
+u.Password = newPassword;
+```
 
-      74:         /// The password.
+```csharp
+Bridge.Save(u);
+```
 
-      75:         /// The new password question.
+```csharp
+return true;
+```
 
-      76:         /// The new password answer.
+```csharp
+}
+```
 
-      77:         /// 
+```csharp
 
-      78:         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer)
 
-      79:         {
 
-      80:             N2.Security.Items.User u = Bridge.GetUser(username);
+```csharp
+/// 
+```
 
-      81:             if (u == null || u.Password != HashPassword(password))
+```csharp
+/// Changes the password question and answer.
+```
 
-      82:                 return false;
+```csharp
+/// 
+```
 
-      83:             u.PasswordQuestion = newPasswordQuestion;
+```csharp
+/// The username.
+```
 
-      84:             u.PasswordAnswer = newPasswordAnswer;
+```csharp
+/// The password.
+```
 
-      85:             Bridge.Save(u);
+```csharp
+/// The new password question.
+```
 
-      86:             return true;
+```csharp
+/// The new password answer.
+```
 
-      87:         }
+```csharp
+/// 
+```
 
-      88:  
+```csharp
+public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer)
+```
 
-      89:         /// 
+```csharp
+{
+```
 
-      90:         /// Validates the user.
+```csharp
+N2.Security.Items.User u = Bridge.GetUser(username);
+```
 
-      91:         /// 
+```csharp
+if (u == null || u.Password != HashPassword(password))
+```
 
-      92:         /// The username.
+```csharp
+return false;
+```
 
-      93:         /// The password.
+```csharp
+u.PasswordQuestion = newPasswordQuestion;
+```
 
-      94:         /// 
+```csharp
+u.PasswordAnswer = newPasswordAnswer;
+```
 
-      95:         public override bool ValidateUser(string username, string password)
+```csharp
+Bridge.Save(u);
+```
 
-      96:         {
+```csharp
+return true;
+```
 
-      97:             N2.Security.Items.User u = Bridge.GetUser(username);
+```csharp
+}
+```
 
-      98:             if (u != null && u.Password == HashPassword(password))
+```csharp
 
-      99:                 return true;
 
-     100:             return false;
 
-     101:         }
+```csharp
+/// 
+```
 
-     102:  
+```csharp
+/// Validates the user.
+```
 
-     103:         /// 
+```csharp
+/// 
+```
 
-     104:         /// Resets the password.
+```csharp
+/// The username.
+```
 
-     105:         /// 
+```csharp
+/// The password.
+```
 
-     106:         /// The username.
+```csharp
+/// 
+```
 
-     107:         /// The answer.
+```csharp
+public override bool ValidateUser(string username, string password)
+```
 
-     108:         /// 
+```csharp
+{
+```
 
-     109:         public override string ResetPassword(string username, string answer)
+```csharp
+N2.Security.Items.User u = Bridge.GetUser(username);
+```
 
-     110:         {
+```csharp
+if (u != null && u.Password == HashPassword(password))
+```
 
-     111:             N2.Security.Items.User u = Bridge.GetUser(username);
+```csharp
+return true;
+```
 
-     112:             if (u != null)
+```csharp
+return false;
+```
 
-     113:             {
+```csharp
+}
+```
 
-     114:                 string newPassword = System.IO.Path.GetRandomFileName();
+```csharp
 
-     115:                 if (newPassword.Length > 7) newPassword = newPassword.Substring(0, 7);
 
-     116:                 u.IsLockedOut = false;
 
-     117:                 u.Password = HashPassword(newPassword);
+```csharp
+/// 
+```
 
-     118:                 Bridge.Save(u);
+```csharp
+/// Resets the password.
+```
 
-     119:                 return newPassword;
+```csharp
+/// 
+```
 
-     120:             }
+```csharp
+/// The username.
+```
 
-     121:             return null;
+```csharp
+/// The answer.
+```
 
-     122:         }
+```csharp
+/// 
+```
 
-     123:  
+```csharp
+public override string ResetPassword(string username, string answer)
+```
 
-     124:         /// 
+```csharp
+{
+```
 
-     125:         /// Gets the password.
+```csharp
+N2.Security.Items.User u = Bridge.GetUser(username);
+```
 
-     126:         /// 
+```csharp
+if (u != null)
+```
 
-     127:         /// The username.
+```csharp
+{
+```
 
-     128:         /// The answer.
+```csharp
+string newPassword = System.IO.Path.GetRandomFileName();
+```
 
-     129:         /// 
+```csharp
+if (newPassword.Length > 7) newPassword = newPassword.Substring(0, 7);
+```
 
-     130:         public override string GetPassword(string username, string answer)
+```csharp
+u.IsLockedOut = false;
+```
 
-     131:         {
+```csharp
+u.Password = HashPassword(newPassword);
+```
 
-     132:             throw new NotImplementedException();
+```csharp
+Bridge.Save(u);
+```
 
-     133:         }
+```csharp
+return newPassword;
+```
 
-     134:  
+```csharp
+}
+```
 
-     135:         /// 
+```csharp
+return null;
+```
 
-     136:         /// Creates the user.
+```csharp
+}
+```
 
-     137:         /// 
+```csharp
 
-     138:         /// The username.
 
-     139:         /// The password.
 
-     140:         /// The email.
+```csharp
+/// 
+```
 
-     141:         /// The password question.
+```csharp
+/// Gets the password.
+```
 
-     142:         /// The password answer.
+```csharp
+/// 
+```
 
-     143:         /// if set to true [is approved].
+```csharp
+/// The username.
+```
 
-     144:         /// The provider user key.
+```csharp
+/// The answer.
+```
 
-     145:         /// The status.
+```csharp
+/// 
+```
 
-     146:         /// 
+```csharp
+public override string GetPassword(string username, string answer)
+```
 
-     147:         public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out MembershipCreateStatus status)
+```csharp
+{
+```
 
-     148:         {
+```csharp
+throw new NotImplementedException();
+```
 
-     149:             N2.Security.Items.User u = Bridge.GetUser(username);
+```csharp
+}
+```
 
-     150:             if (u != null)
+```csharp
 
-     151:             {
 
-     152:                 status = MembershipCreateStatus.DuplicateUserName;
 
-     153:                 return null;
+```csharp
+/// 
+```
 
-     154:             }
+```csharp
+/// Creates the user.
+```
 
-     155:             if (string.IsNullOrEmpty(username))
+```csharp
+/// 
+```
 
-     156:             {
+```csharp
+/// The username.
+```
 
-     157:                 status = MembershipCreateStatus.InvalidUserName;
+```csharp
+/// The password.
+```
 
-     158:                 return null;
+```csharp
+/// The email.
+```
 
-     159:             }
+```csharp
+/// The password question.
+```
 
-     160:             if (string.IsNullOrEmpty(password))
+```csharp
+/// The password answer.
+```
 
-     161:             {
+```csharp
+/// if set to true [is approved].
+```
 
-     162:                 status = MembershipCreateStatus.InvalidPassword;
+```csharp
+/// The provider user key.
+```
 
-     163:                 return null;
+```csharp
+/// The status.
+```
 
-     164:             }
+```csharp
+/// 
+```
 
-     165:             status = MembershipCreateStatus.Success;
+```csharp
+public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out MembershipCreateStatus status)
+```
 
-     166:  
+```csharp
+{
+```
 
-     167:             u = Bridge.CreateUser(username, HashPassword(password), email, passwordQuestion, passwordAnswer, isApproved, providerUserKey);
+```csharp
+N2.Security.Items.User u = Bridge.GetUser(username);
+```
 
-     168:  
+```csharp
+if (u != null)
+```
 
-     169:             MembershipUser m = u.GetMembershipUser(base.Name);
+```csharp
+{
+```
 
-     170:             return m;
+```csharp
+status = MembershipCreateStatus.DuplicateUserName;
+```
 
-     171:         }
+```csharp
+return null;
+```
 
-     172:      
+```csharp
+}
+```
 
-     173:     }
+```csharp
+if (string.IsNullOrEmpty(username))
+```
 
-     174: }
+```csharp
+{
+```
+
+```csharp
+status = MembershipCreateStatus.InvalidUserName;
+```
+
+```csharp
+return null;
+```
+
+```csharp
+}
+```
+
+```csharp
+if (string.IsNullOrEmpty(password))
+```
+
+```csharp
+{
+```
+
+```csharp
+status = MembershipCreateStatus.InvalidPassword;
+```
+
+```csharp
+return null;
+```
+
+```csharp
+}
+```
+
+```csharp
+status = MembershipCreateStatus.Success;
+```
+
+```csharp
+
+
+
+```csharp
+u = Bridge.CreateUser(username, HashPassword(password), email, passwordQuestion, passwordAnswer, isApproved, providerUserKey);
+```
+
+```csharp
+
+
+
+```csharp
+MembershipUser m = u.GetMembershipUser(base.Name);
+```
+
+```csharp
+return m;
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 Pass the Salt!
 
 Of course, being too clever for my own good, I didn’t use an unsalted hash…I generated the salt from the strong name key of the current assembly.  Which was fine for my green field application where all assemblies were strong names…not so good now where the chain of dependencies aren’t strongly named.  If you’re interested the algorithm is pretty simple:
 
   
-       1: public static byte[] GetSaltFromAssembly()
+```csharp
+public static byte[] GetSaltFromAssembly()
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     System.Reflection.Assembly ass = System.Reflection.Assembly.GetExecutingAssembly();
+```csharp
+System.Reflection.Assembly ass = System.Reflection.Assembly.GetExecutingAssembly();
+```
 
-       4:     byte[] fullKey = ass.GetName().GetPublicKey();
+```csharp
+byte[] fullKey = ass.GetName().GetPublicKey();
+```
 
-       5:     byte[] salt = new byte[8];
+```csharp
+byte[] salt = new byte[8];
+```
 
-       6:     for (int i = 0; i 
+```csharp
+for (int i = 0; i 
+```
 
-       7:     {
+```csharp
+{
+```
 
-       8:         salt[i] = fullKey[i];
+```csharp
+salt[i] = fullKey[i];
+```
 
-       9:     }
+```csharp
+}
+```
 
-      10:     return salt;
+```csharp
+return salt;
+```
 
-      11: }
+```csharp
+}
+```
 
 To resolve, this I will need to obtain the salt and replicate it in the new assembly.  This time around I’m going to use a simpler mechanism and store the salt as a Base64 encoded string using the default Settings Class for the project.
 
@@ -397,120 +767,230 @@ Hooking It Up
 Finally, I just need to wire up the Provider in the web.config:
 
   
-       1: "CustomMembershipProvider">
+```csharp
+"CustomMembershipProvider">
+```
 
-       2:     
+```csharp
 
-       3:         
 
-       4:         "CustomMembershipProvider" type="VWT2OC.Website.Support.Security.CustomMembershipProvider, VWT2OC.Website.Support" />
 
-       5:     
+```csharp
 
-       6: 
+
+
+```csharp
+"CustomMembershipProvider" type="VWT2OC.Website.Support.Security.CustomMembershipProvider, VWT2OC.Website.Support" />
+```
+
+```csharp
+
+
+
+```csharp
+
+
 
 Integrating into the Forum
 
 To fully integrate the forum into the site, a quick custom implementation of the AbstractN2ForumUser is in order:
 
   
-       1: using System.Web;
+```csharp
+using System.Web;
+```
 
-       2: using N2;
+```csharp
+using N2;
+```
 
-       3: using N2.Security;
+```csharp
+using N2.Security;
+```
 
-       4:  
+```csharp
 
-       5: namespace VWT2OC.Website.Support.Security
 
-       6: {
 
-       7:     /// 
+```csharp
+namespace VWT2OC.Website.Support.Security
+```
 
-       8:     /// Integrated the VWT2OC/N2CMS User into the Forum Addon
+```csharp
+{
+```
 
-       9:     /// 
+```csharp
+/// 
+```
 
-      10:     public class ForumUser : N2.Templates.Forum.Services.AbstractN2ForumUser
+```csharp
+/// Integrated the VWT2OC/N2CMS User into the Forum Addon
+```
 
-      11:     {
+```csharp
+/// 
+```
 
-      12:         ItemBridge bridge;
+```csharp
+public class ForumUser : N2.Templates.Forum.Services.AbstractN2ForumUser
+```
 
-      13:  
+```csharp
+{
+```
 
-      14:         /// 
+```csharp
+ItemBridge bridge;
+```
 
-      15:         /// Gets the bridge.
+```csharp
 
-      16:         /// 
 
-      17:         /// The bridge.
 
-      18:         protected virtual ItemBridge Bridge
+```csharp
+/// 
+```
 
-      19:         {
+```csharp
+/// Gets the bridge.
+```
 
-      20:             get { return bridge ?? (bridge = Context.Current.Resolve()); }
+```csharp
+/// 
+```
 
-      21:         }
+```csharp
+/// The bridge.
+```
 
-      22:  
+```csharp
+protected virtual ItemBridge Bridge
+```
 
-      23:         /// 
+```csharp
+{
+```
 
-      24:         /// Initializes this instance.
+```csharp
+get { return bridge ?? (bridge = Context.Current.Resolve()); }
+```
 
-      25:         /// 
+```csharp
+}
+```
 
-      26:         protected override void Initialize()
+```csharp
 
-      27:         {
 
-      28:             _isAuthenticated = false;
 
-      29:             _userName = "";
+```csharp
+/// 
+```
 
-      30:             HttpContext current = HttpContext.Current;
+```csharp
+/// Initializes this instance.
+```
 
-      31:             // Check wether the user is authenticated
+```csharp
+/// 
+```
 
-      32:             if (current.User.Identity.IsAuthenticated)
+```csharp
+protected override void Initialize()
+```
 
-      33:             {
+```csharp
+{
+```
 
-      34:                 string username = current.User.Identity.Name;
+```csharp
+_isAuthenticated = false;
+```
 
-      35:                 N2.Security.Items.User user = Bridge.GetUser(username);
+```csharp
+_userName = "";
+```
 
-      36:  
+```csharp
+HttpContext current = HttpContext.Current;
+```
 
-      37:                 // Get the data
+```csharp
+// Check wether the user is authenticated
+```
 
-      38:                 _userID = user.ID;
+```csharp
+if (current.User.Identity.IsAuthenticated)
+```
 
-      39:                 _userName = username;
+```csharp
+{
+```
 
-      40:                 _email = user.Email;
+```csharp
+string username = current.User.Identity.Name;
+```
 
-      41:                 
+```csharp
+N2.Security.Items.User user = Bridge.GetUser(username);
+```
 
-      42:                 _location = (current.Profile.Context[UserDetailKey.Location] as string) ?? string.Empty;
+```csharp
 
-      43:                 _homePage = (current.Profile.Context[UserDetailKey.Website] as string) ?? string.Empty;
 
-      44:                 _isAuthenticated = true;
 
-      45:             }
+```csharp
+// Get the data
+```
 
-      46:  
+```csharp
+_userID = user.ID;
+```
 
-      47:         }
+```csharp
+_userName = username;
+```
 
-      48:     }
+```csharp
+_email = user.Email;
+```
 
-      49: }
+```csharp
+
+
+
+```csharp
+_location = (current.Profile.Context[UserDetailKey.Location] as string) ?? string.Empty;
+```
+
+```csharp
+_homePage = (current.Profile.Context[UserDetailKey.Website] as string) ?? string.Empty;
+```
+
+```csharp
+_isAuthenticated = true;
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 This class will use the standard n2cms profile provider and User objects to fill in the blanks that the GenericForumUser provided with the Forum Addon is missing.
 
@@ -553,26 +1033,45 @@ Fortunately, this is as simple as adding a new database to App_Data in visual st
   * Now to remove the default administrator credentials from the web.config 
     
       
-           1: authentication mode="Forms">
+```csharp
+authentication mode="Forms">
+```
 
-           2:     forms loginUrl="n2/login.aspx" protection="All" timeout="30000" path="/">
+```csharp
+forms loginUrl="n2/login.aspx" protection="All" timeout="30000" path="/">
+```
 
-           3:         credentials passwordFormat="Clear">
+```csharp
+credentials passwordFormat="Clear">
+```
 
-           4:             
+```csharp
 
-           5: 
 
-           6:             
 
-           7: -->
+```csharp
 
-           8:         credentials>
 
-           9:     forms>
 
-          10: authentication>
+```csharp
 
+
+
+```csharp
+-->
+```
+
+```csharp
+credentials>
+```
+
+```csharp
+forms>
+```
+
+```csharp
+authentication>
+```
     
   
 
@@ -599,10 +1098,13 @@ Fortunately, this is as simple as adding a new database to App_Data in visual st
   * At the end of the wizard click ‘Finish’.  At this point, my installation erred as Session State had been disabled and the addon requires it. To enable it change the sessionState mode to InProc  in the web.config 
     
       
-           1: -->
+```csharp
+-->
+```
 
-           2: sessionState mode="InProc" />
-
+```csharp
+sessionState mode="InProc" />
+```
     
   
 

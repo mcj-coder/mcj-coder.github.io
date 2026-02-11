@@ -19,170 +19,330 @@ originalUrl: "https://martinondotnet.blogspot.com/"
 
   As if by magic, the Proxy appeared…               1: using System;
 
-       2: using System.ServiceModel;
+```csharp
+using System.ServiceModel;
+```
 
-       3:  
+```csharp
 
-       4: namespace MartinOnDotNet.Helpers.WCF
 
-       5: {
 
-       6:     /// 
+```csharp
+namespace MartinOnDotNet.Helpers.WCF
+```
 
-       7:     /// Dynamically create a WCF proxy class using the given interface
+```csharp
+{
+```
 
-       8:     /// 
+```csharp
+/// 
+```
 
-       9:     /// The type of the service contract.
+```csharp
+/// Dynamically create a WCF proxy class using the given interface
+```
 
-      10:     public class DynamicTidyProxy : IDisposable
+```csharp
+/// 
+```
 
-      11:     {
+```csharp
+/// The type of the service contract.
+```
 
-      12:  
+```csharp
+public class DynamicTidyProxy : IDisposable
+```
 
-      13:         /// 
+```csharp
+{
+```
 
-      14:         /// Initializes a new instance of the  class.
+```csharp
 
-      15:         /// 
 
-      16:         public DynamicTidyProxy()
 
-      17:         {
+```csharp
+/// 
+```
 
-      18:             EndpointName = typeof(TServiceContract).Name;
+```csharp
+/// Initializes a new instance of the  class.
+```
 
-      19:         }
+```csharp
+/// 
+```
 
-      20:  
+```csharp
+public DynamicTidyProxy()
+```
 
-      21:         /// 
+```csharp
+{
+```
 
-      22:         /// Initializes a new instance of the  class.
+```csharp
+EndpointName = typeof(TServiceContract).Name;
+```
 
-      23:         /// 
+```csharp
+}
+```
 
-      24:         /// Name of the endpoint configuration.
+```csharp
 
-      25:         public DynamicTidyProxy(string endpointConfigurationName)
 
-      26:         {
 
-      27:             EndpointName = endpointConfigurationName;
+```csharp
+/// 
+```
 
-      28:         }
+```csharp
+/// Initializes a new instance of the  class.
+```
 
-      29:  
+```csharp
+/// 
+```
 
-      30:         /// 
+```csharp
+/// Name of the endpoint configuration.
+```
 
-      31:         /// Gets or sets the name of the endpoint.
+```csharp
+public DynamicTidyProxy(string endpointConfigurationName)
+```
 
-      32:         /// 
+```csharp
+{
+```
 
-      33:         /// The name of the endpoint.
+```csharp
+EndpointName = endpointConfigurationName;
+```
 
-      34:         public string EndpointName { get; set; }
+```csharp
+}
+```
 
-      35:  
+```csharp
 
-      36:         private ChannelFactory _channel;
 
-      37:         private TServiceContract _client;
 
-      38:  
+```csharp
+/// 
+```
 
-      39:         /// 
+```csharp
+/// Gets or sets the name of the endpoint.
+```
 
-      40:         /// Gets the client.
+```csharp
+/// 
+```
 
-      41:         /// 
+```csharp
+/// The name of the endpoint.
+```
 
-      42:         /// The client.
+```csharp
+public string EndpointName { get; set; }
+```
 
-      43:         public TServiceContract Client
+```csharp
 
-      44:         {
 
-      45:             get
 
-      46:             {
+```csharp
+private ChannelFactory _channel;
+```
 
-      47:                 if (_client == null)
+```csharp
+private TServiceContract _client;
+```
 
-      48:                 {
+```csharp
 
-      49:                     if (!typeof(TServiceContract).IsInterface) throw new NotSupportedException("TServiceContract must be an interface!");
 
-      50:                     if (string.IsNullOrEmpty(EndpointName)) throw new NotSupportedException("EndpointName must be set prior to use!");
 
-      51:                     _channel = new ChannelFactory(EndpointName);
+```csharp
+/// 
+```
 
-      52:                     _client = _channel.CreateChannel();
+```csharp
+/// Gets the client.
+```
 
-      53:                 }
+```csharp
+/// 
+```
 
-      54:                 return _client;
+```csharp
+/// The client.
+```
 
-      55:             }
+```csharp
+public TServiceContract Client
+```
 
-      56:  
+```csharp
+{
+```
 
-      57:         }
+```csharp
+get
+```
 
-      58:  
+```csharp
+{
+```
 
-      59:  
+```csharp
+if (_client == null)
+```
 
-      60:  
+```csharp
+{
+```
 
-      61:         #region IDisposable Members
+```csharp
+if (!typeof(TServiceContract).IsInterface) throw new NotSupportedException("TServiceContract must be an interface!");
+```
 
-      62:  
+```csharp
+if (string.IsNullOrEmpty(EndpointName)) throw new NotSupportedException("EndpointName must be set prior to use!");
+```
 
-      63:         /// 
+```csharp
+_channel = new ChannelFactory(EndpointName);
+```
 
-      64:         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+```csharp
+_client = _channel.CreateChannel();
+```
 
-      65:         /// 
+```csharp
+}
+```
 
-      66:         public void Dispose()
+```csharp
+return _client;
+```
 
-      67:         {
+```csharp
+}
+```
 
-      68:             if (_channel != null)
+```csharp
 
-      69:             {
 
-      70:                 _channel.CloseConnection();
 
-      71:             }
+```csharp
+}
+```
 
-      72:             GC.SuppressFinalize(this);
+```csharp
 
-      73:         }
 
-      74:  
 
-      75:         #endregion
+```csharp
 
-      76:     }
 
-      77: }
+
+```csharp
+
+
+
+```csharp
+#region IDisposable Members
+```
+
+```csharp
+
+
+
+```csharp
+/// 
+```
+
+```csharp
+/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+```
+
+```csharp
+/// 
+```
+
+```csharp
+public void Dispose()
+```
+
+```csharp
+{
+```
+
+```csharp
+if (_channel != null)
+```
+
+```csharp
+{
+```
+
+```csharp
+_channel.CloseConnection();
+```
+
+```csharp
+}
+```
+
+```csharp
+GC.SuppressFinalize(this);
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+#endregion
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 I’ve coded the default constructor to use the service contract interface type name… so make sure your config file matches!
 
 You can then dynamically create WCF proxies in code using:
 
   
-       1: using (var proxy = new DynamicTidyProxy())       
+```csharp
+using (var proxy = new DynamicTidyProxy())       
+```
 
-       2: {      
+```csharp
+{      
+```
 
-       3:   proxy.Client.DoSomeMagicallyComplexOperation();     
+```csharp
+proxy.Client.DoSomeMagicallyComplexOperation();     
+```
 
-       4: }
+```csharp
+}
+```
 
 No svcutil, or VS2008 Service Reference Required!
 
@@ -193,98 +353,194 @@ Tidying Up
 You’ve probably noticed the subtle “_channel.CloseConnection()” in the DynamicTidyProxy Dispose Method…this is simply an extension method that wraps all of the required WCF boiler plate code…
 
   
-       1: // 
+```csharp
+// 
+```
 
-       2: /// Safely closes a service client connection.
+```csharp
+/// Safely closes a service client connection.
+```
 
-       3: /// 
+```csharp
+/// 
+```
 
-       4: /// The service client.
+```csharp
+/// The service client.
+```
 
-       5: public static void CloseConnection(this ICommunicationObject serviceClient)
+```csharp
+public static void CloseConnection(this ICommunicationObject serviceClient)
+```
 
-       6: {
+```csharp
+{
+```
 
-       7:     if (serviceClient == null) return;
+```csharp
+if (serviceClient == null) return;
+```
 
-       8:     try
+```csharp
+try
+```
 
-       9:     {
+```csharp
+{
+```
 
-      10:         if (serviceClient.State == CommunicationState.Opened)
+```csharp
+if (serviceClient.State == CommunicationState.Opened)
+```
 
-      11:         {
+```csharp
+{
+```
 
-      12:             serviceClient.Close();
+```csharp
+serviceClient.Close();
+```
 
-      13:         }
+```csharp
+}
+```
 
-      14:         else
+```csharp
+else
+```
 
-      15:         {
+```csharp
+{
+```
 
-      16:             serviceClient.Abort();
+```csharp
+serviceClient.Abort();
+```
 
-      17:         }
+```csharp
+}
+```
 
-      18:     }
+```csharp
+}
+```
 
-      19:     catch (CommunicationException ex)
+```csharp
+catch (CommunicationException ex)
+```
 
-      20:     {
+```csharp
+{
+```
 
-      21:         Logging.Logger.Log(ex);
+```csharp
+Logging.Logger.Log(ex);
+```
 
-      22:         try
+```csharp
+try
+```
 
-      23:         {
+```csharp
+{
+```
 
-      24:             serviceClient.Abort();
+```csharp
+serviceClient.Abort();
+```
 
-      25:         }
+```csharp
+}
+```
 
-      26:         catch { } //nasty but nothing useful can be found by logging this exception as secondary issue
+```csharp
+catch { } //nasty but nothing useful can be found by logging this exception as secondary issue
+```
 
-      27:     }
+```csharp
+}
+```
 
-      28:     catch (TimeoutException ex)
+```csharp
+catch (TimeoutException ex)
+```
 
-      29:     {
+```csharp
+{
+```
 
-      30:         Logging.Logger.Log(ex);
+```csharp
+Logging.Logger.Log(ex);
+```
 
-      31:         try
+```csharp
+try
+```
 
-      32:         {
+```csharp
+{
+```
 
-      33:             serviceClient.Abort();
+```csharp
+serviceClient.Abort();
+```
 
-      34:         }
+```csharp
+}
+```
 
-      35:         catch { }//nasty but nothing useful can be found by logging this exception as secondary issue
+```csharp
+catch { }//nasty but nothing useful can be found by logging this exception as secondary issue
+```
 
-      36:     }
+```csharp
+}
+```
 
-      37:     catch (Exception ex)
+```csharp
+catch (Exception ex)
+```
 
-      38:     {
+```csharp
+{
+```
 
-      39:         Logging.Logger.Log(ex);
+```csharp
+Logging.Logger.Log(ex);
+```
 
-      40:         try
+```csharp
+try
+```
 
-      41:         {
+```csharp
+{
+```
 
-      42:             serviceClient.Abort();
+```csharp
+serviceClient.Abort();
+```
 
-      43:         }
+```csharp
+}
+```
 
-      44:         catch { }//nasty but nothing useful can be found by logging this exception as secondary issue
+```csharp
+catch { }//nasty but nothing useful can be found by logging this exception as secondary issue
+```
 
-      45:         throw;
+```csharp
+throw;
+```
 
-      46:  
+```csharp
 
-      47:     }
 
-      48: }
+
+```csharp
+}
+```
+
+```csharp
+}
+```

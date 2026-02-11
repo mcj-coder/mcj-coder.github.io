@@ -9,57 +9,103 @@ originalUrl: "https://martinondotnet.blogspot.com/"
 
 String.Format is a wonderful method, a real life saver when it comes to producing (readable) formatted text from within code.  I use it *everywhere*, but it gets a bit tedious typing the same boilerplate code to use it properly:
 
-             1: string formatted = string.Format(CultureInfo.InvariantCulture, "Formatted text {0:-15} example generated on {1:d}", meaningfulString, DateTime.Now);
+```csharp
+string formatted = string.Format(CultureInfo.InvariantCulture, "Formatted text {0:-15} example generated on {1:d}", meaningfulString, DateTime.Now);
+```
 
 That “string.Format(CultureInfo.InvariantCulture,” over 40 characters before you get the meat of the statement.  Sure you can drop the invariant culture bit but then you can introduce weird formatting problems on different machines….no what I need is a useful extension method to take my pain away:
 
   
-       1: /// 
+```csharp
+/// 
+```
 
-       2: /// Populates the template using the provided arguments and the invariante culture
+```csharp
+/// Populates the template using the provided arguments and the invariante culture
+```
 
-       3: /// 
+```csharp
+/// 
+```
 
-       4: /// The template.
+```csharp
+/// The template.
+```
 
-       5: /// The args.
+```csharp
+/// The args.
+```
 
-       6: public static string ToFormattedString(this string template, params object[] args)
+```csharp
+public static string ToFormattedString(this string template, params object[] args)
+```
 
-       7: {
+```csharp
+{
+```
 
-       8:     return template.ToFormattedString(CultureInfo.InvariantCulture, args);
+```csharp
+return template.ToFormattedString(CultureInfo.InvariantCulture, args);
+```
 
-       9: }
+```csharp
+}
+```
 
-      10:  
+```csharp
 
-      11: /// 
 
-      12: /// Populates the template using the provided arguments usign the provided formatter
 
-      13: /// 
+```csharp
+/// 
+```
 
-      14: /// The template.
+```csharp
+/// Populates the template using the provided arguments usign the provided formatter
+```
 
-      15: /// The formatter.
+```csharp
+/// 
+```
 
-      16: /// The args.
+```csharp
+/// The template.
+```
 
-      17: public static string ToFormattedString(this string template, IFormatProvider formatter, params object[] args)
+```csharp
+/// The formatter.
+```
 
-      18: {
+```csharp
+/// The args.
+```
 
-      19:     if (string.IsNullOrEmpty(template)) return string.Empty;
+```csharp
+public static string ToFormattedString(this string template, IFormatProvider formatter, params object[] args)
+```
 
-      20:     return string.Format(formatter, template, args);
+```csharp
+{
+```
 
-      21: }
+```csharp
+if (string.IsNullOrEmpty(template)) return string.Empty;
+```
+
+```csharp
+return string.Format(formatter, template, args);
+```
+
+```csharp
+}
+```
 
 Now the above example becomes:
 
   
-       1: string formatted = "Formatted text {0:-15} example generated on {1:d}".ToFormattedString(meaningfulString, DateTime.Now);
+```csharp
+string formatted = "Formatted text {0:-15} example generated on {1:d}".ToFormattedString(meaningfulString, DateTime.Now);
+```
 
 It’s definitely an improvement and the important bit of the statement (the template with formatting) is right at the front for easy debugging.
 

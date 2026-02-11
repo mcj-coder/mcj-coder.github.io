@@ -9,72 +9,140 @@ originalUrl: "https://martinondotnet.blogspot.com/"
 
 I recently needed to create an instance of the System.Web.StaticFileHandler.  This is a bit difficult as the class is internal so reflection must be used:
 
-             1: private static IHttpHandler _staticFileHandler;
+```csharp
+private static IHttpHandler _staticFileHandler;
+```
 
-       2:  
+```csharp
 
-       3: private static IHttpHandler StaticFileHandler
 
-       4: {
 
-       5:     get
+```csharp
+private static IHttpHandler StaticFileHandler
+```
 
-       6:     {
+```csharp
+{
+```
 
-       7:         if (_staticFileHandler == null)
+```csharp
+get
+```
 
-       8:         {
+```csharp
+{
+```
 
-       9:             Assembly systemWeb = typeof(IHttpHandler).Assembly;
+```csharp
+if (_staticFileHandler == null)
+```
 
-      10:             /* If you don't have a public type to reference a lookup like this could be done
+```csharp
+{
+```
 
-      11:                 Assembly systemWeb = AppDomain.CurrentDomain.GetAssemblies()
+```csharp
+Assembly systemWeb = typeof(IHttpHandler).Assembly;
+```
 
-      12:                     .Where(ass => ass.GetName().Name == "System.Web")
+```csharp
+/* If you don't have a public type to reference a lookup like this could be done
+```
 
-      13:                     .First();
+```csharp
+Assembly systemWeb = AppDomain.CurrentDomain.GetAssemblies()
+```
 
-      14:             */
+```csharp
+.Where(ass => ass.GetName().Name == "System.Web")
+```
 
-      15:          
+```csharp
+.First();
+```
 
-      16:             Type staticFileHandler = systemWeb.GetType("System.Web.StaticFileHandler");
+```csharp
+*/
+```
 
-      17:                         ConstructorInfo ci = staticFileHandler.GetConstructor(
+```csharp
 
-      18:                             BindingFlags.NonPublic | BindingFlags.Instance
 
-      19:                             , null
 
-      20:                             , Type.EmptyTypes
+```csharp
+Type staticFileHandler = systemWeb.GetType("System.Web.StaticFileHandler");
+```
 
-      21:                             , null);
+```csharp
+ConstructorInfo ci = staticFileHandler.GetConstructor(
+```
 
-      22:             _staticFileHandler = ci.Invoke(null) as IHttpHandler;
+```csharp
+BindingFlags.NonPublic | BindingFlags.Instance
+```
 
-      23:             if (_staticFileHandler == null) throw new NotSupportedException("System.Web must contain System.Web.StaticFileHandler");
+```csharp
+, null
+```
 
-      24:         }
+```csharp
+, Type.EmptyTypes
+```
 
-      25:         return _staticFileHandler;
+```csharp
+, null);
+```
 
-      26:     }
+```csharp
+_staticFileHandler = ci.Invoke(null) as IHttpHandler;
+```
 
-      27: }
+```csharp
+if (_staticFileHandler == null) throw new NotSupportedException("System.Web must contain System.Web.StaticFileHandler");
+```
 
-      28:  
+```csharp
+}
+```
 
-      29: /*
+```csharp
+return _staticFileHandler;
+```
 
-      30: using System;
+```csharp
+}
+```
 
-      31: using System.Linq;
+```csharp
+}
+```
 
-      32: using System.Reflection;
+```csharp
 
-      33: using System.Web;
 
-      34: */
+
+```csharp
+/*
+```
+
+```csharp
+using System;
+```
+
+```csharp
+using System.Linq;
+```
+
+```csharp
+using System.Reflection;
+```
+
+```csharp
+using System.Web;
+```
+
+```csharp
+*/
+```
 
 Hope it helps.

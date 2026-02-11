@@ -19,107 +19,209 @@ For a long time now I’ve been stamping down hard on empty catch blocks in code
 
   For example, this is a common pattern of code that I’m seeing during Code Review sessions:
 
-             1: public bool PerformCriticalTask()
+```csharp
+public bool PerformCriticalTask()
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     try
+```csharp
+try
+```
 
-       4:     {
+```csharp
+{
+```
 
-       5:         CriticalFunctionalityTaskA();
+```csharp
+CriticalFunctionalityTaskA();
+```
 
-       6:         CriticalFunctionalityTaskB();
+```csharp
+CriticalFunctionalityTaskB();
+```
 
-       7:         CriticalFunctionalityTaskC();
+```csharp
+CriticalFunctionalityTaskC();
+```
 
-       8:         return true;
+```csharp
+return true;
+```
 
-       9:     }
+```csharp
+}
+```
 
-      10:     catch(Exception ex)
+```csharp
+catch(Exception ex)
+```
 
-      11:     {
+```csharp
+{
+```
 
-      12:         Logger.Log(ex);
+```csharp
+Logger.Log(ex);
+```
 
-      13:     }
+```csharp
+}
+```
 
-      14:     return false;
+```csharp
+return false;
+```
 
-      15: }
+```csharp
+}
+```
 
-      16:  
+```csharp
 
-      17: public CriticalFunctionalityTaskA()
 
-      18: {
 
-      19:     try
+```csharp
+public CriticalFunctionalityTaskA()
+```
 
-      20:     {
+```csharp
+{
+```
 
-      21:         //Do Important Stuff Here
+```csharp
+try
+```
 
-      22:     }
+```csharp
+{
+```
 
-      23:     catch(Exception ex)
+```csharp
+//Do Important Stuff Here
+```
 
-      24:     {
+```csharp
+}
+```
 
-      25:         Logger.Log(ex);
+```csharp
+catch(Exception ex)
+```
 
-      26:     }
+```csharp
+{
+```
 
-      27: }
+```csharp
+Logger.Log(ex);
+```
 
-      28:  
+```csharp
+}
+```
 
-      29: public CriticalFunctionalityTaskB()
+```csharp
+}
+```
 
-      30: {
+```csharp
 
-      31:     try
 
-      32:     {
 
-      33:         //Do More Important Stuff Here
+```csharp
+public CriticalFunctionalityTaskB()
+```
 
-      34:     }
+```csharp
+{
+```
 
-      35:     catch(Exception ex)
+```csharp
+try
+```
 
-      36:     {
+```csharp
+{
+```
 
-      37:         Logger.Log(ex);
+```csharp
+//Do More Important Stuff Here
+```
 
-      38:     }
+```csharp
+}
+```
 
-      39: }
+```csharp
+catch(Exception ex)
+```
 
-      40:  
+```csharp
+{
+```
 
-      41: public CriticalFunctionalityTaskC()
+```csharp
+Logger.Log(ex);
+```
 
-      42: {
+```csharp
+}
+```
 
-      43:     try
+```csharp
+}
+```
 
-      44:     {
+```csharp
 
-      45:         //Do The Most Important Stuff
 
-      46:     }
 
-      47:     catch(Exception ex)
+```csharp
+public CriticalFunctionalityTaskC()
+```
 
-      48:     {
+```csharp
+{
+```
 
-      49:         Logger.Log(ex);
+```csharp
+try
+```
 
-      50:     }
+```csharp
+{
+```
 
-      51: }
+```csharp
+//Do The Most Important Stuff
+```
+
+```csharp
+}
+```
+
+```csharp
+catch(Exception ex)
+```
+
+```csharp
+{
+```
+
+```csharp
+Logger.Log(ex);
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 It’s pretty clear that this Catch/Log pattern has become a developers default exception handling boiler plate code.  It’s adding no value and actually making the troubleshooting processes more complicated and time consuming.  
 

@@ -11,379 +11,753 @@ I’ve recently needed to have a multilingual menu where the id for each menu it
 
   So I’ve knocked out a quick’n’dirty TSQL script to clone a menu across across several languages whilst maintaining the relevant ids.
 
-             1: BEGIN TRANSACTION
+```csharp
+BEGIN TRANSACTION
+```
 
-       2:  
+```csharp
 
-       3: CREATE TABLE #NewMenu  (
 
-       4:     [mnu_id] [bigint] NOT NULL,
 
-       5:     [mnu_name] [nvarchar](255) NULL,
+```csharp
+CREATE TABLE #NewMenu  (
+```
 
-       6:     [mnu_description] [nvarchar](255) NULL,
+```csharp
+[mnu_id] [bigint] NOT NULL,
+```
 
-       7:     [folder_id] [bigint] NOT NULL,
+```csharp
+[mnu_name] [nvarchar](255) NULL,
+```
 
-       8:     [recursive] [int] NOT NULL,
+```csharp
+[mnu_description] [nvarchar](255) NULL,
+```
 
-       9:     [user_id] [bigint] NULL,
+```csharp
+[folder_id] [bigint] NOT NULL,
+```
 
-      10:     [date_created] [datetime] NOT NULL,
+```csharp
+[recursive] [int] NOT NULL,
+```
 
-      11:     [last_edit_date] [datetime] NULL,
+```csharp
+[user_id] [bigint] NULL,
+```
 
-      12:     [last_edit_lname] [nvarchar](50) NOT NULL,
+```csharp
+[date_created] [datetime] NOT NULL,
+```
 
-      13:     [last_edit_fname] [nvarchar](50) NOT NULL,
+```csharp
+[last_edit_date] [datetime] NULL,
+```
 
-      14:     [mnu_type] [int] NOT NULL,
+```csharp
+[last_edit_lname] [nvarchar](50) NOT NULL,
+```
 
-      15:     [mnu_link] [nvarchar](255) NULL,
+```csharp
+[last_edit_fname] [nvarchar](50) NOT NULL,
+```
 
-      16:     [template_link] [nvarchar](255) NULL,
+```csharp
+[mnu_type] [int] NOT NULL,
+```
 
-      17:     [parent_id] [bigint] NULL,
+```csharp
+[mnu_link] [nvarchar](255) NULL,
+```
 
-      18:     [ancestor_id] [bigint] NULL,
+```csharp
+[template_link] [nvarchar](255) NULL,
+```
 
-      19:     [content_language] [int] NOT NULL,
+```csharp
+[parent_id] [bigint] NULL,
+```
 
-      20:     [mnu_image] [nvarchar](512) NULL,
+```csharp
+[ancestor_id] [bigint] NULL,
+```
 
-      21:     [mnu_image_override] [int] NULL,
+```csharp
+[content_language] [int] NOT NULL,
+```
 
-      22:     [mnu_to_folders] [nvarchar](512) NULL,
+```csharp
+[mnu_image] [nvarchar](512) NULL,
+```
 
-      23:     [mnu_to_templates] [nvarchar](255) NULL,
+```csharp
+[mnu_image_override] [int] NULL,
+```
 
-      24:     [dynamic_replication_method] [int] NULL)
+```csharp
+[mnu_to_folders] [nvarchar](512) NULL,
+```
 
-      25: GO
+```csharp
+[mnu_to_templates] [nvarchar](255) NULL,
+```
 
-      26:  
+```csharp
+[dynamic_replication_method] [int] NULL)
+```
 
-      27: WITH MenuCTE AS (
+```csharp
+GO
+```
 
-      28: SELECT  *
+```csharp
 
-      29:   FROM [dbo].[menu_tbl]
 
-      30:   WHERE [mnu_id]=60 -- MENUID TO CLONE
 
-      31:   AND [content_language]=2057 -- LANGUAGE OF MENU TO CLONE
+```csharp
+WITH MenuCTE AS (
+```
 
-      32:   UNION ALL 
+```csharp
+SELECT  *
+```
 
-      33:   SELECT  [dbo].[menu_tbl].*
+```csharp
+FROM [dbo].[menu_tbl]
+```
 
-      34:   FROM [dbo].[menu_tbl]
+```csharp
+WHERE [mnu_id]=60 -- MENUID TO CLONE
+```
 
-      35:     INNER JOIN MenuCTE ON MenuCTE.mnu_id=[dbo].[menu_tbl].[ancestor_id]
+```csharp
+AND [content_language]=2057 -- LANGUAGE OF MENU TO CLONE
+```
 
-      36:     AND MenuCTE.content_language=[dbo].[menu_tbl].content_language
+```csharp
+UNION ALL 
+```
 
-      37:     AND MenuCTE.[ancestor_id]!=[dbo].[menu_tbl].mnu_id
+```csharp
+SELECT  [dbo].[menu_tbl].*
+```
 
-      38: )
+```csharp
+FROM [dbo].[menu_tbl]
+```
 
-      39: -- Clone menu
+```csharp
+INNER JOIN MenuCTE ON MenuCTE.mnu_id=[dbo].[menu_tbl].[ancestor_id]
+```
 
-      40: INSERT INTO #NewMenu([mnu_id]
+```csharp
+AND MenuCTE.content_language=[dbo].[menu_tbl].content_language
+```
 
-      41:       ,[mnu_name]
+```csharp
+AND MenuCTE.[ancestor_id]!=[dbo].[menu_tbl].mnu_id
+```
 
-      42:       ,[mnu_description]
+```csharp
+)
+```
 
-      43:       ,[folder_id]
+```csharp
+-- Clone menu
+```
 
-      44:       ,[recursive]
+```csharp
+INSERT INTO #NewMenu([mnu_id]
+```
 
-      45:       ,[user_id]
+```csharp
+,[mnu_name]
+```
 
-      46:       ,[date_created]
+```csharp
+,[mnu_description]
+```
 
-      47:       ,[last_edit_date]
+```csharp
+,[folder_id]
+```
 
-      48:       ,[last_edit_lname]
+```csharp
+,[recursive]
+```
 
-      49:       ,[last_edit_fname]
+```csharp
+,[user_id]
+```
 
-      50:       ,[mnu_type]
+```csharp
+,[date_created]
+```
 
-      51:       ,[mnu_link]
+```csharp
+,[last_edit_date]
+```
 
-      52:       ,[template_link]
+```csharp
+,[last_edit_lname]
+```
 
-      53:       ,[parent_id]
+```csharp
+,[last_edit_fname]
+```
 
-      54:       ,[ancestor_id]
+```csharp
+,[mnu_type]
+```
 
-      55:       ,[content_language]
+```csharp
+,[mnu_link]
+```
 
-      56:       ,[mnu_image]
+```csharp
+,[template_link]
+```
 
-      57:       ,[mnu_image_override]
+```csharp
+,[parent_id]
+```
 
-      58:       ,[mnu_to_folders]
+```csharp
+,[ancestor_id]
+```
 
-      59:       ,[mnu_to_templates]
+```csharp
+,[content_language]
+```
 
-      60:       ,[dynamic_replication_method] )
+```csharp
+,[mnu_image]
+```
 
-      61: SELECT [mnu_id]
+```csharp
+,[mnu_image_override]
+```
 
-      62:       ,UPPER([L].[browser_code]) + ' ' + [mnu_name]
+```csharp
+,[mnu_to_folders]
+```
 
-      63:       ,[mnu_description]
+```csharp
+,[mnu_to_templates]
+```
 
-      64:       ,[folder_id]
+```csharp
+,[dynamic_replication_method] )
+```
 
-      65:       ,[recursive]
+```csharp
+SELECT [mnu_id]
+```
 
-      66:       ,[user_id]
+```csharp
+,UPPER([L].[browser_code]) + ' ' + [mnu_name]
+```
 
-      67:       ,[date_created]
+```csharp
+,[mnu_description]
+```
 
-      68:       ,[last_edit_date]
+```csharp
+,[folder_id]
+```
 
-      69:       ,[last_edit_lname]
+```csharp
+,[recursive]
+```
 
-      70:       ,[last_edit_fname]
+```csharp
+,[user_id]
+```
 
-      71:       ,[mnu_type]
+```csharp
+,[date_created]
+```
 
-      72:       ,[mnu_link]
+```csharp
+,[last_edit_date]
+```
 
-      73:       ,[template_link]
+```csharp
+,[last_edit_lname]
+```
 
-      74:       ,[parent_id]
+```csharp
+,[last_edit_fname]
+```
 
-      75:       ,[ancestor_id]
+```csharp
+,[mnu_type]
+```
 
-      76:       ,[L].language_id--[content_language]
+```csharp
+,[mnu_link]
+```
 
-      77:       ,[mnu_image]
+```csharp
+,[template_link]
+```
 
-      78:       ,[mnu_image_override]
+```csharp
+,[parent_id]
+```
 
-      79:       ,[mnu_to_folders]
+```csharp
+,[ancestor_id]
+```
 
-      80:       ,[mnu_to_templates]
+```csharp
+,[L].language_id--[content_language]
+```
 
-      81:       ,[dynamic_replication_method] 
+```csharp
+,[mnu_image]
+```
 
-      82: FROM MenuCTE
+```csharp
+,[mnu_image_override]
+```
 
-      83: INNER JOIN language_type [L] ON [L].language_id IN (1033,1036,1034,2052,1031,1040,1046,1049) -- LANGUAGES TO CLONE INTO
+```csharp
+,[mnu_to_folders]
+```
 
-      84:  
+```csharp
+,[mnu_to_templates]
+```
 
-      85: -- Conflicting Rows
+```csharp
+,[dynamic_replication_method] 
+```
 
-      86: SELECT * FROM #NewMenu [NM]
+```csharp
+FROM MenuCTE
+```
 
-      87: INNER JOIN [menu_tbl] [M] ON [NM].mnu_id=[M].mnu_id AND [NM].content_language = [M].content_language
+```csharp
+INNER JOIN language_type [L] ON [L].language_id IN (1033,1036,1034,2052,1031,1040,1046,1049) -- LANGUAGES TO CLONE INTO
+```
 
-      88:  
+```csharp
 
-      89: /*  uncomment this block when ready to add new menus! 
 
-      90: INSERT INTO [menu_tbl]([mnu_id]
 
-      91:       ,[mnu_name]
+```csharp
+-- Conflicting Rows
+```
 
-      92:       ,[mnu_description]
+```csharp
+SELECT * FROM #NewMenu [NM]
+```
 
-      93:       ,[folder_id]
+```csharp
+INNER JOIN [menu_tbl] [M] ON [NM].mnu_id=[M].mnu_id AND [NM].content_language = [M].content_language
+```
 
-      94:       ,[recursive]
+```csharp
 
-      95:       ,[user_id]
 
-      96:       ,[date_created]
 
-      97:       ,[last_edit_date]
+```csharp
+/*  uncomment this block when ready to add new menus! 
+```
 
-      98:       ,[last_edit_lname]
+```csharp
+INSERT INTO [menu_tbl]([mnu_id]
+```
 
-      99:       ,[last_edit_fname]
+```csharp
+,[mnu_name]
+```
 
-     100:       ,[mnu_type]
+```csharp
+,[mnu_description]
+```
 
-     101:       ,[mnu_link]
+```csharp
+,[folder_id]
+```
 
-     102:       ,[template_link]
+```csharp
+,[recursive]
+```
 
-     103:       ,[parent_id]
+```csharp
+,[user_id]
+```
 
-     104:       ,[ancestor_id]
+```csharp
+,[date_created]
+```
 
-     105:       ,[content_language]
+```csharp
+,[last_edit_date]
+```
 
-     106:       ,[mnu_image]
+```csharp
+,[last_edit_lname]
+```
 
-     107:       ,[mnu_image_override]
+```csharp
+,[last_edit_fname]
+```
 
-     108:       ,[mnu_to_folders]
+```csharp
+,[mnu_type]
+```
 
-     109:       ,[mnu_to_templates]
+```csharp
+,[mnu_link]
+```
 
-     110:       ,[dynamic_replication_method] )
+```csharp
+,[template_link]
+```
 
-     111: SELECT [mnu_id]
+```csharp
+,[parent_id]
+```
 
-     112:       ,[mnu_name]
+```csharp
+,[ancestor_id]
+```
 
-     113:       ,[mnu_description]
+```csharp
+,[content_language]
+```
 
-     114:       ,[folder_id]
+```csharp
+,[mnu_image]
+```
 
-     115:       ,[recursive]
+```csharp
+,[mnu_image_override]
+```
 
-     116:       ,[user_id]
+```csharp
+,[mnu_to_folders]
+```
 
-     117:       ,[date_created]
+```csharp
+,[mnu_to_templates]
+```
 
-     118:       ,[last_edit_date]
+```csharp
+,[dynamic_replication_method] )
+```
 
-     119:       ,[last_edit_lname]
+```csharp
+SELECT [mnu_id]
+```
 
-     120:       ,[last_edit_fname]
+```csharp
+,[mnu_name]
+```
 
-     121:       ,[mnu_type]
+```csharp
+,[mnu_description]
+```
 
-     122:       ,[mnu_link]
+```csharp
+,[folder_id]
+```
 
-     123:       ,[template_link]
+```csharp
+,[recursive]
+```
 
-     124:       ,[parent_id]
+```csharp
+,[user_id]
+```
 
-     125:       ,[ancestor_id]
+```csharp
+,[date_created]
+```
 
-     126:       ,[content_language]
+```csharp
+,[last_edit_date]
+```
 
-     127:       ,[mnu_image]
+```csharp
+,[last_edit_lname]
+```
 
-     128:       ,[mnu_image_override]
+```csharp
+,[last_edit_fname]
+```
 
-     129:       ,[mnu_to_folders]
+```csharp
+,[mnu_type]
+```
 
-     130:       ,[mnu_to_templates]
+```csharp
+,[mnu_link]
+```
 
-     131:       ,[dynamic_replication_method]
+```csharp
+,[template_link]
+```
 
-     132: FROM #NewMenu
+```csharp
+,[parent_id]
+```
 
-     133: 
+```csharp
+,[ancestor_id]
+```
 
-     134: INSERT INTO [menu_to_item_tbl]([mnu_id]
+```csharp
+,[content_language]
+```
 
-     135:       ,[item_id]
+```csharp
+,[mnu_image]
+```
 
-     136:       ,[item_type]
+```csharp
+,[mnu_image_override]
+```
 
-     137:       ,[item_title]
+```csharp
+,[mnu_to_folders]
+```
 
-     138:       ,[item_link]
+```csharp
+,[mnu_to_templates]
+```
 
-     139:       ,[item_target]
+```csharp
+,[dynamic_replication_method]
+```
 
-     140:       ,[order_loc]
+```csharp
+FROM #NewMenu
+```
 
-     141:       ,[item_description]
+```csharp
 
-     142:       ,[link_type]
 
-     143:       ,[id]
 
-     144:       ,[content_language]
+```csharp
+INSERT INTO [menu_to_item_tbl]([mnu_id]
+```
 
-     145:       ,[item_image]
+```csharp
+,[item_id]
+```
 
-     146:       ,[item_image_override])
+```csharp
+,[item_type]
+```
 
-     147: SELECT [MI].[mnu_id]
+```csharp
+,[item_title]
+```
 
-     148:       ,[item_id]
+```csharp
+,[item_link]
+```
 
-     149:       ,[item_type]
+```csharp
+,[item_target]
+```
 
-     150:       ,[item_title]
+```csharp
+,[order_loc]
+```
 
-     151:       ,[item_link]
+```csharp
+,[item_description]
+```
 
-     152:       ,[item_target]
+```csharp
+,[link_type]
+```
 
-     153:       ,[order_loc]
+```csharp
+,[id]
+```
 
-     154:       ,[item_description]
+```csharp
+,[content_language]
+```
 
-     155:       ,[link_type]
+```csharp
+,[item_image]
+```
 
-     156:       ,[id]
+```csharp
+,[item_image_override])
+```
 
-     157:       ,[NM].[content_language]
+```csharp
+SELECT [MI].[mnu_id]
+```
 
-     158:       ,[item_image]
+```csharp
+,[item_id]
+```
 
-     159:       ,[item_image_override]
+```csharp
+,[item_type]
+```
 
-     160: FROM [dbo].[menu_to_item_tbl] [MI]
+```csharp
+,[item_title]
+```
 
-     161: INNER JOIN #NewMenu [NM] ON [MI].mnu_id=[NM].mnu_id 
+```csharp
+,[item_link]
+```
 
-     162: 
+```csharp
+,[item_target]
+```
 
-     163: */
+```csharp
+,[order_loc]
+```
 
-     164:  
+```csharp
+,[item_description]
+```
 
-     165: -- INSERTED ROWS
+```csharp
+,[link_type]
+```
 
-     166: SELECT * FROM #NewMenu
+```csharp
+,[id]
+```
 
-     167:  
+```csharp
+,[NM].[content_language]
+```
 
-     168: SELECT [MI].[mnu_id]
+```csharp
+,[item_image]
+```
 
-     169:       ,[item_id]
+```csharp
+,[item_image_override]
+```
 
-     170:       ,[item_type]
+```csharp
+FROM [dbo].[menu_to_item_tbl] [MI]
+```
 
-     171:       ,[item_title]
+```csharp
+INNER JOIN #NewMenu [NM] ON [MI].mnu_id=[NM].mnu_id 
+```
 
-     172:       ,[item_link]
+```csharp
 
-     173:       ,[item_target]
 
-     174:       ,[order_loc]
 
-     175:       ,[item_description]
+```csharp
+*/
+```
 
-     176:       ,[link_type]
+```csharp
 
-     177:       ,[id]
 
-     178:       ,[NM].[content_language]
 
-     179:       ,[item_image]
+```csharp
+-- INSERTED ROWS
+```
 
-     180:       ,[item_image_override]
+```csharp
+SELECT * FROM #NewMenu
+```
 
-     181: FROM [dbo].[menu_to_item_tbl] [MI]
+```csharp
 
-     182: INNER JOIN #NewMenu [NM] ON [MI].mnu_id=[NM].mnu_id 
 
-     183:  
 
-     184: DROP TABLE #NewMenu
+```csharp
+SELECT [MI].[mnu_id]
+```
 
-     185:  
+```csharp
+,[item_id]
+```
 
-     186: ROLLBACK TRANSACTION -- keep in place until 100% happy!
+```csharp
+,[item_type]
+```
 
-     187: -- COMMIT TRANSACTION -- remove comment when ready!
+```csharp
+,[item_title]
+```
+
+```csharp
+,[item_link]
+```
+
+```csharp
+,[item_target]
+```
+
+```csharp
+,[order_loc]
+```
+
+```csharp
+,[item_description]
+```
+
+```csharp
+,[link_type]
+```
+
+```csharp
+,[id]
+```
+
+```csharp
+,[NM].[content_language]
+```
+
+```csharp
+,[item_image]
+```
+
+```csharp
+,[item_image_override]
+```
+
+```csharp
+FROM [dbo].[menu_to_item_tbl] [MI]
+```
+
+```csharp
+INNER JOIN #NewMenu [NM] ON [MI].mnu_id=[NM].mnu_id 
+```
+
+```csharp
+
+
+
+```csharp
+DROP TABLE #NewMenu
+```
+
+```csharp
+
+
+
+```csharp
+ROLLBACK TRANSACTION -- keep in place until 100% happy!
+```
+
+```csharp
+-- COMMIT TRANSACTION -- remove comment when ready!
+```
 
 You’ll notice that this query uses a CTE (needs SQL 2005 and above) to recursively retrieve all of the menu entries.  It’s also wrapped in a transaction (which will ROLLBACK until you modify the script, and I’ve commented out the section that inserts records into your table – you’ll need to uncomment it to make it work.
 

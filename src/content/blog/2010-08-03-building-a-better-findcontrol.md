@@ -15,87 +15,159 @@ There are times in any semi-advanced ASP.NET developers life when they’re work
 
   
 ## Get All Child Controls of a Given Type
-             1: public static IEnumerable GetAllChildControlsOfType(this Control parent) where T : Control
+```csharp
+public static IEnumerable GetAllChildControlsOfType(this Control parent) where T : Control
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:    if (parent == null) throw new ArgumentNullException("parent");
+```csharp
+if (parent == null) throw new ArgumentNullException("parent");
+```
 
-       4:    foreach (Control c in parent.Controls)
+```csharp
+foreach (Control c in parent.Controls)
+```
 
-       5:    {
+```csharp
+{
+```
 
-       6:        if (typeof(T).IsInstanceOfType(c)) yield return (T)c;
+```csharp
+if (typeof(T).IsInstanceOfType(c)) yield return (T)c;
+```
 
-       7:        foreach (T tc in c.GetAllChildControlsOfType())
+```csharp
+foreach (T tc in c.GetAllChildControlsOfType())
+```
 
-       8:            yield return tc;
+```csharp
+yield return tc;
+```
 
-       9:    }
+```csharp
+}
+```
 
-      10:    yield break;
+```csharp
+yield break;
+```
 
-      11: }
+```csharp
+}
+```
 
 ## Get All Child Controls that Implement a Given Interface
 
 For when you don’t care what the control is, as long as it can do a particular thing….try it with IButtonControl.
 
   
-       1: public static IEnumerable GetAllChildControlsWithInterface(this Control parent)
+```csharp
+public static IEnumerable GetAllChildControlsWithInterface(this Control parent)
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:    if (!typeof(T).IsInterface) throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture,"Type '{0}' is not an interface".ToFormattedString(typeof(T).ToString()));
+```csharp
+if (!typeof(T).IsInterface) throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture,"Type '{0}' is not an interface".ToFormattedString(typeof(T).ToString()));
+```
 
-       4:    if (parent == null) throw new ArgumentNullException("parent");
+```csharp
+if (parent == null) throw new ArgumentNullException("parent");
+```
 
-       5:    foreach (object c in parent.Controls)
+```csharp
+foreach (object c in parent.Controls)
+```
 
-       6:    {
+```csharp
+{
+```
 
-       7:        if (typeof(T).IsInstanceOfType(c))
+```csharp
+if (typeof(T).IsInstanceOfType(c))
+```
 
-       8:            yield return (T)c;
+```csharp
+yield return (T)c;
+```
 
-       9:        Control ctrl = c as Control;
+```csharp
+Control ctrl = c as Control;
+```
 
-      10:        if (ctrl != null)
+```csharp
+if (ctrl != null)
+```
 
-      11:            foreach (T tc in ctrl.GetAllChildControlsWithInterface())
+```csharp
+foreach (T tc in ctrl.GetAllChildControlsWithInterface())
+```
 
-      12:                yield return tc;
+```csharp
+yield return tc;
+```
 
-      13:    }
+```csharp
+}
+```
 
-      14:    yield break;
+```csharp
+yield break;
+```
 
-      15: }
+```csharp
+}
+```
 
 ## Find All Controls With a Given ID
 
 Find every Textbox with an Id of ‘FirstName’ within a repeater….
 
   
-       1: public static IEnumerable FindAllControl(this Control parent, string id) where T : Control
+```csharp
+public static IEnumerable FindAllControl(this Control parent, string id) where T : Control
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:    if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
+```csharp
+if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
+```
 
-       4:    return parent.GetAllChildControlsOfType()
+```csharp
+return parent.GetAllChildControlsOfType()
+```
 
-       5:        .Where(c => string.Equals(c.ID, id, StringComparison.OrdinalIgnoreCase));
+```csharp
+.Where(c => string.Equals(c.ID, id, StringComparison.OrdinalIgnoreCase));
+```
 
-       6: }
+```csharp
+}
+```
 
 ## Find The First Control with an ID
 
   
-       1: public static T FindControl(this Control parent, string id) where T : Control
+```csharp
+public static T FindControl(this Control parent, string id) where T : Control
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:    return parent.FindAllControl(id).FirstOrDefault();
+```csharp
+return parent.FindAllControl(id).FirstOrDefault();
+```
 
-       4: }
+```csharp
+}
+```

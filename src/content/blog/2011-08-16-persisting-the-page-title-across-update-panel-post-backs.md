@@ -9,22 +9,40 @@ originalUrl: "https://martinondotnet.blogspot.com/"
 
 There’s a fun bug with AsyncPostbacks blanking out the Page Title ([http://stackoverflow.com/questions/627378/page-losing-title-after-updatepanel-asyncpostback)](http://stackoverflow.com/questions/627378/page-losing-title-after-updatepanel-asyncpostback), the recommended fix is to rebind the page title on each Async Postback or to use the declarative page title attribute in the aspx.  My fix is to fix a JS bug in JS:
 
-             1: $(function(){
+```csharp
+$(function(){
+```
 
-       2:     var prm = Sys.WebForms.PageRequestManager.getInstance();
+```csharp
+var prm = Sys.WebForms.PageRequestManager.getInstance();
+```
 
-       3:     if (!(prm)) return;
+```csharp
+if (!(prm)) return;
+```
 
-       4:     document.orginalTitle=document.title;
+```csharp
+document.orginalTitle=document.title;
+```
 
-       5:     instance.add_endRequest(function(s, e){
+```csharp
+instance.add_endRequest(function(s, e){
+```
 
-       6:         if (document.title.replace(/\s/g,"").length==0)
+```csharp
+if (document.title.replace(/\s/g,"").length==0)
+```
 
-       7:             document.title=document.orginalTitle;
+```csharp
+document.title=document.orginalTitle;
+```
 
-       8:     });
+```csharp
+});
+```
 
-       9: });
+```csharp
+});
+```
 
 This JS code will ensure that the page title is persisted across ajax requests, with no changes to the server side code.   If you don’t have JQuery available (for shame!) then just move the function body into a code block which will execute on the GET request/first view of the page.

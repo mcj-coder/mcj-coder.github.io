@@ -15,29 +15,53 @@ I’ve recently had to look at dynamically assigning an assembly versions based 
 
   This is the Devil Line that causes the problem:
 
-             1: protected override void InternalExecute()
+```csharp
+protected override void InternalExecute()
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     // Implementation ommitted
+```csharp
+// Implementation ommitted
+```
 
-       4:     this.assembly = Assembly.LoadFrom(this.NetAssembly.GetMetadata("FullPath"));
+```csharp
+this.assembly = Assembly.LoadFrom(this.NetAssembly.GetMetadata("FullPath"));
+```
 
-       5:     // Implementation ommitted
+```csharp
+// Implementation ommitted
+```
 
-       6: }
+```csharp
+}
+```
 
-       7: /* Taken From MSBuild.ExtensionPack.Framework.Assembly using Reflector
+```csharp
+/* Taken From MSBuild.ExtensionPack.Framework.Assembly using Reflector
+```
 
-       8: protected override void InternalExecute();
+```csharp
+protected override void InternalExecute();
+```
 
-       9:  
+```csharp
 
-      10: Declaring Type: MSBuild.ExtensionPack.Framework.Assembly 
 
-      11: Assembly: MSBuild.ExtensionPack, Version=3.5.0.0 
 
-      12: */
+```csharp
+Declaring Type: MSBuild.ExtensionPack.Framework.Assembly 
+```
+
+```csharp
+Assembly: MSBuild.ExtensionPack, Version=3.5.0.0 
+```
+
+```csharp
+*/
+```
 
 It looks innocent enough, but it loads the assembly into the current AppDomain (MSBuild’s build process) which then prevents any other process from accessing the file – even the build process itself.  
 
@@ -48,292 +72,572 @@ Fail.
 To get around this, I knocked up a quick custom MSBuild Task:
 
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Linq;
+```csharp
+using System.Linq;
+```
 
-       3: using System.Reflection;
+```csharp
+using System.Reflection;
+```
 
-       4: using Microsoft.Build.Framework;
+```csharp
+using Microsoft.Build.Framework;
+```
 
-       5: using Microsoft.Build.Utilities;
+```csharp
+using Microsoft.Build.Utilities;
+```
 
-       6:  
+```csharp
 
-       7: namespace MartinOnDotNet.MSBuild.Tasks
 
-       8: {
 
-       9:     /// 
+```csharp
+namespace MartinOnDotNet.MSBuild.Tasks
+```
 
-      10:     /// This task takes a four section version number 8.0.0.128 and returns an abbreviated version number
+```csharp
+{
+```
 
-      11:     /// based on the  first three parts (800).  This can then be used to distinguish depended versions.
+```csharp
+/// 
+```
 
-      12:     /// 
+```csharp
+/// This task takes a four section version number 8.0.0.128 and returns an abbreviated version number
+```
 
-      13:     public class AbbreviateVersionTask : Task
+```csharp
+/// based on the  first three parts (800).  This can then be used to distinguish depended versions.
+```
 
-      14:     {
+```csharp
+/// 
+```
 
-      15:  
+```csharp
+public class AbbreviateVersionTask : Task
+```
 
-      16:         /// 
+```csharp
+{
+```
 
-      17:         /// Executes this instance.
+```csharp
 
-      18:         /// 
 
-      19:         /// 
 
-      20:         public override bool Execute()
+```csharp
+/// 
+```
 
-      21:         {
+```csharp
+/// Executes this instance.
+```
 
-      22: #if DEBUG
+```csharp
+/// 
+```
 
-      23:             if (Properties.Settings.Default.LaunchDebugger
+```csharp
+/// 
+```
 
-      24:                 && !System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Launch();
+```csharp
+public override bool Execute()
+```
 
-      25: #endif
+```csharp
+{
+```
 
-      26:             if (AbbreviatedVersionParts  4) AbbreviatedVersionParts = 3;
+```csharp
+#if DEBUG
+```
 
-      27:             AssemblyName assname = AssemblyName.GetAssemblyName(NetAssembly.GetMetadata("FullPath"));
+```csharp
+if (Properties.Settings.Default.LaunchDebugger
+```
 
-      28:             Version v = assname.Version;
+```csharp
+&& !System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Launch();
+```
 
-      29:             AssemblyVersion = v.ToString();
+```csharp
+#endif
+```
 
-      30:             string[] parts = v.ToString(AbbreviatedVersionParts).Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+```csharp
+if (AbbreviatedVersionParts  4) AbbreviatedVersionParts = 3;
+```
 
-      31:             AbbreviatedVersion = string.Concat(parts.ToArray());
+```csharp
+AssemblyName assname = AssemblyName.GetAssemblyName(NetAssembly.GetMetadata("FullPath"));
+```
 
-      32:             Major = v.Major;
+```csharp
+Version v = assname.Version;
+```
 
-      33:             Minor = v.Minor;
+```csharp
+AssemblyVersion = v.ToString();
+```
 
-      34:             Build = v.Build;
+```csharp
+string[] parts = v.ToString(AbbreviatedVersionParts).Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+```
 
-      35:             Revision = v.Revision;
+```csharp
+AbbreviatedVersion = string.Concat(parts.ToArray());
+```
 
-      36:             return true;
+```csharp
+Major = v.Major;
+```
 
-      37:         }
+```csharp
+Minor = v.Minor;
+```
 
-      38:  
+```csharp
+Build = v.Build;
+```
 
-      39:         /// 
+```csharp
+Revision = v.Revision;
+```
 
-      40:         /// Gets or sets the assembly version.
+```csharp
+return true;
+```
 
-      41:         /// 
+```csharp
+}
+```
 
-      42:         /// The assembly version.
+```csharp
 
-      43:         [Output]
 
-      44:         public string AssemblyVersion { get; set; }
 
-      45:  
+```csharp
+/// 
+```
 
-      46:         /// 
+```csharp
+/// Gets or sets the assembly version.
+```
 
-      47:         /// Gets or sets the abbreviated version pats.
+```csharp
+/// 
+```
 
-      48:         /// 
+```csharp
+/// The assembly version.
+```
 
-      49:         /// The abbreviated version pats.
+```csharp
+[Output]
+```
 
-      50:         public int AbbreviatedVersionParts { get; set; }
+```csharp
+public string AssemblyVersion { get; set; }
+```
 
-      51:  
+```csharp
 
-      52:         /// 
 
-      53:         /// Gets or sets the assembly.
 
-      54:         /// 
+```csharp
+/// 
+```
 
-      55:         /// The assembly.
+```csharp
+/// Gets or sets the abbreviated version pats.
+```
 
-      56:         [Required]
+```csharp
+/// 
+```
 
-      57:         public ITaskItem NetAssembly { get; set; }
+```csharp
+/// The abbreviated version pats.
+```
 
-      58:  
+```csharp
+public int AbbreviatedVersionParts { get; set; }
+```
 
-      59:         /// 
+```csharp
 
-      60:         /// Gets or sets the abbreviated version.
 
-      61:         /// 
 
-      62:         /// The abbreviated version.
+```csharp
+/// 
+```
 
-      63:         [Output]
+```csharp
+/// Gets or sets the assembly.
+```
 
-      64:         public string AbbreviatedVersion { get; set; }
+```csharp
+/// 
+```
 
-      65:  
+```csharp
+/// The assembly.
+```
 
-      66:         /// 
+```csharp
+[Required]
+```
 
-      67:         /// Gets or sets the major.
+```csharp
+public ITaskItem NetAssembly { get; set; }
+```
 
-      68:         /// 
+```csharp
 
-      69:         /// The major.
 
-      70:         [Output]
 
-      71:         public int Major { get; set; }
+```csharp
+/// 
+```
 
-      72:         /// 
+```csharp
+/// Gets or sets the abbreviated version.
+```
 
-      73:         /// Gets or sets the minor.
+```csharp
+/// 
+```
 
-      74:         /// 
+```csharp
+/// The abbreviated version.
+```
 
-      75:         /// The minor.
+```csharp
+[Output]
+```
 
-      76:         [Output]
+```csharp
+public string AbbreviatedVersion { get; set; }
+```
 
-      77:         public int Minor { get; set; }
+```csharp
 
-      78:         /// 
 
-      79:         /// Gets or sets the build.
 
-      80:         /// 
+```csharp
+/// 
+```
 
-      81:         /// The build.
+```csharp
+/// Gets or sets the major.
+```
 
-      82:         [Output]
+```csharp
+/// 
+```
 
-      83:         public int Build { get; set; }
+```csharp
+/// The major.
+```
 
-      84:         /// 
+```csharp
+[Output]
+```
 
-      85:         /// Gets or sets the revision.
+```csharp
+public int Major { get; set; }
+```
 
-      86:         /// 
+```csharp
+/// 
+```
 
-      87:         /// The revision.
+```csharp
+/// Gets or sets the minor.
+```
 
-      88:         [Output]
+```csharp
+/// 
+```
 
-      89:         public int Revision { get; set; }
+```csharp
+/// The minor.
+```
 
-      90:  
+```csharp
+[Output]
+```
 
-      91:  
+```csharp
+public int Minor { get; set; }
+```
 
-      92:     }
+```csharp
+/// 
+```
 
-      93: }
+```csharp
+/// Gets or sets the build.
+```
+
+```csharp
+/// 
+```
+
+```csharp
+/// The build.
+```
+
+```csharp
+[Output]
+```
+
+```csharp
+public int Build { get; set; }
+```
+
+```csharp
+/// 
+```
+
+```csharp
+/// Gets or sets the revision.
+```
+
+```csharp
+/// 
+```
+
+```csharp
+/// The revision.
+```
+
+```csharp
+[Output]
+```
+
+```csharp
+public int Revision { get; set; }
+```
+
+```csharp
+
+
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 The main different between my implementation and the MSBuild Extension Pack task is this line:
 
   
-       1: AssemblyName assname = AssemblyName.GetAssemblyName(NetAssembly.GetMetadata("FullPath"));
+```csharp
+AssemblyName assname = AssemblyName.GetAssemblyName(NetAssembly.GetMetadata("FullPath"));
+```
 
 This line retrieves the assemblies name object (version, public key, etc, etc) without actually loading the assembly into the AppDomain, hence – no locking!  Sweet.
 
 This can now be referenced in your build scripts, like so:
 
   
-       1: 
+```csharp
 
-       2: UsingTask AssemblyFile="..\3rd Party\MartinOnDotNet Build Tasks\MartinOnDotNet.MSBuild.Tasks.dll"
 
-       3:                      TaskName="MartinOnDotNet.MSBuild.Tasks.AbbreviateVersionTask" />
 
-       4:  
+```csharp
+UsingTask AssemblyFile="..\3rd Party\MartinOnDotNet Build Tasks\MartinOnDotNet.MSBuild.Tasks.dll"
+```
 
-       5: 
+```csharp
+TaskName="MartinOnDotNet.MSBuild.Tasks.AbbreviateVersionTask" />
+```
 
-       6: Target Name="MergeVersions">
+```csharp
 
-       7:     
 
-       8:     
 
-       9:     MartinOnDotNet.MSBuild.Tasks.AbbreviateVersionTask NetAssembly="$(HelpersLibrary)">
+```csharp
 
-      10:         Output TaskParameter="AssemblyVersion"
 
-      11:                         PropertyName="HelpersAssemblyVersion" />
 
-      12:         Output TaskParameter="Major"
+```csharp
+Target Name="MergeVersions">
+```
 
-      13:                         PropertyName="HelpersMajor" />
+```csharp
 
-      14:         Output TaskParameter="Major"
 
-      15:                         PropertyName="HelpersMajor" />
 
-      16:         Output TaskParameter="Minor"
+```csharp
 
-      17:                         PropertyName="HelpersMinor" />
 
-      18:         Output TaskParameter="Build"
 
-      19:                         PropertyName="HelpersBuild" />
+```csharp
+MartinOnDotNet.MSBuild.Tasks.AbbreviateVersionTask NetAssembly="$(HelpersLibrary)">
+```
 
-      20:         Output TaskParameter="Revision"
+```csharp
+Output TaskParameter="AssemblyVersion"
+```
 
-      21:                         PropertyName="HelpersRevision" />
+```csharp
+PropertyName="HelpersAssemblyVersion" />
+```
 
-      22:     MartinOnDotNet.MSBuild.Tasks.AbbreviateVersionTask>
+```csharp
+Output TaskParameter="Major"
+```
 
-      23:     Message Text="Helpers Version: $(HelpersAssemblyVersion)"
+```csharp
+PropertyName="HelpersMajor" />
+```
 
-      24:                      Importance="high" />
+```csharp
+Output TaskParameter="Major"
+```
 
-      25:     ItemGroup>
+```csharp
+PropertyName="HelpersMajor" />
+```
 
-      26:         AssemblyInfoFiles Include="..\Freestyle.Helpers.Ektron\Properties\AssemblyInfo.cs"/>
+```csharp
+Output TaskParameter="Minor"
+```
 
-      27:     ItemGroup>
+```csharp
+PropertyName="HelpersMinor" />
+```
 
-      28:     
+```csharp
+Output TaskParameter="Build"
+```
 
-      29:     Message Text="Assembly Info File: %(AssemblyInfoFiles.FullPath)"
+```csharp
+PropertyName="HelpersBuild" />
+```
 
-      30:                      Importance="high" />
+```csharp
+Output TaskParameter="Revision"
+```
 
-      31:     MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)"
+```csharp
+PropertyName="HelpersRevision" />
+```
 
-      32:                                                                                                 AssemblyFileMajorVersion="$(HelpersMajor)"
+```csharp
+MartinOnDotNet.MSBuild.Tasks.AbbreviateVersionTask>
+```
 
-      33:                                                                                                 AssemblyFileMinorVersion="$(AbbreviatedVersion)"
+```csharp
+Message Text="Helpers Version: $(HelpersAssemblyVersion)"
+```
 
-      34:                                                                                                 AssemblyFileBuildNumberType="NoIncrement"
+```csharp
+Importance="high" />
+```
 
-      35:                                                                                                 AssemblyFileBuildNumber="$(HelpersBuild)"
+```csharp
+ItemGroup>
+```
 
-      36:                                                                                                 AssemblyFileRevisionType="NoIncrement"
+```csharp
+AssemblyInfoFiles Include="..\Freestyle.Helpers.Ektron\Properties\AssemblyInfo.cs"/>
+```
 
-      37:                                                                                                 AssemblyFileRevision="$(HelpersRevision)"
+```csharp
+ItemGroup>
+```
 
-      38:                                                                                                 AssemblyMajorVersion="$(HelpersMajor)"
+```csharp
 
-      39:                                                                                                 AssemblyMinorVersion="$(AbbreviatedVersion)"
 
-      40:                                                                                                 AssemblyBuildNumberType="NoIncrement"
 
-      41:                                                                                                 AssemblyBuildNumber="$(HelpersBuild)"
+```csharp
+Message Text="Assembly Info File: %(AssemblyInfoFiles.FullPath)"
+```
 
-      42:                                                                                                 AssemblyRevisionType="NoIncrement"
+```csharp
+Importance="high" />
+```
 
-      43:                                                                                                 AssemblyRevision="$(HelpersRevision)"
+```csharp
+MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)"
+```
 
-      44:                                                                                                 SkipVersioning="false"/>
+```csharp
+AssemblyFileMajorVersion="$(HelpersMajor)"
+```
 
-      45:     
+```csharp
+AssemblyFileMinorVersion="$(AbbreviatedVersion)"
+```
 
-      46: target>
+```csharp
+AssemblyFileBuildNumberType="NoIncrement"
+```
+
+```csharp
+AssemblyFileBuildNumber="$(HelpersBuild)"
+```
+
+```csharp
+AssemblyFileRevisionType="NoIncrement"
+```
+
+```csharp
+AssemblyFileRevision="$(HelpersRevision)"
+```
+
+```csharp
+AssemblyMajorVersion="$(HelpersMajor)"
+```
+
+```csharp
+AssemblyMinorVersion="$(AbbreviatedVersion)"
+```
+
+```csharp
+AssemblyBuildNumberType="NoIncrement"
+```
+
+```csharp
+AssemblyBuildNumber="$(HelpersBuild)"
+```
+
+```csharp
+AssemblyRevisionType="NoIncrement"
+```
+
+```csharp
+AssemblyRevision="$(HelpersRevision)"
+```
+
+```csharp
+SkipVersioning="false"/>
+```
+
+```csharp
+
+
+
+```csharp
+target>
+```
 
 The above example makes use the AssemblyInfo task in the MSBuild Extension Pack to explicitly set the version number for my assembly.

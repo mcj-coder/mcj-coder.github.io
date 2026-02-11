@@ -11,430 +11,840 @@ I’m still tracing though issues after upgrading to 8.01, this time looking at 
 
   Looking at the Event Logs shows lots of errors like this:
 
-             1: Exception type: PlatformNotSupportedException 
+```csharp
+Exception type: PlatformNotSupportedException 
+```
 
-       2:  
+```csharp
 
-       3: Exception message: The DefaultHttpHandler.BeginProcessRequest method is not 
 
-       4: supported by IIS integrated pipeline mode. 
+
+```csharp
+Exception message: The DefaultHttpHandler.BeginProcessRequest method is not 
+```
+
+```csharp
+supported by IIS integrated pipeline mode. 
+```
 
 This is telling me that I’m trying to serve a file via the IIS 7 Integrated Pipeline using a handler that’s specifically designed for IIS 6 (or IIS Classic Pipeline).  What could be causing that?
 
 Stack trace isn’t much help either:
 
   
-       1: System.PlatformNotSupportedException: The DefaultHttpHandler.BeginProcessRequest method is not supported by IIS integrated pipeline mode.
+```csharp
+System.PlatformNotSupportedException: The DefaultHttpHandler.BeginProcessRequest method is not supported by IIS integrated pipeline mode.
+```
 
-       2:    at System.Web.DefaultHttpHandler.BeginProcessRequest(HttpContext context, AsyncCallback callback, Object state)
+```csharp
+at System.Web.DefaultHttpHandler.BeginProcessRequest(HttpContext context, AsyncCallback callback, Object state)
+```
 
-       3:    at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+```csharp
+at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+```
 
-       4:    at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+```csharp
+at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+```
 
 The site is using extension-less aliasing so the configured default handler (EkDavHttpHandlerFactory) needs be looked into.  Essentially, this class analyses the request and applies particular rules against it to decide which handler is best suited to serve the content.  In this case, the static file should be served by the default content handler.  This is selected by looking at the server version if the server version is greater than 6 then use (the [Ektron](http://bit.ly/d0YHh7) Implementation of) StaticFileHandler otherwise DefaultHttpHandler.
 
 The server version is parse from a server variable:
 
   
-       1: private static int GetServerVersion(HttpContext context)
+```csharp
+private static int GetServerVersion(HttpContext context)
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     string str = string.Empty;
+```csharp
+string str = string.Empty;
+```
 
-       4:     if (ServerVersion == 0)
+```csharp
+if (ServerVersion == 0)
+```
 
-       5:     {
+```csharp
+{
+```
 
-       6:         try
+```csharp
+try
+```
 
-       7:         {
+```csharp
+{
+```
 
-       8:             str = context.Request.ServerVariables["SERVER_SOFTWARE"];
+```csharp
+str = context.Request.ServerVariables["SERVER_SOFTWARE"];
+```
 
-       9:             if (!string.IsNullOrEmpty(str))
+```csharp
+if (!string.IsNullOrEmpty(str))
+```
 
-      10:             {
+```csharp
+{
+```
 
-      11:                 int index = str.IndexOf("/");
+```csharp
+int index = str.IndexOf("/");
+```
 
-      12:                 if (index > -1)
+```csharp
+if (index > -1)
+```
 
-      13:                 {
+```csharp
+{
+```
 
-      14:                     str = str.Substring(index + 1);
+```csharp
+str = str.Substring(index + 1);
+```
 
-      15:                 }
+```csharp
+}
+```
 
-      16:                 if (!string.IsNullOrEmpty(str))
+```csharp
+if (!string.IsNullOrEmpty(str))
+```
 
-      17:                 {
+```csharp
+{
+```
 
-      18:                     decimal num2;
+```csharp
+decimal num2;
+```
 
-      19:                     decimal.TryParse(str, out num2);
+```csharp
+decimal.TryParse(str, out num2);
+```
 
-      20:                     ServerVersion = (int) num2;
+```csharp
+ServerVersion = (int) num2;
+```
 
-      21:                 }
+```csharp
+}
+```
 
-      22:             }
+```csharp
+}
+```
 
-      23:         }
+```csharp
+}
+```
 
-      24:         catch
+```csharp
+catch
+```
 
-      25:         {
+```csharp
+{
+```
 
-      26:             ServerVersion = 6;
+```csharp
+ServerVersion = 6;
+```
 
-      27:         }
+```csharp
+}
+```
 
-      28:     }
+```csharp
+}
+```
 
-      29:     return ServerVersion;
+```csharp
+return ServerVersion;
+```
 
-      30: }
+```csharp
+}
+```
 
-      31:  
+```csharp
 
-      32: /* Grabbed using Reflector From
 
-      33: 
 
-      34: private static int GetServerVersion(HttpContext context);
+```csharp
+/* Grabbed using Reflector From
+```
 
-      35:  
+```csharp
 
-      36: Declaring Type: Ektron.ASM.EkHttpDavHandler.EkDavHttpHandlerFactory 
 
-      37: Assembly: Ektron.ASM.EkHttpDavHandler, Version=1.0.0.0 
 
-      38: 
+```csharp
+private static int GetServerVersion(HttpContext context);
+```
 
-      39: */
+```csharp
 
-      40:  
+
+
+```csharp
+Declaring Type: Ektron.ASM.EkHttpDavHandler.EkDavHttpHandlerFactory 
+```
+
+```csharp
+Assembly: Ektron.ASM.EkHttpDavHandler, Version=1.0.0.0 
+```
+
+```csharp
+
+
+
+```csharp
+*/
+```
+
+```csharp
+
+
 
 D’oh!  Decimal.TryParse will (by default) use the current threads locale and French uses a comma as a decimal seperator!  7.0 is not a valid decimal!  This could be fixed by passing in CultureInfo.InvariantCulture into the TryParse method to get a consistent evaluation, but that would take a hot fix to deploy.
 
 To fix this now, we need to implement a subclass of EkDavHttpHandlerFactory to ensure that the correct handler is used to serve static files:
 
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Linq;
+```csharp
+using System.Linq;
+```
 
-       3: using System.Reflection;
+```csharp
+using System.Reflection;
+```
 
-       4: using System.Web;
+```csharp
+using System.Web;
+```
 
-       5: using global::Ektron.ASM.FileHandler;
+```csharp
+using global::Ektron.ASM.FileHandler;
+```
 
-       6:  
+```csharp
 
-       7:  
 
-       8: namespace MartinOnDotNet.Ektron.Web
 
-       9: {
+```csharp
 
-      10:     /// 
 
-      11:     /// Correctly handler asset folders named /assets/ that aren't the ektron assets folder
 
-      12:     /// 
+```csharp
+namespace MartinOnDotNet.Ektron.Web
+```
 
-      13:     /// Required assembly references
+```csharp
+{
+```
 
-      14:     /// 
+```csharp
+/// 
+```
 
-      15:     /// Ektron.ASM.EkHttpDavHandler
+```csharp
+/// Correctly handler asset folders named /assets/ that aren't the ektron assets folder
+```
 
-      16:     /// Ektron.ASM.FileHandler
+```csharp
+/// 
+```
 
-      17:     /// Ektron.Cms.URLAliasing
+```csharp
+/// Required assembly references
+```
 
-      18:     /// 
+```csharp
+/// 
+```
 
-      19:     /// 
+```csharp
+/// Ektron.ASM.EkHttpDavHandler
+```
 
-      20:     [CLSCompliant(false)]
+```csharp
+/// Ektron.ASM.FileHandler
+```
 
-      21:     public class EkDavHttpHandlerFactory
+```csharp
+/// Ektron.Cms.URLAliasing
+```
 
-      22:         : global::Ektron.ASM.EkHttpDavHandler.EkDavHttpHandlerFactory
+```csharp
+/// 
+```
 
-      23:     {
+```csharp
+/// 
+```
 
-      24:         
+```csharp
+[CLSCompliant(false)]
+```
 
-      25:         /// 
+```csharp
+public class EkDavHttpHandlerFactory
+```
 
-      26:         /// Gets the handler.
+```csharp
+: global::Ektron.ASM.EkHttpDavHandler.EkDavHttpHandlerFactory
+```
 
-      27:         /// 
+```csharp
+{
+```
 
-      28:         /// The context.
+```csharp
 
-      29:         /// Type of the request.
 
-      30:         /// The URL.
 
-      31:         /// The path translated.
+```csharp
+/// 
+```
 
-      32:         /// The correct request handler
+```csharp
+/// Gets the handler.
+```
 
-      33:         public override System.Web.IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated)
+```csharp
+/// 
+```
 
-      34:         {
+```csharp
+/// The context.
+```
 
-      35:             IHttpHandler handler = base.GetHandler(context, requestType, url, pathTranslated); // inherit other mapping logic
+```csharp
+/// Type of the request.
+```
 
-      36:              if (typeof(DefaultHttpHandler).IsInstanceOfType(handler) && HttpRuntime.UsingIntegratedPipeline)
+```csharp
+/// The URL.
+```
 
-      37:             {
+```csharp
+/// The path translated.
+```
 
-      38:                 handler = GetFallbackHandlerForServer();
+```csharp
+/// The correct request handler
+```
 
-      39:             }
+```csharp
+public override System.Web.IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated)
+```
 
-      40:             return handler;
+```csharp
+{
+```
 
-      41:         }
+```csharp
+IHttpHandler handler = base.GetHandler(context, requestType, url, pathTranslated); // inherit other mapping logic
+```
 
-      42:  
+```csharp
+if (typeof(DefaultHttpHandler).IsInstanceOfType(handler) && HttpRuntime.UsingIntegratedPipeline)
+```
 
-      43:         /// 
+```csharp
+{
+```
 
-      44:         /// Gets the fallback handler for server.
+```csharp
+handler = GetFallbackHandlerForServer();
+```
 
-      45:         /// 
+```csharp
+}
+```
 
-      46:         /// 
+```csharp
+return handler;
+```
 
-      47:         /// This algorithm was taken from the Ektron implementation using
+```csharp
+}
+```
 
-      48:         /// Reflector.  As it's reflection based, there's a chance that future releases
+```csharp
 
-      49:         /// will break it.
 
-      50:         private static IHttpHandler GetFallbackHandlerForServer()
 
-      51:         {
+```csharp
+/// 
+```
 
-      52:             if (!HttpRuntime.UsingIntegratedPipeline) return new DefaultHttpHandler();
+```csharp
+/// Gets the fallback handler for server.
+```
 
-      53:             return new StaticFileHandler(); // return Ektron Static File Implementation
+```csharp
+/// 
+```
 
-      54:         }
+```csharp
+/// 
+```
 
-      55:  
+```csharp
+/// This algorithm was taken from the Ektron implementation using
+```
 
-      56:     }
+```csharp
+/// Reflector.  As it's reflection based, there's a chance that future releases
+```
 
-      57: }
+```csharp
+/// will break it.
+```
+
+```csharp
+private static IHttpHandler GetFallbackHandlerForServer()
+```
+
+```csharp
+{
+```
+
+```csharp
+if (!HttpRuntime.UsingIntegratedPipeline) return new DefaultHttpHandler();
+```
+
+```csharp
+return new StaticFileHandler(); // return Ektron Static File Implementation
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 If you’ve implemented my [Asset Folder fix](http://martinondotnet.blogspot.com/2010/04/ektron-fix-for-uploading-assets-into.html) then the combined EkDavHttpHandlerFactory is this:
 
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Linq;
+```csharp
+using System.Linq;
+```
 
-       3: using System.Reflection;
+```csharp
+using System.Reflection;
+```
 
-       4: using System.Web;
+```csharp
+using System.Web;
+```
 
-       5: using global::Ektron.ASM.FileHandler;
+```csharp
+using global::Ektron.ASM.FileHandler;
+```
 
-       6:  
+```csharp
 
-       7:  
 
-       8: namespace MartinOnDotNet.Ektron.Web
 
-       9: {
+```csharp
 
-      10:     /// 
 
-      11:     /// Correctly handler asset folders named /assets/ that aren't the ektron assets folder
 
-      12:     /// 
+```csharp
+namespace MartinOnDotNet.Ektron.Web
+```
 
-      13:     /// Required assembly references
+```csharp
+{
+```
 
-      14:     /// 
+```csharp
+/// 
+```
 
-      15:     /// Ektron.ASM.EkHttpDavHandler
+```csharp
+/// Correctly handler asset folders named /assets/ that aren't the ektron assets folder
+```
 
-      16:     /// Ektron.ASM.FileHandler
+```csharp
+/// 
+```
 
-      17:     /// Ektron.Cms.URLAliasing
+```csharp
+/// Required assembly references
+```
 
-      18:     /// 
+```csharp
+/// 
+```
 
-      19:     /// 
+```csharp
+/// Ektron.ASM.EkHttpDavHandler
+```
 
-      20:     [CLSCompliant(false)]
+```csharp
+/// Ektron.ASM.FileHandler
+```
 
-      21:     public class EkDavHttpHandlerFactory
+```csharp
+/// Ektron.Cms.URLAliasing
+```
 
-      22:         : global::Ektron.ASM.EkHttpDavHandler.EkDavHttpHandlerFactory
+```csharp
+/// 
+```
 
-      23:     {
+```csharp
+/// 
+```
 
-      24:  
+```csharp
+[CLSCompliant(false)]
+```
 
-      25:         /// 
+```csharp
+public class EkDavHttpHandlerFactory
+```
 
-      26:         /// Gets the handler.
+```csharp
+: global::Ektron.ASM.EkHttpDavHandler.EkDavHttpHandlerFactory
+```
 
-      27:         /// 
+```csharp
+{
+```
 
-      28:         /// The context.
+```csharp
 
-      29:         /// Type of the request.
 
-      30:         /// The URL.
 
-      31:         /// The path translated.
+```csharp
+/// 
+```
 
-      32:         /// The correct request handler
+```csharp
+/// Gets the handler.
+```
 
-      33:         public override System.Web.IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated)
+```csharp
+/// 
+```
 
-      34:         {
+```csharp
+/// The context.
+```
 
-      35:             IHttpHandler handler = base.GetHandler(context, requestType, url, pathTranslated); // inherit other mapping logic
+```csharp
+/// Type of the request.
+```
 
-      36:             if (typeof(AssetHttpHandler).IsInstanceOfType(handler)) // override assets folder handling
+```csharp
+/// The URL.
+```
 
-      37:             {
+```csharp
+/// The path translated.
+```
 
-      38:                 if (!context.Request.PhysicalPath.StartsWith(context.Server.MapPath("~/assets/"), StringComparison.OrdinalIgnoreCase))
+```csharp
+/// The correct request handler
+```
 
-      39:                 {
+```csharp
+public override System.Web.IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated)
+```
 
-      40:                     handler = GetFallbackHandlerForServer();
+```csharp
+{
+```
 
-      41:  
+```csharp
+IHttpHandler handler = base.GetHandler(context, requestType, url, pathTranslated); // inherit other mapping logic
+```
 
-      42:                 }
+```csharp
+if (typeof(AssetHttpHandler).IsInstanceOfType(handler)) // override assets folder handling
+```
 
-      43:             }
+```csharp
+{
+```
 
-      44:             else if (typeof(DefaultHttpHandler).IsInstanceOfType(handler) && HttpRuntime.UsingIntegratedPipeline)
+```csharp
+if (!context.Request.PhysicalPath.StartsWith(context.Server.MapPath("~/assets/"), StringComparison.OrdinalIgnoreCase))
+```
 
-      45:             {
+```csharp
+{
+```
 
-      46:                 handler = GetFallbackHandlerForServer();
+```csharp
+handler = GetFallbackHandlerForServer();
+```
 
-      47:             }
+```csharp
 
-      48:             return handler;
 
-      49:         }
 
-      50:  
+```csharp
+}
+```
 
-      51:         /// 
+```csharp
+}
+```
 
-      52:         /// Gets the fallback handler for server.
+```csharp
+else if (typeof(DefaultHttpHandler).IsInstanceOfType(handler) && HttpRuntime.UsingIntegratedPipeline)
+```
 
-      53:         /// 
+```csharp
+{
+```
 
-      54:         /// 
+```csharp
+handler = GetFallbackHandlerForServer();
+```
 
-      55:         /// This algorithm was taken from the Ektron implementation using
+```csharp
+}
+```
 
-      56:         /// Reflector.  As it's reflection based, there's a chance that future releases
+```csharp
+return handler;
+```
 
-      57:         /// will break it.
+```csharp
+}
+```
 
-      58:         private static IHttpHandler GetFallbackHandlerForServer()
+```csharp
 
-      59:         {
 
-      60:             if (!HttpRuntime.UsingIntegratedPipeline) return new DefaultHttpHandler();
 
-      61:             return StaticFileHandler;
+```csharp
+/// 
+```
 
-      62:         }
+```csharp
+/// Gets the fallback handler for server.
+```
 
-      63:  
+```csharp
+/// 
+```
 
-      64:         [ThreadStatic()]
+```csharp
+/// 
+```
 
-      65:         private static IHttpHandler _staticFileHandler = null;
+```csharp
+/// This algorithm was taken from the Ektron implementation using
+```
 
-      66:  
+```csharp
+/// Reflector.  As it's reflection based, there's a chance that future releases
+```
 
-      67:         /// 
+```csharp
+/// will break it.
+```
 
-      68:         /// Gets the static file handler.
+```csharp
+private static IHttpHandler GetFallbackHandlerForServer()
+```
 
-      69:         /// 
+```csharp
+{
+```
 
-      70:         /// The static file handler.
+```csharp
+if (!HttpRuntime.UsingIntegratedPipeline) return new DefaultHttpHandler();
+```
 
-      71:         private static IHttpHandler StaticFileHandler
+```csharp
+return StaticFileHandler;
+```
 
-      72:         {
+```csharp
+}
+```
 
-      73:             get
+```csharp
 
-      74:             {
 
-      75:                 if (_staticFileHandler == null)
 
-      76:                 {
+```csharp
+[ThreadStatic()]
+```
 
-      77:                     Assembly systemWeb = AppDomain.CurrentDomain.GetAssemblies()
+```csharp
+private static IHttpHandler _staticFileHandler = null;
+```
 
-      78:                     .Where(ass => ass.GetName().Name == "System.Web")
+```csharp
 
-      79:                     .First();
 
-      80:                     if (systemWeb == null)
 
-      81:                     {
+```csharp
+/// 
+```
 
-      82:                         Type staticFileHandler = systemWeb.GetType("System.Web.StaticFileHandler");
+```csharp
+/// Gets the static file handler.
+```
 
-      83:                         ConstructorInfo ci = staticFileHandler.GetConstructor(
+```csharp
+/// 
+```
 
-      84:                             BindingFlags.NonPublic | BindingFlags.Instance
+```csharp
+/// The static file handler.
+```
 
-      85:                             , null
+```csharp
+private static IHttpHandler StaticFileHandler
+```
 
-      86:                             , Type.EmptyTypes
+```csharp
+{
+```
 
-      87:                             , null);
+```csharp
+get
+```
 
-      88:                         _staticFileHandler = ci.Invoke(null) as IHttpHandler;
+```csharp
+{
+```
 
-      89:                         if (_staticFileHandler == null) throw new NotSupportedException("System.Web must contain System.Web.StaticFileHandler");
+```csharp
+if (_staticFileHandler == null)
+```
 
-      90:                     }
+```csharp
+{
+```
 
-      91:                     else
+```csharp
+Assembly systemWeb = AppDomain.CurrentDomain.GetAssemblies()
+```
 
-      92:                     {
+```csharp
+.Where(ass => ass.GetName().Name == "System.Web")
+```
 
-      93:                         throw new NotSupportedException("AppDomain must contain System.Web!");
+```csharp
+.First();
+```
 
-      94:                     }
+```csharp
+if (systemWeb == null)
+```
 
-      95:                 }
+```csharp
+{
+```
 
-      96:                 return _staticFileHandler;
+```csharp
+Type staticFileHandler = systemWeb.GetType("System.Web.StaticFileHandler");
+```
 
-      97:             }
+```csharp
+ConstructorInfo ci = staticFileHandler.GetConstructor(
+```
 
-      98:         }
+```csharp
+BindingFlags.NonPublic | BindingFlags.Instance
+```
 
-      99:     }
+```csharp
+, null
+```
 
-     100: }
+```csharp
+, Type.EmptyTypes
+```
+
+```csharp
+, null);
+```
+
+```csharp
+_staticFileHandler = ci.Invoke(null) as IHttpHandler;
+```
+
+```csharp
+if (_staticFileHandler == null) throw new NotSupportedException("System.Web must contain System.Web.StaticFileHandler");
+```
+
+```csharp
+}
+```
+
+```csharp
+else
+```
+
+```csharp
+{
+```
+
+```csharp
+throw new NotSupportedException("AppDomain must contain System.Web!");
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+return _staticFileHandler;
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```

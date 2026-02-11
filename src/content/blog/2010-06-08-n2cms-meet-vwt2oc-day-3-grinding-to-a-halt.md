@@ -23,13 +23,21 @@ Well, it was going way too well to last.  It’s become apparent that the exist
 
   The Web Application projects will have the following Post-Build Event defined:
 
-             1: $(SolutionDir)Tools\CodeBehindRemover\CodeBehindRemover /i:$(ProjectDir) /o:$(SolutionDir)Website\ /e:ascx,aspx,master,asmx,ashx
+```csharp
+$(SolutionDir)Tools\CodeBehindRemover\CodeBehindRemover /i:$(ProjectDir) /o:$(SolutionDir)Website\ /e:ascx,aspx,master,asmx,ashx
+```
 
-       2:  
+```csharp
 
-       3: robocopy $(ProjectDir) $(SolutionDir)Website\ /XD .svn obj /XF *.cs *.ascx *.aspx *.master *.asmx *.ashx *.csproj *.sln *.suo *.user *.cache /S
 
-       4: if errorlevel 1 set errorlevel=0
+
+```csharp
+robocopy $(ProjectDir) $(SolutionDir)Website\ /XD .svn obj /XF *.cs *.ascx *.aspx *.master *.asmx *.ashx *.csproj *.sln *.suo *.user *.cache /S
+```
+
+```csharp
+if errorlevel 1 set errorlevel=0
+```
 
 This will mean that there is no ‘hard’ reference between the two new features and the VWT2OC website project.  They will be dropped in to the project and loaded dynamically like every other n2cms addon and extension.
 
@@ -38,47 +46,89 @@ Skeleton Editor Addons
 Integration new administration screens to the n2cms editor site is quite simple as all you need to do it decorate a standard page class with the ToolbarPluginAttribute decorator:
 
   
-       1: namespace N2.Edit.Club
+```csharp
+namespace N2.Edit.Club
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     /// 
+```csharp
+/// 
+```
 
-       4:     /// Lists the Available Club Management features
+```csharp
+/// Lists the Available Club Management features
+```
 
-       5:     /// 
+```csharp
+/// 
+```
 
-       6:     [ToolbarPluginAttribute("CLUB" // the text to appear next to the icon
+```csharp
+[ToolbarPluginAttribute("CLUB" // the text to appear next to the icon
+```
 
-       7:         , "club" // the name of the feature (used as a div id wrapping the button)
+```csharp
+, "club" // the name of the feature (used as a div id wrapping the button)
+```
 
-       8:         , "Club/ClubManagement.aspx" // the page to open
+```csharp
+, "Club/ClubManagement.aspx" // the page to open
+```
 
-       9:         , ToolbarArea.Navigation //appear in the top leve group of buttons
+```csharp
+, ToolbarArea.Navigation //appear in the top leve group of buttons
+```
 
-      10:         , Targets.Navigation // this page is a new menu, so display in the navigation frame
+```csharp
+, Targets.Navigation // this page is a new menu, so display in the navigation frame
+```
 
-      11:         , "~/N2/Resources/icons/group.png" //the icon to use
+```csharp
+, "~/N2/Resources/icons/group.png" //the icon to use
+```
 
-      12:         , 110 // sort order - where to appear in the toolbar
+```csharp
+, 110 // sort order - where to appear in the toolbar
+```
 
-      13:         , ToolTip = "Administer Club"
+```csharp
+, ToolTip = "Administer Club"
+```
 
-      14:         , AuthorizedRoles = new string[] { "Administrators", "Admin" }
+```csharp
+, AuthorizedRoles = new string[] { "Administrators", "Admin" }
+```
 
-      15:         , GlobalResourceClassName = "Toolbar")
+```csharp
+, GlobalResourceClassName = "Toolbar")
+```
 
-      16:     ]
+```csharp
+]
+```
 
-      17:     public partial class ClubManagement : System.Web.UI.Page
+```csharp
+public partial class ClubManagement : System.Web.UI.Page
+```
 
-      18:     {
+```csharp
+{
+```
 
-      19:  
+```csharp
 
-      20:     }
 
-      21: }
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 This results in a ‘Club’ button in the toolbar which, when clicked, opens the target page in the navigation frame:
 
@@ -87,7 +137,9 @@ This results in a ‘Club’ button in the toolbar which, when clicked, opens th
 Buy giving the links within this page a target of ‘preview’ we can open actual administration screens within the preview frame:
 
   
-       1: li>a href="Titles/Titles.aspx" target="preview">Titlesa>li>
+```csharp
+li>a href="Titles/Titles.aspx" target="preview">Titlesa>li>
+```
 
 ## Deployment
 
@@ -124,126 +176,248 @@ Before deploying to a preview location there are a few more tweaks that need to 
 For your entertainment - this is my modified Web Deployment project file:
 
   
-       1: 
+```csharp
 
-       2:   Microsoft Visual Studio 2008 Web Deployment Project 
 
-       3:   http://go.microsoft.com/fwlink/?LinkID=104956
 
-       4: 
+```csharp
+Microsoft Visual Studio 2008 Web Deployment Project 
+```
 
-       5: -->
+```csharp
+http://go.microsoft.com/fwlink/?LinkID=104956
+```
 
-       6: Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+```csharp
 
-       7:   PropertyGroup>
 
-       8:     Configuration Condition=" '$(Configuration)' == '' ">DebugConfiguration>
 
-       9:     Platform Condition=" '$(Platform)' == '' ">AnyCPUPlatform>
+```csharp
+-->
+```
 
-      10:     ProductVersion>9.0.21022ProductVersion>
+```csharp
+Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+```
 
-      11:     SchemaVersion>2.0SchemaVersion>
+```csharp
+PropertyGroup>
+```
 
-      12:     ProjectGuid>{990B76AF-AC0D-47D8-9D9A-485F4FDED792}ProjectGuid>
+```csharp
+Configuration Condition=" '$(Configuration)' == '' ">DebugConfiguration>
+```
 
-      13:     SourceWebPhysicalPath>..\WebsiteSourceWebPhysicalPath>
+```csharp
+Platform Condition=" '$(Platform)' == '' ">AnyCPUPlatform>
+```
 
-      14:     SourceWebProject>{0943038B-9FE4-40C2-93DE-0F9908348EFF}|Website\Website.csprojSourceWebProject>
+```csharp
+ProductVersion>9.0.21022ProductVersion>
+```
 
-      15:     SourceWebVirtualPath>/SourceWebVirtualPath>
+```csharp
+SchemaVersion>2.0SchemaVersion>
+```
 
-      16:     TargetFrameworkVersion>v3.5TargetFrameworkVersion>
+```csharp
+ProjectGuid>{990B76AF-AC0D-47D8-9D9A-485F4FDED792}ProjectGuid>
+```
 
-      17:     DebugSymbols>trueDebugSymbols>
+```csharp
+SourceWebPhysicalPath>..\WebsiteSourceWebPhysicalPath>
+```
 
-      18:     EnableUpdateable>falseEnableUpdateable>
+```csharp
+SourceWebProject>{0943038B-9FE4-40C2-93DE-0F9908348EFF}|Website\Website.csprojSourceWebProject>
+```
 
-      19:     UseMerge>trueUseMerge>
+```csharp
+SourceWebVirtualPath>/SourceWebVirtualPath>
+```
 
-      20:     SingleAssemblyName>VWT2OC.WebsiteSingleAssemblyName>
+```csharp
+TargetFrameworkVersion>v3.5TargetFrameworkVersion>
+```
 
-      21:     DeleteAppCodeCompiledFiles>falseDeleteAppCodeCompiledFiles>
+```csharp
+DebugSymbols>trueDebugSymbols>
+```
 
-      22:     DeleteAppDataFolder>falseDeleteAppDataFolder>
+```csharp
+EnableUpdateable>falseEnableUpdateable>
+```
 
-      23:     UseWebConfigReplacement>trueUseWebConfigReplacement>
+```csharp
+UseMerge>trueUseMerge>
+```
 
-      24:   PropertyGroup>
+```csharp
+SingleAssemblyName>VWT2OC.WebsiteSingleAssemblyName>
+```
 
-      25:   PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+```csharp
+DeleteAppCodeCompiledFiles>falseDeleteAppCodeCompiledFiles>
+```
 
-      26:    
+```csharp
+DeleteAppDataFolder>falseDeleteAppDataFolder>
+```
 
-      27:     OutputPath>.\DebugOutputPath>
+```csharp
+UseWebConfigReplacement>trueUseWebConfigReplacement>
+```
 
-      28:   
+```csharp
+PropertyGroup>
+```
 
-      29:   PropertyGroup>
+```csharp
+PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+```
 
-      30:   PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+```csharp
 
-      31:   
 
-      32:     OutputPath>.\ReleaseOutputPath>
 
-      33:   PropertyGroup>
+```csharp
+OutputPath>.\DebugOutputPath>
+```
 
-      34:   ItemGroup>
+```csharp
 
-      35:   ItemGroup>
 
-      36:   ItemGroup>
 
-      37:     WebConfigReplacementFiles Include="App_Data\connectionStrings.config.live">
+```csharp
+PropertyGroup>
+```
 
-      38:       Section>connectionStringsSection>
+```csharp
+PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+```
 
-      39:     WebConfigReplacementFiles>
+```csharp
 
-      40:     WebConfigReplacementFiles Include="App_Data\yafnet.config.live">
 
-      41:       Section>yafnetSection>
 
-      42:     WebConfigReplacementFiles>
+```csharp
+OutputPath>.\ReleaseOutputPath>
+```
 
-      43:   ItemGroup>
+```csharp
+PropertyGroup>
+```
 
-      44:   ItemGroup>
+```csharp
+ItemGroup>
+```
 
-      45:     ExcludeFromBuild Include="$(SourceWebPhysicalPath)\**\.svn\**\*.*" />
+```csharp
+ItemGroup>
+```
 
-      46:     ExcludeFromBuild Include="$(SourceWebPhysicalPath)\**\*.csproj*" />
+```csharp
+ItemGroup>
+```
 
-      47:     ExcludeFromBuild Include="$(SourceWebPhysicalPath)\N2\Installation\**\*.*" />
+```csharp
+WebConfigReplacementFiles Include="App_Data\connectionStrings.config.live">
+```
 
-      48:     ExcludeFromBuild Include="$(SourceWebPhysicalPath)\App_Data\**\*.*" Exclude="$(SourceWebPhysicalPath)\App_Data\*.config*" />
+```csharp
+Section>connectionStringsSection>
+```
 
-      49:   ItemGroup>
+```csharp
+WebConfigReplacementFiles>
+```
 
-      50:   ItemGroup>
+```csharp
+WebConfigReplacementFiles Include="App_Data\yafnet.config.live">
+```
 
-      51:     DeleteAfterBuild Include="$(OutputPath)\App_Data\yafnet.config.live" />
+```csharp
+Section>yafnetSection>
+```
 
-      52:     DeleteAfterBuild Include="$(OutputPath)\yafnet.config" />
+```csharp
+WebConfigReplacementFiles>
+```
 
-      53:     DeleteAfterBuild Include="$(OutputPath)\App_Data\connectionStrings.config.live" />
+```csharp
+ItemGroup>
+```
 
-      54:     DeleteAfterBuild Include="$(OutputPath)\obj\**\*.*" />
+```csharp
+ItemGroup>
+```
 
-      55:     DeleteAfterBuild Include="$(OutputPath)\bin\*.tmp" />
+```csharp
+ExcludeFromBuild Include="$(SourceWebPhysicalPath)\**\.svn\**\*.*" />
+```
 
-      56:   ItemGroup>
+```csharp
+ExcludeFromBuild Include="$(SourceWebPhysicalPath)\**\*.csproj*" />
+```
 
-      57:   Import Project="$(MSBuildExtensionsPath)\Microsoft\WebDeployment\v9.0\Microsoft.WebDeployment.targets" />
+```csharp
+ExcludeFromBuild Include="$(SourceWebPhysicalPath)\N2\Installation\**\*.*" />
+```
 
-      58:   Target Name="AfterBuild">
+```csharp
+ExcludeFromBuild Include="$(SourceWebPhysicalPath)\App_Data\**\*.*" Exclude="$(SourceWebPhysicalPath)\App_Data\*.config*" />
+```
 
-      59:     Delete Files="@(DeleteAfterBuild)" />
+```csharp
+ItemGroup>
+```
 
-      60:   Target>
+```csharp
+ItemGroup>
+```
 
-      61: Project>
+```csharp
+DeleteAfterBuild Include="$(OutputPath)\App_Data\yafnet.config.live" />
+```
+
+```csharp
+DeleteAfterBuild Include="$(OutputPath)\yafnet.config" />
+```
+
+```csharp
+DeleteAfterBuild Include="$(OutputPath)\App_Data\connectionStrings.config.live" />
+```
+
+```csharp
+DeleteAfterBuild Include="$(OutputPath)\obj\**\*.*" />
+```
+
+```csharp
+DeleteAfterBuild Include="$(OutputPath)\bin\*.tmp" />
+```
+
+```csharp
+ItemGroup>
+```
+
+```csharp
+Import Project="$(MSBuildExtensionsPath)\Microsoft\WebDeployment\v9.0\Microsoft.WebDeployment.targets" />
+```
+
+```csharp
+Target Name="AfterBuild">
+```
+
+```csharp
+Delete Files="@(DeleteAfterBuild)" />
+```
+
+```csharp
+Target>
+```
+
+```csharp
+Project>
+```
 
 I then modified the build configuration so the deployment project was only built for ‘release’ builds.

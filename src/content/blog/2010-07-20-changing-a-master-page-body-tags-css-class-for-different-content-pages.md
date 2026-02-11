@@ -9,119 +9,226 @@ originalUrl: "https://martinondotnet.blogspot.com/"
 
 It seems a bit of a failing of Master Pages that there’s no clear way to assign different CSS classes to the ‘body’ tag based on the Content Page.  To get around this, I’ve taken to inheriting all of my content pages from a known base class (which in turn inherits from System.Web.Page) and then giving it a publically accessible property of ‘BodyCssClass’!
 
-             1: namespace MartinOnDotNet.MasterPageBodyClass
+```csharp
+namespace MartinOnDotNet.MasterPageBodyClass
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     public class BasePage : System.Web.UI.Page
+```csharp
+public class BasePage : System.Web.UI.Page
+```
 
-       4:     {
+```csharp
+{
+```
 
-       5:         public string BodyCssClass { get; set; }
+```csharp
+public string BodyCssClass { get; set; }
+```
 
-       6:  
+```csharp
 
-       7:     }
 
-       8: }
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 This can then be picked up from the MasterPage and used to modify the body tag:
 
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2:  
+```csharp
 
-       3: namespace MartinOnDotNet.MasterPageBodyClass
 
-       4: {
 
-       5:     public partial class Global : System.Web.UI.MasterPage
+```csharp
+namespace MartinOnDotNet.MasterPageBodyClass
+```
 
-       6:     {
+```csharp
+{
+```
 
-       7:         protected override void OnPreRender(EventArgs e)
+```csharp
+public partial class Global : System.Web.UI.MasterPage
+```
 
-       8:         {
+```csharp
+{
+```
 
-       9:             base.OnPreRender(e);
+```csharp
+protected override void OnPreRender(EventArgs e)
+```
 
-      10:             BasePage current = Page as BasePage;
+```csharp
+{
+```
 
-      11:             if (current != null && !string.IsNullOrEmpty(current.BodyCssClass))
+```csharp
+base.OnPreRender(e);
+```
 
-      12:             {
+```csharp
+BasePage current = Page as BasePage;
+```
 
-      13:                 Body.Attributes["class"] = current.BodyCssClass;
+```csharp
+if (current != null && !string.IsNullOrEmpty(current.BodyCssClass))
+```
 
-      14:             }
+```csharp
+{
+```
 
-      15:         }
+```csharp
+Body.Attributes["class"] = current.BodyCssClass;
+```
 
-      16:     }
+```csharp
+}
+```
 
-      17: }
+```csharp
+}
+```
 
+```csharp
+}
+```
+
+```csharp
+}
+```
   
-       1: 
+```csharp
 
-       2: DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-       3: html xmlns="http://www.w3.org/1999/xhtml" >
 
-       4: head runat="server">
+```csharp
+DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+```
 
-       5:     asp:ContentPlaceHolder ID="head" runat="server">
+```csharp
+html xmlns="http://www.w3.org/1999/xhtml" >
+```
 
-       6:     asp:ContentPlaceHolder>
+```csharp
+head runat="server">
+```
 
-       7: head>
+```csharp
+asp:ContentPlaceHolder ID="head" runat="server">
+```
 
-       8: body runat="server" id="Body">
+```csharp
+asp:ContentPlaceHolder>
+```
 
-       9:     form id="form1" runat="server">
+```csharp
+head>
+```
 
-      10:     div>
+```csharp
+body runat="server" id="Body">
+```
 
-      11:         asp:ScriptManager ID="ScriptManager1" runat="server" />
+```csharp
+form id="form1" runat="server">
+```
 
-      12:         asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+```csharp
+div>
+```
 
-      13:         
+```csharp
+asp:ScriptManager ID="ScriptManager1" runat="server" />
+```
 
-      14:         asp:ContentPlaceHolder>
+```csharp
+asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+```
 
-      15:     div>
+```csharp
 
-      16:     form>
 
-      17: body>
 
-      18: html>
+```csharp
+asp:ContentPlaceHolder>
+```
+
+```csharp
+div>
+```
+
+```csharp
+form>
+```
+
+```csharp
+body>
+```
+
+```csharp
+html>
+```
 
 The class itself can be assigned in the  declaration of the Content Pages that implement the MasterPage:
 
   
-       1: 
+```csharp
 
-       2:     MasterPageFile="~/Global.Master" 
 
-       3:     AutoEventWireup="true" 
 
-       4:     Title="Content Page" 
+```csharp
+MasterPageFile="~/Global.Master" 
+```
 
-       5:     Inherits="MartinOnDotNet.MasterPageBodyClass.BasePage"
+```csharp
+AutoEventWireup="true" 
+```
 
-       6:     BodyCssClass="content" %>
+```csharp
+Title="Content Page" 
+```
 
-       7:  
+```csharp
+Inherits="MartinOnDotNet.MasterPageBodyClass.BasePage"
+```
 
-       8: asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+```csharp
+BodyCssClass="content" %>
+```
 
-       9: asp:Content>
+```csharp
 
-      10: asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-      11: asp:Content>
+
+```csharp
+asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+```
+
+```csharp
+asp:Content>
+```
+
+```csharp
+asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+```
+
+```csharp
+asp:Content>
+```
 
 **Attachment: **[**MasterPageBodyClass.zip**](http://bit.ly/dpVZaW)

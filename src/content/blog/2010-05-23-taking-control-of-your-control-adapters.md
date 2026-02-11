@@ -17,108 +17,208 @@ I was recently put in a difficult position when I was attempting to integrate so
 ## How To Use
   To use the AdvancedControlAdapterModule you first need to register a Custom Configuration Section and add HttpModule registration entries  into your applications web.config:
 
-             1: xml version="1.0"?>
+```csharp
+xml version="1.0"?>
+```
 
-       2: configuration>
+```csharp
+configuration>
+```
 
-       3:     configSections>
+```csharp
+configSections>
+```
 
-       4:     
+```csharp
 
-       5:     section name="controlAdapters"
 
-       6:                          type="MartinOnDotNet.ControlAdapters.AdvancedControlAdapterSection"/>
 
-       7:     configSections>
+```csharp
+section name="controlAdapters"
+```
 
-       8:     controlAdapters configSource="Configs\ControlAdapters.config"/>
+```csharp
+type="MartinOnDotNet.ControlAdapters.AdvancedControlAdapterSection"/>
+```
 
-       9:     appSettings />
+```csharp
+configSections>
+```
 
-      10:     connectionStrings />
+```csharp
+controlAdapters configSource="Configs\ControlAdapters.config"/>
+```
 
-      11:     
+```csharp
+appSettings />
+```
 
-      12:  
+```csharp
+connectionStrings />
+```
 
-      13:     
+```csharp
 
-      14:     system.web>
 
-      15:         httpModules>
 
-      16:             add name="AdvancedControlAdapterModule" type="MartinOnDotNet.ControlAdapters.AdvancedControlAdapterModule"/>
+```csharp
 
-      17:         httpModules>
 
-      18:     system.web>
 
-      19:     
+```csharp
 
-      20:     system.webServer>
 
-      21:         modules>
 
-      22:             add name="AdvancedControlAdapterModule" preCondition="integratedMode" type="MartinOnDotNet.ControlAdapters.AdvancedControlAdapterModule"/>
+```csharp
+system.web>
+```
 
-      23:         modules>
+```csharp
+httpModules>
+```
 
-      24:     system.webServer>
+```csharp
+add name="AdvancedControlAdapterModule" type="MartinOnDotNet.ControlAdapters.AdvancedControlAdapterModule"/>
+```
 
-      25: configuration>
+```csharp
+httpModules>
+```
+
+```csharp
+system.web>
+```
+
+```csharp
+
+
+
+```csharp
+system.webServer>
+```
+
+```csharp
+modules>
+```
+
+```csharp
+add name="AdvancedControlAdapterModule" preCondition="integratedMode" type="MartinOnDotNet.ControlAdapters.AdvancedControlAdapterModule"/>
+```
+
+```csharp
+modules>
+```
+
+```csharp
+system.webServer>
+```
+
+```csharp
+configuration>
+```
 
 You can now define the rules for manipulating the control adapters (*for the example above this would go in ‘Configs\ControlAdapters.config’ but you can populate the ‘controlAdapters’ element in the web.config as well*):
 
   
-       1: xml version="1.0"?>
+```csharp
+xml version="1.0"?>
+```
 
-       2: controlAdapters>
+```csharp
+controlAdapters>
+```
 
-       3:   paths>
+```csharp
+paths>
+```
 
-       4:     clear />
+```csharp
+clear />
+```
 
-       5:     add path="~/Disabled.aspx">
+```csharp
+add path="~/Disabled.aspx">
+```
 
-       6:       blacklist>
+```csharp
+blacklist>
+```
 
-       7:         add controlAdapterType="MartinOnDotNet.BasicControlAdapter.CheckBoxControlAdapter" />
+```csharp
+add controlAdapterType="MartinOnDotNet.BasicControlAdapter.CheckBoxControlAdapter" />
+```
 
-       8:       blacklist>
+```csharp
+blacklist>
+```
 
-       9:     add>
+```csharp
+add>
+```
 
-      10:     add path="~/Disabled/Injected.aspx">
+```csharp
+add path="~/Disabled/Injected.aspx">
+```
 
-      11:       blacklist>
+```csharp
+blacklist>
+```
 
-      12:         add controlAdapterType="MartinOnDotNet.BasicControlAdapter.CheckBoxControlAdapter" />
+```csharp
+add controlAdapterType="MartinOnDotNet.BasicControlAdapter.CheckBoxControlAdapter" />
+```
 
-      13:       blacklist>
+```csharp
+blacklist>
+```
 
-      14:       injections>
+```csharp
+injections>
+```
 
-      15:         add controlAdapterType="MartinOnDotNet.BasicControlAdapter.CheckBoxControlAdapter, BasicControlAdapter" targetControlType="System.Web.UI.WebControls.CheckBox" targetControlId="^AdaptedCheckbox$" />
+```csharp
+add controlAdapterType="MartinOnDotNet.BasicControlAdapter.CheckBoxControlAdapter, BasicControlAdapter" targetControlType="System.Web.UI.WebControls.CheckBox" targetControlId="^AdaptedCheckbox$" />
+```
 
-      16:       injections>
+```csharp
+injections>
+```
 
-      17:     add>
+```csharp
+add>
+```
 
-      18:     add path="~/Disabled/">
+```csharp
+add path="~/Disabled/">
+```
 
-      19:       whitelist>
+```csharp
+whitelist>
+```
 
-      20:         -- To Disable All Control Adapters -->
+```csharp
+-- To Disable All Control Adapters -->
+```
 
-      21:         add controlAdapterType="Disable All" />
+```csharp
+add controlAdapterType="Disable All" />
+```
 
-      22:       whitelist>
+```csharp
+whitelist>
+```
 
-      23:     add>
+```csharp
+add>
+```
 
-      24:   paths>
+```csharp
+paths>
+```
 
-      25: controlAdapters>
+```csharp
+controlAdapters>
+```
 
 A few pointers on the rules:
 
@@ -139,245 +239,469 @@ A few pointers on the rules:
 The AdvancedControlAdapterModule intercepts every request just before whatever HttpHandler is assigned to serve the content is executed, it checks to see if it’s an aspx page (derived from System.Web.UI.Page) and then hooks into the pages ‘PreRenderComplete’ event.  This event is called after the pages control tree is fully populated and any processing for the request is finished with the only thing left, is to render the output.
 
   
-       1: private static AdvancedControlAdapter
+```csharp
+private static AdvancedControlAdapter
+```
 
-       2:     Section ControlAdapterConfig = System.Configuration.ConfigurationManager.GetSection("controlAdapters") as AdvancedControlAdapterSection;
+```csharp
+Section ControlAdapterConfig = System.Configuration.ConfigurationManager.GetSection("controlAdapters") as AdvancedControlAdapterSection;
+```
 
-       3:  
+```csharp
 
-       4: /// 
 
-       5: /// Initializes a module and prepares it to handle requests.
 
-       6: /// 
+```csharp
+/// 
+```
 
-       7: /// An  that provides access to the methods, properties, and events common to all application objects within an ASP.NET application
+```csharp
+/// Initializes a module and prepares it to handle requests.
+```
 
-       8: public void Init(HttpApplication context)
+```csharp
+/// 
+```
 
-       9: {
+```csharp
+/// An  that provides access to the methods, properties, and events common to all application objects within an ASP.NET application
+```
 
-      10:     if (ControlAdapterConfig==null) return;
+```csharp
+public void Init(HttpApplication context)
+```
 
-      11:     context.PreRequestHandlerExecute += new EventHandler(OnPreRequestHandlerExecute);
+```csharp
+{
+```
 
-      12: }
+```csharp
+if (ControlAdapterConfig==null) return;
+```
 
-      13:  
+```csharp
+context.PreRequestHandlerExecute += new EventHandler(OnPreRequestHandlerExecute);
+```
 
-      14:  
+```csharp
+}
+```
 
-      15: private void OnPreRequestHandlerExecute(object sender, EventArgs e)
+```csharp
 
-      16: {
 
-      17:  
 
-      18:     HttpContext current = HttpContext.Current;
+```csharp
 
-      19:     Page page = current.CurrentHandler as Page;
 
-      20:     if (page != null)
 
-      21:     {
+```csharp
+private void OnPreRequestHandlerExecute(object sender, EventArgs e)
+```
 
-      22:         page.PreRenderComplete += new EventHandler(OnPreRenderComplete);
+```csharp
+{
+```
 
-      23:     }
+```csharp
 
-      24: }
 
-      25:  
 
-      26:  
+```csharp
+HttpContext current = HttpContext.Current;
+```
 
-      27: private void OnPreRenderComplete(object sender, EventArgs e)
+```csharp
+Page page = current.CurrentHandler as Page;
+```
 
-      28: {
+```csharp
+if (page != null)
+```
 
-      29:    // Control Adapter Magic Required
+```csharp
+{
+```
 
-      30: }
+```csharp
+page.PreRenderComplete += new EventHandler(OnPreRenderComplete);
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+
+
+
+```csharp
+private void OnPreRenderComplete(object sender, EventArgs e)
+```
+
+```csharp
+{
+```
+
+```csharp
+// Control Adapter Magic Required
+```
+
+```csharp
+}
+```
 
 The module gets the relevant configuration for the request and then checks every control adapter against the blacklist and whitelist, to determine if it’s allowed.  This is done using reflection to manipulate the ‘***Adapter***’ internal property( and it’s backing field ***_adapter***) of the System.Web.UI.Control type that every ASP.Net control is derived from. 
 
  Using [Reflector](http://bit.ly/cUbyio) you can see the implementation of this property isn’t trivial:
 
   
-       1: protected ControlAdapter Adapter
+```csharp
+protected ControlAdapter Adapter
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     get
+```csharp
+get
+```
 
-       4:     {
+```csharp
+{
+```
 
-       5:         if (!this.flags[0x8000])
+```csharp
+if (!this.flags[0x8000])
+```
 
-       6:         {
+```csharp
+{
+```
 
-       7:             this._adapter = this.ResolveAdapter();
+```csharp
+this._adapter = this.ResolveAdapter();
+```
 
-       8:             this.flags.Set(0x8000);
+```csharp
+this.flags.Set(0x8000);
+```
 
-       9:         }
+```csharp
+}
+```
 
-      10:         return this._adapter;
+```csharp
+return this._adapter;
+```
 
-      11:     }
+```csharp
+}
+```
 
-      12: }
+```csharp
+}
+```
 
-      13:  
+```csharp
+
+
 
 To successfully, replace _adapter we will need to trick the classes internal logic into thinking it’s already resolved the adapter.  This was easily done by invoking the property using reflection which causes all flags to be correctly set.
 
   
-       1: private static void ProcessControlAdapters(Page page, AdvancedControlAdapterPathElement path)
+```csharp
+private static void ProcessControlAdapters(Page page, AdvancedControlAdapterPathElement path)
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     PropertyInfo pi = typeof(Control).GetProperty("Adapter", BindingFlags.NonPublic | BindingFlags.Instance);
+```csharp
+PropertyInfo pi = typeof(Control).GetProperty("Adapter", BindingFlags.NonPublic | BindingFlags.Instance);
+```
 
-       4:     FieldInfo fi = typeof(Control).GetField("_adapter", BindingFlags.NonPublic | BindingFlags.Instance);
+```csharp
+FieldInfo fi = typeof(Control).GetField("_adapter", BindingFlags.NonPublic | BindingFlags.Instance);
+```
 
-       5:     foreach (Control c in page.GetAllChildControlsOfType())
+```csharp
+foreach (Control c in page.GetAllChildControlsOfType())
+```
 
-       6:     {
+```csharp
+{
+```
 
-       7:         ControlAdapter ca = pi.GetValue(c, null) as ControlAdapter; // resolve Control Adapter
+```csharp
+ControlAdapter ca = pi.GetValue(c, null) as ControlAdapter; // resolve Control Adapter
+```
 
-       8:         if (ca != null)
+```csharp
+if (ca != null)
+```
 
-       9:         {
+```csharp
+{
+```
 
-      10:             bool allowed = IsControlAdapterAllowed(path, ca.GetType());
+```csharp
+bool allowed = IsControlAdapterAllowed(path, ca.GetType());
+```
 
-      11:             if (!allowed) fi.SetValue(c, null); // disable
+```csharp
+if (!allowed) fi.SetValue(c, null); // disable
+```
 
-      12:         }
+```csharp
+}
+```
 
-      13:     }
+```csharp
+}
+```
 
-      14: }
+```csharp
+}
+```
 
-      15:  
+```csharp
 
-      16: private static bool IsControlAdapterAllowed(AdvancedControlAdapterPathElement path, Type adapterType)
 
-      17: {
 
-      18:     foreach (AdvancedControlAdapterRegistrationElement blacklisted in path.Blacklist)
+```csharp
+private static bool IsControlAdapterAllowed(AdvancedControlAdapterPathElement path, Type adapterType)
+```
 
-      19:     {
+```csharp
+{
+```
 
-      20:         if (
+```csharp
+foreach (AdvancedControlAdapterRegistrationElement blacklisted in path.Blacklist)
+```
 
-      21:                 string.Equals(adapterType.FullName, blacklisted.ControlAdapterType, StringComparison.OrdinalIgnoreCase)
+```csharp
+{
+```
 
-      22:                 ||
+```csharp
+if (
+```
 
-      23:                 string.Equals(adapterType.Name, blacklisted.ControlAdapterType, StringComparison.OrdinalIgnoreCase)
+```csharp
+string.Equals(adapterType.FullName, blacklisted.ControlAdapterType, StringComparison.OrdinalIgnoreCase)
+```
 
-      24:             )
+```csharp
+||
+```
 
-      25:         {
+```csharp
+string.Equals(adapterType.Name, blacklisted.ControlAdapterType, StringComparison.OrdinalIgnoreCase)
+```
 
-      26:             return false; //not allowed
+```csharp
+)
+```
 
-      27:         }
+```csharp
+{
+```
 
-      28:     }
+```csharp
+return false; //not allowed
+```
 
-      29:     return path.Whitelist.Count > 0 && (path.Whitelist[adapterType.FullName] != null || path.Whitelist[adapterType.Name] != null);
+```csharp
+}
+```
 
-      30: }
+```csharp
+}
+```
+
+```csharp
+return path.Whitelist.Count > 0 && (path.Whitelist[adapterType.FullName] != null || path.Whitelist[adapterType.Name] != null);
+```
+
+```csharp
+}
+```
 
 The process for injecting a control adapter is a little more complicated as we need to dynamically construct the control adapter using reflection and assign its Control property as well as assign it to the matching control:
 
   
-       1: private static void InjectControlAdapters(Page page, AdvancedControlAdapterPathElement path)
+```csharp
+private static void InjectControlAdapters(Page page, AdvancedControlAdapterPathElement path)
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     PropertyInfo pi = typeof(Control).GetProperty("Adapter", BindingFlags.NonPublic | BindingFlags.Instance);
+```csharp
+PropertyInfo pi = typeof(Control).GetProperty("Adapter", BindingFlags.NonPublic | BindingFlags.Instance);
+```
 
-       4:     FieldInfo fi = typeof(Control).GetField("_adapter", BindingFlags.NonPublic | BindingFlags.Instance);
+```csharp
+FieldInfo fi = typeof(Control).GetField("_adapter", BindingFlags.NonPublic | BindingFlags.Instance);
+```
 
-       5:     FieldInfo fiControl = typeof(ControlAdapter).GetField("_control", BindingFlags.NonPublic | BindingFlags.Instance);
+```csharp
+FieldInfo fiControl = typeof(ControlAdapter).GetField("_control", BindingFlags.NonPublic | BindingFlags.Instance);
+```
 
-       6:     foreach (AdvancedControlAdapterRegistrationElement inject in path.Injections)
+```csharp
+foreach (AdvancedControlAdapterRegistrationElement inject in path.Injections)
+```
 
-       7:     {
+```csharp
+{
+```
 
-       8:         foreach (Control c in page.GetAllChildControlsOfType())
+```csharp
+foreach (Control c in page.GetAllChildControlsOfType())
+```
 
-       9:         {
+```csharp
+{
+```
 
-      10:             if (
+```csharp
+if (
+```
 
-      11:                 (
+```csharp
+(
+```
 
-      12:                     string.IsNullOrEmpty(inject.TargetControlType)
+```csharp
+string.IsNullOrEmpty(inject.TargetControlType)
+```
 
-      13:                     ||
+```csharp
+||
+```
 
-      14:                     string.Equals(c.GetType().FullName, inject.TargetControlType, StringComparison.OrdinalIgnoreCase)
+```csharp
+string.Equals(c.GetType().FullName, inject.TargetControlType, StringComparison.OrdinalIgnoreCase)
+```
 
-      15:                     ||
+```csharp
+||
+```
 
-      16:                     string.Equals(c.GetType().Name, inject.TargetControlType, StringComparison.OrdinalIgnoreCase)
+```csharp
+string.Equals(c.GetType().Name, inject.TargetControlType, StringComparison.OrdinalIgnoreCase)
+```
 
-      17:                  )
+```csharp
+)
+```
 
-      18:                 &&
+```csharp
+&&
+```
 
-      19:                     Regex.IsMatch(c.ClientID, inject.TargetControlId, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace)
+```csharp
+Regex.IsMatch(c.ClientID, inject.TargetControlId, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace)
+```
 
-      20:                 )
+```csharp
+)
+```
 
-      21:             {
+```csharp
+{
+```
 
-      22:                 ControlAdapter ca = pi.GetValue(c, null) as ControlAdapter; //bait ...
+```csharp
+ControlAdapter ca = pi.GetValue(c, null) as ControlAdapter; //bait ...
+```
 
-      23:                 Type t = Type.GetType(inject.ControlAdapterType);
+```csharp
+Type t = Type.GetType(inject.ControlAdapterType);
+```
 
-      24:                 ControlAdapter injectCa = t.GetConstructor(Type.EmptyTypes).Invoke(null) as ControlAdapter;
+```csharp
+ControlAdapter injectCa = t.GetConstructor(Type.EmptyTypes).Invoke(null) as ControlAdapter;
+```
 
-      25:                 fiControl.SetValue(injectCa, c);
+```csharp
+fiControl.SetValue(injectCa, c);
+```
 
-      26:                 fi.SetValue(c, injectCa);// ...and switch
+```csharp
+fi.SetValue(c, injectCa);// ...and switch
+```
 
-      27:             }
+```csharp
+}
+```
 
-      28:         }
+```csharp
+}
+```
 
-      29:     }
+```csharp
+}
+```
 
-      30: }
+```csharp
+}
+```
 
 ## Seeing It In Action
 
 I’ve constructed a basic example demonstrating the functionality, included a very basic control adapter for the CheckBox control.  The adapter suppresses the enclosing ***span*** which the default ASP.Net rendering injects when a CssClass is applied (but not when CssClass is blank).  The difference in mark up is quite basic:
 
   
-       1: 
+```csharp
 
-       2: span class="PrettyMeUp">
 
-       3:     input id="UnAdaptedCheckBox" type="checkbox" name="UnAdaptedCheckBox" />
 
-       4:     label for="UnAdaptedCheckBox">Unadaptedlabel>
+```csharp
+span class="PrettyMeUp">
+```
 
-       5: span>
+```csharp
+input id="UnAdaptedCheckBox" type="checkbox" name="UnAdaptedCheckBox" />
+```
 
-       6:  
+```csharp
+label for="UnAdaptedCheckBox">Unadaptedlabel>
+```
 
-       7: 
+```csharp
+span>
+```
 
-       8:     input class="PrettyMeUp" id="AdaptedCheckbox" name="AdaptedCheckbox" type="checkbox" />
+```csharp
 
-       9:     label class="PrettyMeUp" for="AdaptedCheckbox">Adaptedlabel>
+
+
+```csharp
+
+
+
+```csharp
+input class="PrettyMeUp" id="AdaptedCheckbox" name="AdaptedCheckbox" type="checkbox" />
+```
+
+```csharp
+label class="PrettyMeUp" for="AdaptedCheckbox">Adaptedlabel>
+```
 
 All of the source code for the Module, Adapter and Demo website are in the accompanying zip file.
 

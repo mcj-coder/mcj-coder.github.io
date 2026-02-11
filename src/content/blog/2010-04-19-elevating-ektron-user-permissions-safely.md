@@ -13,197 +13,392 @@ When you’re coding against the [Ektron](http://bit.ly/d0YHh7) API you frequent
 
           ```
 
-      18:     /// ContentAPI contentApi = ApiFactory.Create&lt;ContentAPI&gt;();
-
-      19:     /// using (ElevatedPermissionScope adminScope = new ElevatedPermissionScope(contentApi))
-
-      20:     /// {
-
-      21:     ///     //Perform Elevated Tasks Here
-
-      22:     ///        
-
-      23:     /// }
-
-      24:     /// // perform normal tasks here
-
-      25:     /// 
+```csharp
+/// ContentAPI contentApi = ApiFactory.Create&lt;ContentAPI&gt;();
 ```
 
-      26:     /// 
+```csharp
+/// using (ElevatedPermissionScope adminScope = new ElevatedPermissionScope(contentApi))
+```
 
-      27:     /// As this class manipulates  objects it can only
+```csharp
+/// {
+```
 
-      28:     /// be used when there is a populated  available.
+```csharp
+///     //Perform Elevated Tasks Here
+```
 
-      29:     /// 
+```csharp
+///        
+```
 
-      30:     /// 
+```csharp
+/// }
+```
 
-      31:     public sealed class ElevatedPermissionScope : IDisposable
+```csharp
+/// // perform normal tasks here
+```
 
-      32:     {
+```csharp
+/// 
+```
 
-      33:         // Required Imports:
+```
 
-      34:         // using Ektron.Cms;            // from Ektron.Cms.Common assembly
+```csharp
+/// 
+```
 
-      35:         // using Ektron.Cms.Common;     // from Ektron.Cms.Common assembly
+```csharp
+/// As this class manipulates  objects it can only
+```
 
-      36:  
+```csharp
+/// be used when there is a populated  available.
+```
 
-      37:  
+```csharp
+/// 
+```
 
-      38:         /// 
+```csharp
+/// 
+```
 
-      39:         /// Initializes a new instance of the  class and configures
+```csharp
+public sealed class ElevatedPermissionScope : IDisposable
+```
 
-      40:         /// the latent userId to be the Ektron InternalAdmin user
+```csharp
+{
+```
 
-      41:         /// 
+```csharp
+// Required Imports:
+```
 
-      42:         /// The API to elevate
+```csharp
+// using Ektron.Cms;            // from Ektron.Cms.Common assembly
+```
 
-      43:         public ElevatedPermissionScope(CommonApi api)
+```csharp
+// using Ektron.Cms.Common;     // from Ektron.Cms.Common assembly
+```
 
-      44:             : this(api, EkConstants.InternalAdmin, EkConstants.InternalAdmin)
+```csharp
 
-      45:         { }
 
-      46:  
 
-      47:  
+```csharp
 
-      48:         /// 
 
-      49:         /// Initializes a new instance of the  class and configures
 
-      50:         /// the latent userId to the provided values
+```csharp
+/// 
+```
 
-      51:         /// 
+```csharp
+/// Initializes a new instance of the  class and configures
+```
 
-      52:         /// The API to elevate
+```csharp
+/// the latent userId to be the Ektron InternalAdmin user
+```
 
-      53:         /// The caller id to impersonate
+```csharp
+/// 
+```
 
-      54:         /// The user id to impersonate
+```csharp
+/// The API to elevate
+```
 
-      55:         public ElevatedPermissionScope(CommonApi api, long callerId, long userId)
+```csharp
+public ElevatedPermissionScope(CommonApi api)
+```
 
-      56:             : this(api.RequestInformationRef, callerId, userId)
+```csharp
+: this(api, EkConstants.InternalAdmin, EkConstants.InternalAdmin)
+```
 
-      57:         { }
+```csharp
+{ }
+```
 
-      58:  
+```csharp
 
-      59:         /// 
 
-      60:         /// Initializes a new instance of the  class.
 
-      61:         /// 
+```csharp
 
-      62:         /// The request info to configure
 
-      63:         /// The caller id.
 
-      64:         /// The user id.
+```csharp
+/// 
+```
 
-      65:         public ElevatedPermissionScope(EkRequestInformation requestInfo, long callerId, long userId)
+```csharp
+/// Initializes a new instance of the  class and configures
+```
 
-      66:         {
+```csharp
+/// the latent userId to the provided values
+```
 
-      67:  
+```csharp
+/// 
+```
 
-      68:             if (requestInfo == null) throw new ArgumentNullException("requestInfo");
+```csharp
+/// The API to elevate
+```
 
-      69:             RequestInfo = requestInfo;
+```csharp
+/// The caller id to impersonate
+```
 
-      70:             OriginalCallerId = RequestInfo.CallerId;
+```csharp
+/// The user id to impersonate
+```
 
-      71:             OriginalUserId = RequestInfo.UserId;
+```csharp
+public ElevatedPermissionScope(CommonApi api, long callerId, long userId)
+```
 
-      72:             RequestInfo.CallerId = callerId;
+```csharp
+: this(api.RequestInformationRef, callerId, userId)
+```
 
-      73:             RequestInfo.UserId = userId;
+```csharp
+{ }
+```
 
-      74:             RequestInfo.UniqueId = 0;
+```csharp
 
-      75:         }
 
-      76:  
 
-      77:         #region Internal Properties
+```csharp
+/// 
+```
 
-      78:  
+```csharp
+/// Initializes a new instance of the  class.
+```
 
-      79:         /// 
+```csharp
+/// 
+```
 
-      80:         /// Gets or sets the request info.
+```csharp
+/// The request info to configure
+```
 
-      81:         /// 
+```csharp
+/// The caller id.
+```
 
-      82:         /// The request info.
+```csharp
+/// The user id.
+```
 
-      83:         internal EkRequestInformation RequestInfo { get; set; }
+```csharp
+public ElevatedPermissionScope(EkRequestInformation requestInfo, long callerId, long userId)
+```
 
-      84:  
+```csharp
+{
+```
 
-      85:         /// 
+```csharp
 
-      86:         /// Gets or sets the original caller id.
 
-      87:         /// 
 
-      88:         /// The original caller id.
+```csharp
+if (requestInfo == null) throw new ArgumentNullException("requestInfo");
+```
 
-      89:         internal long OriginalCallerId { get; set; }
+```csharp
+RequestInfo = requestInfo;
+```
 
-      90:  
+```csharp
+OriginalCallerId = RequestInfo.CallerId;
+```
 
-      91:         /// 
+```csharp
+OriginalUserId = RequestInfo.UserId;
+```
 
-      92:         /// Gets or sets the original user id.
+```csharp
+RequestInfo.CallerId = callerId;
+```
 
-      93:         /// 
+```csharp
+RequestInfo.UserId = userId;
+```
 
-      94:         /// The original user id.
+```csharp
+RequestInfo.UniqueId = 0;
+```
 
-      95:         internal long OriginalUserId { get; set; }
+```csharp
+}
+```
 
-      96:  
+```csharp
 
-      97:         #endregion
 
-      98:  
 
-      99:         #region IDisposable Members
+```csharp
+#region Internal Properties
+```
 
-     100:  
+```csharp
 
-     101:         /// 
 
-     102:         /// Restores the original Latent User Id
 
-     103:         /// 
+```csharp
+/// 
+```
 
-     104:         public void Dispose()
+```csharp
+/// Gets or sets the request info.
+```
 
-     105:         {
+```csharp
+/// 
+```
 
-     106:             RequestInfo.CallerId = OriginalCallerId;
+```csharp
+/// The request info.
+```
 
-     107:             RequestInfo.UserId = OriginalUserId;
+```csharp
+internal EkRequestInformation RequestInfo { get; set; }
+```
 
-     108:             GC.SuppressFinalize(this);
+```csharp
 
-     109:         }
 
-     110:  
 
-     111:         #endregion
+```csharp
+/// 
+```
 
-     112:     }
+```csharp
+/// Gets or sets the original caller id.
+```
 
-     113:  
+```csharp
+/// 
+```
 
-     114: }
+```csharp
+/// The original caller id.
+```
+
+```csharp
+internal long OriginalCallerId { get; set; }
+```
+
+```csharp
+
+
+
+```csharp
+/// 
+```
+
+```csharp
+/// Gets or sets the original user id.
+```
+
+```csharp
+/// 
+```
+
+```csharp
+/// The original user id.
+```
+
+```csharp
+internal long OriginalUserId { get; set; }
+```
+
+```csharp
+
+
+
+```csharp
+#endregion
+```
+
+```csharp
+
+
+
+```csharp
+#region IDisposable Members
+```
+
+```csharp
+
+
+
+```csharp
+/// 
+```
+
+```csharp
+/// Restores the original Latent User Id
+```
+
+```csharp
+/// 
+```
+
+```csharp
+public void Dispose()
+```
+
+```csharp
+{
+```
+
+```csharp
+RequestInfo.CallerId = OriginalCallerId;
+```
+
+```csharp
+RequestInfo.UserId = OriginalUserId;
+```
+
+```csharp
+GC.SuppressFinalize(this);
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+#endregion
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+}
+```

@@ -9,50 +9,92 @@ originalUrl: "https://martinondotnet.blogspot.com/"
 
 I recently had to upgrade an multilingual [Ektron](http://bit.ly/d0YHh7) project and all went [relatively](http://bit.ly/a8LEPz) well.  However, whilst debugging the site – I noticed that we were getting a lot of Formatting Exceptions when running the site in French (fr-FR) but not English (en-GB).  I tracked this down to the new ‘workarea/csslib/ektronCss.ashx’ and ‘workarea/java/ektronJs.ashx’ handlers and in particular around the mechanism for parsing the ‘If-Modified-Since’ header:
 
-             1: public class ektronCss : IHttpHandler {
+```csharp
+public class ektronCss : IHttpHandler {
+```
 
-       2:     
+```csharp
 
-       3:     public void ProcessRequest (HttpContext context) 
 
-       4:     {
 
-       5:         // Ommitted for clarity until line 19    
+```csharp
+public void ProcessRequest (HttpContext context) 
+```
 
-       6:         CultureInfo provider = CultureInfo.InvariantCulture;
+```csharp
+{
+```
 
-       7:         DateTime lastUpdate = String.IsNullOrEmpty(context.Request.Headers.Get("If-Modified-Since")) 
+```csharp
+// Ommitted for clarity until line 19    
+```
 
-       8:             ? DateTime.MinValue 
+```csharp
+CultureInfo provider = CultureInfo.InvariantCulture;
+```
 
-       9:             : DateTime.ParseExact(context.Request.Headers.Get("If-Modified-Since"), "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'", null);
+```csharp
+DateTime lastUpdate = String.IsNullOrEmpty(context.Request.Headers.Get("If-Modified-Since")) 
+```
 
-      10:         // Ommitted for Brevity        
+```csharp
+? DateTime.MinValue 
+```
 
-      11:     }
+```csharp
+: DateTime.ParseExact(context.Request.Headers.Get("If-Modified-Since"), "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'", null);
+```
 
-      12: }
+```csharp
+// Ommitted for Brevity        
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 This can easily be fixed by substituting the **null** argument for the DateTime.ParseExact method for the **provider** variable:
 
   
-       1: public class ektronCss : IHttpHandler {
+```csharp
+public class ektronCss : IHttpHandler {
+```
 
-       2:     
+```csharp
 
-       3:     public void ProcessRequest (HttpContext context) 
 
-       4:     {
 
-       5:         // Ommitted for clarity until line 19    
+```csharp
+public void ProcessRequest (HttpContext context) 
+```
 
-       6:         CultureInfo provider = CultureInfo.InvariantCulture;
+```csharp
+{
+```
 
-       7:         DateTime lastUpdate = String.IsNullOrEmpty(context.Request.Headers.Get("If-Modified-Since")) 
+```csharp
+// Ommitted for clarity until line 19    
+```
 
-       8:             ? DateTime.MinValue 
+```csharp
+CultureInfo provider = CultureInfo.InvariantCulture;
+```
 
-       9:             : DateTime.ParseExact(context.Request.Headers.Get("If-Modified-Since"), "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'", ***provider*);**
+```csharp
+DateTime lastUpdate = String.IsNullOrEmpty(context.Request.Headers.Get("If-Modified-Since")) 
+```
+
+```csharp
+? DateTime.MinValue 
+```
+
+```csharp
+: DateTime.ParseExact(context.Request.Headers.Get("If-Modified-Since"), "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'", ***provider*);**
+```
 
     **  10:         // Ommitted for Brevity        **
 

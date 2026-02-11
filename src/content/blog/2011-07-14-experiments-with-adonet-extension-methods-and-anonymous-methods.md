@@ -9,61 +9,117 @@ originalUrl: "https://martinondotnet.blogspot.com/"
 
 As much as at pains me to admit it, an ORM Framework is not the answer to all data access problems.  Sometimes the quickest, easiest and most maintainable approach is back-to-basics flat ADO.Net.  For those developers whose (development) life began with Entity Framework, NHibernate or SubSonic.  This is a fairly typical example of an ADO.Net method (in a well structured code base):
 
-             1: private static IEnumerable GetPendingApprovals(long approvalGroupId)
+```csharp
+private static IEnumerable GetPendingApprovals(long approvalGroupId)
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     List approvals = new List();
+```csharp
+List approvals = new List();
+```
 
-       4:     using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[Properties.Settings.Default.ConnectionStringName].ConnectionString))
+```csharp
+using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[Properties.Settings.Default.ConnectionStringName].ConnectionString))
+```
 
-       5:     {
+```csharp
+{
+```
 
-       6:         using (SqlCommand cmd = conn.CreateCommand())
+```csharp
+using (SqlCommand cmd = conn.CreateCommand())
+```
 
-       7:         {
+```csharp
+{
+```
 
-       8:             cmd.CommandText = "SELECT ContentId, LanguageId, Status FROM Approvals WHER ApprovalGroupID=@groupId";
+```csharp
+cmd.CommandText = "SELECT ContentId, LanguageId, Status FROM Approvals WHER ApprovalGroupID=@groupId";
+```
 
-       9:             cmd.Parameters.AddWithValue("groupId", approvalGroupId);
+```csharp
+cmd.Parameters.AddWithValue("groupId", approvalGroupId);
+```
 
-      10:             cmd.Connection.Open();
+```csharp
+cmd.Connection.Open();
+```
 
-      11:             using (SqlDataReader dr = cmd.ExecuteReader())
+```csharp
+using (SqlDataReader dr = cmd.ExecuteReader())
+```
 
-      12:             {
+```csharp
+{
+```
 
-      13:                 while (dr.Read())
+```csharp
+while (dr.Read())
+```
 
-      14:                 {
+```csharp
+{
+```
 
-      15:                     approvals.Add(new ContentAwaitingApproval
+```csharp
+approvals.Add(new ContentAwaitingApproval
+```
 
-      16:                     {
+```csharp
+{
+```
 
-      17:                         ContentId = dr.GetInt64(0)
+```csharp
+ContentId = dr.GetInt64(0)
+```
 
-      18:                         ,
+```csharp
+,
+```
 
-      19:                         LanguageId = dr.GetInt32(1)
+```csharp
+LanguageId = dr.GetInt32(1)
+```
 
-      20:                         ,
+```csharp
+,
+```
 
-      21:                         Status = dr.GetString(2)
+```csharp
+Status = dr.GetString(2)
+```
 
-      22:                     });
+```csharp
+});
+```
 
-      23:                 }
+```csharp
+}
+```
 
-      24:             }
+```csharp
+}
+```
 
-      25:         }
+```csharp
+}
+```
 
-      26:     }
+```csharp
+}
+```
 
-      27:     return approvals;
+```csharp
+return approvals;
+```
 
-      28: }
+```csharp
+}
+```
 
 What’s occuring:
 
@@ -96,19 +152,33 @@ But wait, ORM isn’t the only thing that’s happened over the last 10 years! 
 Well, for starters we can tidy up that SqlConnection initializer to get something a bit cleaner and maybe some configuration validation code in place:
 
   
-       1: private static SqlConnection ToConnection(this string connectionStringName)
+```csharp
+private static SqlConnection ToConnection(this string connectionStringName)
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     if (connectionStringName.IsNullOrWhiteSpace()) throw new ArgumentException("Connection String Name cannot be empty", "connectionStringName");
+```csharp
+if (connectionStringName.IsNullOrWhiteSpace()) throw new ArgumentException("Connection String Name cannot be empty", "connectionStringName");
+```
 
-       4:     ConnectionStringSettings cns = ConfigurationManager.ConnectionStrings[connectionStringName];
+```csharp
+ConnectionStringSettings cns = ConfigurationManager.ConnectionStrings[connectionStringName];
+```
 
-       5:     if (cns == null) throw new ArgumentException("Connection String Name '{0}' cannot be found".ToFormattedString(connectionStringName), "connectionStringName");
+```csharp
+if (cns == null) throw new ArgumentException("Connection String Name '{0}' cannot be found".ToFormattedString(connectionStringName), "connectionStringName");
+```
 
-       6:     return new SqlConnection(cns.ConnectionString);
+```csharp
+return new SqlConnection(cns.ConnectionString);
+```
 
-       7: }
+```csharp
+}
+```
 
 So replace:
 
@@ -121,417 +191,819 @@ With
 Next, that parameter mapping code can be easily refactored away into a reusable block and add some additional intelligence too:
 
   
-       1: private static void AddParametersToCommand(IDictionarystring, object> parameters, SqlCommand cmd)
+```csharp
+private static void AddParametersToCommand(IDictionarystring, object> parameters, SqlCommand cmd)
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     if (parameters == null) return;
+```csharp
+if (parameters == null) return;
+```
 
-       4:     foreach (string key in parameters.Keys)
+```csharp
+foreach (string key in parameters.Keys)
+```
 
-       5:     {
+```csharp
+{
+```
 
-       6:         if (parameters[key] == null)
+```csharp
+if (parameters[key] == null)
+```
 
-       7:         {
+```csharp
+{
+```
 
-       8:             cmd.Parameters.AddWithValue(key, DBNull.Value);
+```csharp
+cmd.Parameters.AddWithValue(key, DBNull.Value);
+```
 
-       9:         }
+```csharp
+}
+```
 
-      10:         else if (parameters[key].GetType().IsPrimitive)
+```csharp
+else if (parameters[key].GetType().IsPrimitive)
+```
 
-      11:         {
+```csharp
+{
+```
 
-      12:             cmd.Parameters.AddWithValue(key, parameters[key]);
+```csharp
+cmd.Parameters.AddWithValue(key, parameters[key]);
+```
 
-      13:         }
+```csharp
+}
+```
 
-      14:         else
+```csharp
+else
+```
 
-      15:         {
+```csharp
+{
+```
 
-      16:             cmd.Parameters.AddWithValue(key, "{0}".ToFormattedString(parameters[key]));
+```csharp
+cmd.Parameters.AddWithValue(key, "{0}".ToFormattedString(parameters[key]));
+```
 
-      17:         }
+```csharp
+}
+```
 
-      18:  
+```csharp
 
-      19:     }
 
-      20: }
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 Finally, the per record processing can be made into delegate method, allowing you the opportunity to add additional exception information to the process:
 
   
-       1: Funcbool> recordAction = (dr)=>{return true;};
+```csharp
+Funcbool> recordAction = (dr)=>{return true;};
+```
 
-       2:  
+```csharp
 
-       3: using (SqlDataReader dr = cmd.ExecuteReader())
 
-       4: {
 
-       5:    int i = 0;
+```csharp
+using (SqlDataReader dr = cmd.ExecuteReader())
+```
 
-       6:    try
+```csharp
+{
+```
 
-       7:    {
+```csharp
+int i = 0;
+```
 
-       8:        while (dr.Read() && recordAction(dr)) i++;
+```csharp
+try
+```
 
-       9:    }
+```csharp
+{
+```
 
-      10:    catch (Exception ex)
+```csharp
+while (dr.Read() && recordAction(dr)) i++;
+```
 
-      11:    {
+```csharp
+}
+```
 
-      12:        ex.Data["Record Ordinal"] = i;
+```csharp
+catch (Exception ex)
+```
 
-      13:        throw;
+```csharp
+{
+```
 
-      14:    }
+```csharp
+ex.Data["Record Ordinal"] = i;
+```
 
-      15: }
+```csharp
+throw;
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 Combining all this can give us a set of reusable ADO.Net extension methods, which allow us to separate the business concern from the ADO.Net concerns, so the example code a the top of the page can become:
 
   
-       1: private static IEnumerable GetPendingApprovals(long approvalGroupId)
+```csharp
+private static IEnumerable GetPendingApprovals(long approvalGroupId)
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     List approvals = new List();
+```csharp
+List approvals = new List();
+```
 
-       4:     "SELECT ContentId, LanguageId, Status FROM Approvals WHER ApprovalGroupID=@groupId"
+```csharp
+"SELECT ContentId, LanguageId, Status FROM Approvals WHER ApprovalGroupID=@groupId"
+```
 
-       5:         .ProcessRecords(
+```csharp
+.ProcessRecords(
+```
 
-       6:             Properties.Settings.Default.ConnectionStringName
+```csharp
+Properties.Settings.Default.ConnectionStringName
+```
 
-       7:             , new Dictionarystring, object> { { "groupId", approvalGroupId } }
+```csharp
+, new Dictionarystring, object> { { "groupId", approvalGroupId } }
+```
 
-       8:             , (dr) =>
+```csharp
+, (dr) =>
+```
 
-       9:                 {
+```csharp
+{
+```
 
-      10:                     approvals.Add(new ContentAwaitingApproval
+```csharp
+approvals.Add(new ContentAwaitingApproval
+```
 
-      11:                     {
+```csharp
+{
+```
 
-      12:                         ContentId = dr.GetInt64(0)
+```csharp
+ContentId = dr.GetInt64(0)
+```
 
-      13:                         ,
+```csharp
+,
+```
 
-      14:                         LanguageId = dr.GetInt32(1)
+```csharp
+LanguageId = dr.GetInt32(1)
+```
 
-      15:                         ,
+```csharp
+,
+```
 
-      16:                         Status = dr.GetString(2)
+```csharp
+Status = dr.GetString(2)
+```
 
-      17:                     });
+```csharp
+});
+```
 
-      18:                     return true;
+```csharp
+return true;
+```
 
-      19:                 }
+```csharp
+}
+```
 
-      20:             );
+```csharp
+);
+```
 
-      21:     return approvals;
+```csharp
+return approvals;
+```
 
-      22: }
+```csharp
+}
+```
 
 Every single line (all 3 if the readability whitespace is removed) are focused on the business side of the query with minimal ADO.Net specific requirements (if you count the connection string name as a ADO.Net specific).
 
 The full (experimental) extension method class is:
 
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Configuration;
+```csharp
+using System.Configuration;
+```
 
-       3: using System.Data.SqlClient;
+```csharp
+using System.Data.SqlClient;
+```
 
-       4: using System.Linq;
+```csharp
+using System.Linq;
+```
 
-       5: using System.Collections.Generic;
+```csharp
+using System.Collections.Generic;
+```
 
-       6: using MartinOnDotNet.TypeConversion;
+```csharp
+using MartinOnDotNet.TypeConversion;
+```
 
-       7:  
+```csharp
 
-       8: namespace MartinOnDotNet.Data.SqlClient
 
-       9: {
 
-      10:     /// 
+```csharp
+namespace MartinOnDotNet.Data.SqlClient
+```
 
-      11:     /// Handy methods for handling SQL
+```csharp
+{
+```
 
-      12:     /// 
+```csharp
+/// 
+```
 
-      13:     public static class SqlClientExtensions
+```csharp
+/// Handy methods for handling SQL
+```
 
-      14:     {
+```csharp
+/// 
+```
 
-      15:         private static SqlConnection ToConnection(this string connectionStringName)
+```csharp
+public static class SqlClientExtensions
+```
 
-      16:         {
+```csharp
+{
+```
 
-      17:             if (connectionStringName.IsNullOrWhiteSpace()) throw new ArgumentException("Connection String Name cannot be empty", "connectionStringName");
+```csharp
+private static SqlConnection ToConnection(this string connectionStringName)
+```
 
-      18:             ConnectionStringSettings cns = ConfigurationManager.ConnectionStrings[connectionStringName];
+```csharp
+{
+```
 
-      19:             if (cns == null) throw new ArgumentException("Connection String Name '{0}' cannot be found".ToFormattedString(connectionStringName), "connectionStringName");
+```csharp
+if (connectionStringName.IsNullOrWhiteSpace()) throw new ArgumentException("Connection String Name cannot be empty", "connectionStringName");
+```
 
-      20:             return new SqlConnection(cns.ConnectionString);
+```csharp
+ConnectionStringSettings cns = ConfigurationManager.ConnectionStrings[connectionStringName];
+```
 
-      21:         }
+```csharp
+if (cns == null) throw new ArgumentException("Connection String Name '{0}' cannot be found".ToFormattedString(connectionStringName), "connectionStringName");
+```
 
-      22:  
+```csharp
+return new SqlConnection(cns.ConnectionString);
+```
 
-      23:         public static void Execute(this string commandText, string connectionStringName)
+```csharp
+}
+```
 
-      24:         {
+```csharp
 
-      25:             commandText.Execute(connectionStringName, null);
 
-      26:         }
 
-      27:  
+```csharp
+public static void Execute(this string commandText, string connectionStringName)
+```
 
-      28:         public static void Execute(this string commandText, string connectionStringName, IDictionarystring, object> parameters)
+```csharp
+{
+```
 
-      29:         {
+```csharp
+commandText.Execute(connectionStringName, null);
+```
 
-      30:             PerformSqlActionbool>(commandText, connectionStringName, parameters, (cmd) =>
+```csharp
+}
+```
 
-      31:             {
+```csharp
 
-      32:                 cmd.ExecuteNonQuery();
 
-      33:                 return true;
 
-      34:             });
+```csharp
+public static void Execute(this string commandText, string connectionStringName, IDictionarystring, object> parameters)
+```
 
-      35:         }
+```csharp
+{
+```
 
-      36:  
+```csharp
+PerformSqlActionbool>(commandText, connectionStringName, parameters, (cmd) =>
+```
 
-      37:         public static T ExecuteScalar(this string commandText, string connectionStringName)
+```csharp
+{
+```
 
-      38:         {
+```csharp
+cmd.ExecuteNonQuery();
+```
 
-      39:             return commandText.ExecuteScalar(connectionStringName, null);
+```csharp
+return true;
+```
 
-      40:         }
+```csharp
+});
+```
 
-      41:  
+```csharp
+}
+```
 
-      42:         public static T ExecuteScalar(this string commandText, string connectionStringName, IDictionarystring, object> parameters)
+```csharp
 
-      43:         {
 
-      44:             return PerformSqlAction(commandText, connectionStringName, parameters, (cmd) =>
 
-      45:             {
+```csharp
+public static T ExecuteScalar(this string commandText, string connectionStringName)
+```
 
-      46:                 object value = cmd.ExecuteScalar();
+```csharp
+{
+```
 
-      47:                 if (value == DBNull.Value) return default(T);
+```csharp
+return commandText.ExecuteScalar(connectionStringName, null);
+```
 
-      48:                 return (T)value;
+```csharp
+}
+```
 
-      49:             });
+```csharp
 
-      50:         }
 
-      51:  
 
-      52:         public static void ProcessRecords(this string commandText, string connectionStringName, Funcbool> recordAction)
+```csharp
+public static T ExecuteScalar(this string commandText, string connectionStringName, IDictionarystring, object> parameters)
+```
 
-      53:         {
+```csharp
+{
+```
 
-      54:             commandText.ProcessRecords(connectionStringName, recordAction);
+```csharp
+return PerformSqlAction(commandText, connectionStringName, parameters, (cmd) =>
+```
 
-      55:         }
+```csharp
+{
+```
 
-      56:  
+```csharp
+object value = cmd.ExecuteScalar();
+```
 
-      57:         public static void ProcessRecords(this string commandText, string connectionStringName, IDictionarystring, object> parameters, Funcbool> recordAction)
+```csharp
+if (value == DBNull.Value) return default(T);
+```
 
-      58:         {
+```csharp
+return (T)value;
+```
 
-      59:             PerformSqlActionbool>(commandText, connectionStringName, parameters, (cmd) =>
+```csharp
+});
+```
 
-      60:            {
+```csharp
+}
+```
 
-      61:                using (SqlDataReader dr = cmd.ExecuteReader())
+```csharp
 
-      62:                {
 
-      63:                    int i = 0;
 
-      64:                    try
+```csharp
+public static void ProcessRecords(this string commandText, string connectionStringName, Funcbool> recordAction)
+```
 
-      65:                    {
+```csharp
+{
+```
 
-      66:                        while (dr.Read() && recordAction(dr)) i++;
+```csharp
+commandText.ProcessRecords(connectionStringName, recordAction);
+```
 
-      67:                    }
+```csharp
+}
+```
 
-      68:                    catch (Exception ex)
+```csharp
 
-      69:                    {
 
-      70:                        ex.Data["Record Ordinal"] = i;
 
-      71:                        throw;
+```csharp
+public static void ProcessRecords(this string commandText, string connectionStringName, IDictionarystring, object> parameters, Funcbool> recordAction)
+```
 
-      72:                    }
+```csharp
+{
+```
 
-      73:                }
+```csharp
+PerformSqlActionbool>(commandText, connectionStringName, parameters, (cmd) =>
+```
 
-      74:                return true;
+```csharp
+{
+```
 
-      75:            });
+```csharp
+using (SqlDataReader dr = cmd.ExecuteReader())
+```
 
-      76:         }
+```csharp
+{
+```
 
-      77:  
+```csharp
+int i = 0;
+```
 
-      78:         private static void AddParametersToCommand(IDictionarystring, object> parameters, SqlCommand cmd)
+```csharp
+try
+```
 
-      79:         {
+```csharp
+{
+```
 
-      80:             if (parameters != null)
+```csharp
+while (dr.Read() && recordAction(dr)) i++;
+```
 
-      81:             {
+```csharp
+}
+```
 
-      82:                 foreach (string key in parameters.Keys)
+```csharp
+catch (Exception ex)
+```
 
-      83:                 {
+```csharp
+{
+```
 
-      84:                     if (parameters[key] == null)
+```csharp
+ex.Data["Record Ordinal"] = i;
+```
 
-      85:                     {
+```csharp
+throw;
+```
 
-      86:                         cmd.Parameters.AddWithValue(key, DBNull.Value);
+```csharp
+}
+```
 
-      87:                     }
+```csharp
+}
+```
 
-      88:                     else if (parameters[key].GetType().IsPrimitive)
+```csharp
+return true;
+```
 
-      89:                     {
+```csharp
+});
+```
 
-      90:                         cmd.Parameters.AddWithValue(key, parameters[key]);
+```csharp
+}
+```
 
-      91:                     }
+```csharp
 
-      92:                     else
 
-      93:                     {
 
-      94:                         cmd.Parameters.AddWithValue(key, "{0}".ToFormattedString(parameters[key]));
+```csharp
+private static void AddParametersToCommand(IDictionarystring, object> parameters, SqlCommand cmd)
+```
 
-      95:                     }
+```csharp
+{
+```
 
-      96:  
+```csharp
+if (parameters != null)
+```
 
-      97:                 }
+```csharp
+{
+```
 
-      98:             }
+```csharp
+foreach (string key in parameters.Keys)
+```
 
-      99:         }
+```csharp
+{
+```
 
-     100:  
+```csharp
+if (parameters[key] == null)
+```
 
-     101:         public static bool HasResults(this string commandText, string connectionStringName)
+```csharp
+{
+```
 
-     102:         {
+```csharp
+cmd.Parameters.AddWithValue(key, DBNull.Value);
+```
 
-     103:             return commandText.HasResults(connectionStringName, null);
+```csharp
+}
+```
 
-     104:         }
+```csharp
+else if (parameters[key].GetType().IsPrimitive)
+```
 
-     105:  
+```csharp
+{
+```
 
-     106:         public static bool HasResults(this string commandText, string connectionStringName, IDictionarystring, object> parameters)
+```csharp
+cmd.Parameters.AddWithValue(key, parameters[key]);
+```
 
-     107:         {
+```csharp
+}
+```
 
-     108:             return PerformSqlActionbool>(commandText, connectionStringName, parameters, (cmd) =>
+```csharp
+else
+```
 
-     109:             {
+```csharp
+{
+```
 
-     110:                 using (SqlDataReader dr = cmd.ExecuteReader())
+```csharp
+cmd.Parameters.AddWithValue(key, "{0}".ToFormattedString(parameters[key]));
+```
 
-     111:                 {
+```csharp
+}
+```
 
-     112:                     return dr.Read();
+```csharp
 
-     113:                 }
 
-     114:             });
 
-     115:         }
+```csharp
+}
+```
 
-     116:  
+```csharp
+}
+```
 
-     117:         private static T PerformSqlAction(string commandText, string connectionStringName, IDictionarystring, object> parameters, Func action)
+```csharp
+}
+```
 
-     118:         {
+```csharp
 
-     119:             if (commandText.IsNullOrWhiteSpace()) throw new ArgumentException("Command cannot be empty", "commandText");
 
-     120:             if (action == null) throw new ArgumentNullException("action");
 
-     121:             try
+```csharp
+public static bool HasResults(this string commandText, string connectionStringName)
+```
 
-     122:             {
+```csharp
+{
+```
 
-     123:                 using (SqlConnection conn = connectionStringName.ToConnection())
+```csharp
+return commandText.HasResults(connectionStringName, null);
+```
 
-     124:                 using (SqlCommand cmd = conn.CreateCommand())
+```csharp
+}
+```
 
-     125:                 {
+```csharp
 
-     126:                     cmd.CommandText = commandText;
 
-     127:                     AddParametersToCommand(parameters, cmd);
 
-     128:                     conn.Open();
+```csharp
+public static bool HasResults(this string commandText, string connectionStringName, IDictionarystring, object> parameters)
+```
 
-     129:                     return action(cmd);
+```csharp
+{
+```
 
-     130:                 }
+```csharp
+return PerformSqlActionbool>(commandText, connectionStringName, parameters, (cmd) =>
+```
 
-     131:             }
+```csharp
+{
+```
 
-     132:             catch (Exception ex)
+```csharp
+using (SqlDataReader dr = cmd.ExecuteReader())
+```
 
-     133:             {
+```csharp
+{
+```
 
-     134:                 ex.Data["Connection String"] = connectionStringName;
+```csharp
+return dr.Read();
+```
 
-     135:                 ex.Data["Command"] = commandText;
+```csharp
+}
+```
 
-     136:                 if (parameters != null)
+```csharp
+});
+```
 
-     137:                 {
+```csharp
+}
+```
 
-     138:                     ex.Data["Parameters"] = parameters.Keys.Select(k => "{0} = '{1}'".ToFormattedString(k, parameters[k])).ToDelimitedString("\n");
+```csharp
 
-     139:                 }
 
-     140:                 throw;
 
-     141:             }
+```csharp
+private static T PerformSqlAction(string commandText, string connectionStringName, IDictionarystring, object> parameters, Func action)
+```
 
-     142:         }
+```csharp
+{
+```
 
-     143:     }
+```csharp
+if (commandText.IsNullOrWhiteSpace()) throw new ArgumentException("Command cannot be empty", "commandText");
+```
 
-     144: }
+```csharp
+if (action == null) throw new ArgumentNullException("action");
+```
+
+```csharp
+try
+```
+
+```csharp
+{
+```
+
+```csharp
+using (SqlConnection conn = connectionStringName.ToConnection())
+```
+
+```csharp
+using (SqlCommand cmd = conn.CreateCommand())
+```
+
+```csharp
+{
+```
+
+```csharp
+cmd.CommandText = commandText;
+```
+
+```csharp
+AddParametersToCommand(parameters, cmd);
+```
+
+```csharp
+conn.Open();
+```
+
+```csharp
+return action(cmd);
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+catch (Exception ex)
+```
+
+```csharp
+{
+```
+
+```csharp
+ex.Data["Connection String"] = connectionStringName;
+```
+
+```csharp
+ex.Data["Command"] = commandText;
+```
+
+```csharp
+if (parameters != null)
+```
+
+```csharp
+{
+```
+
+```csharp
+ex.Data["Parameters"] = parameters.Keys.Select(k => "{0} = '{1}'".ToFormattedString(k, parameters[k])).ToDelimitedString("\n");
+```
+
+```csharp
+}
+```
+
+```csharp
+throw;
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 These provide DataReader, Scalar and Execute methods that all leverage the same generic ADO.Net method PerformSqlAction using best practise boiler plate code with detailed exception logging backed in.

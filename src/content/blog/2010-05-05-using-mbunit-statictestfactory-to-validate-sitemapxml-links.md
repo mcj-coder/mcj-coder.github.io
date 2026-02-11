@@ -13,256 +13,508 @@ I’ve been investigating a replacement for our current link checker ([SEO Optim
 
   Enjoy.
 
-             1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Collections.Generic;
+```csharp
+using System.Collections.Generic;
+```
 
-       3: using System.Globalization;
+```csharp
+using System.Globalization;
+```
 
-       4: using System.Linq;
+```csharp
+using System.Linq;
+```
 
-       5: using System.Net;
+```csharp
+using System.Net;
+```
 
-       6: using System.Xml.Linq;
+```csharp
+using System.Xml.Linq;
+```
 
-       7: using MbUnit.Framework;
+```csharp
+using MbUnit.Framework;
+```
 
-       8:  
+```csharp
 
-       9: namespace MartinOnDotNet.VerificationTests
 
-      10: {
 
-      11:     /// 
+```csharp
+namespace MartinOnDotNet.VerificationTests
+```
 
-      12:     /// Includes methods to verify the validity of a sitemap.xml
+```csharp
+{
+```
 
-      13:     /// 
+```csharp
+/// 
+```
 
-      14:     public sealed class ValidateSiteMap
+```csharp
+/// Includes methods to verify the validity of a sitemap.xml
+```
 
-      15:     {
+```csharp
+/// 
+```
 
-      16:  
+```csharp
+public sealed class ValidateSiteMap
+```
 
-      17:         /// 
+```csharp
+{
+```
 
-      18:         /// Generates a static test for each url referenced within the sitemap
+```csharp
 
-      19:         /// 
 
-      20:         [StaticTestFactory, Parallelizable(TestScope.Descendants)]
 
-      21:         public static IEnumerable GenerateSiteMapLinkTests()
+```csharp
+/// 
+```
 
-      22:         {
+```csharp
+/// Generates a static test for each url referenced within the sitemap
+```
 
-      23:             Uri sitemapUri = new Uri(Properties.Settings.Default.SiteMapXmlUri); // Uri for Xml Sitemap to test : http://localhost/sitemap.xml
+```csharp
+/// 
+```
 
-      24:             int requestTimeout = Properties.Settings.Default.SiteMapRequestTimeout; //timeout for each request in ms : 300ms
+```csharp
+[StaticTestFactory, Parallelizable(TestScope.Descendants)]
+```
 
-      25:  
+```csharp
+public static IEnumerable GenerateSiteMapLinkTests()
+```
 
-      26:             IEnumerablestring> locations = GetSitemapLocations(sitemapUri);
+```csharp
+{
+```
 
-      27:             //is sitemap populated
+```csharp
+Uri sitemapUri = new Uri(Properties.Settings.Default.SiteMapXmlUri); // Uri for Xml Sitemap to test : http://localhost/sitemap.xml
+```
 
-      28:             yield return CreateSitemapHasNodesTest(sitemapUri, locations);
+```csharp
+int requestTimeout = Properties.Settings.Default.SiteMapRequestTimeout; //timeout for each request in ms : 300ms
+```
 
-      29:             
+```csharp
 
-      30:             //are all reference urls valid
 
-      31:             foreach (string location in locations)
 
-      32:             {
+```csharp
+IEnumerablestring> locations = GetSitemapLocations(sitemapUri);
+```
 
-      33:                 yield return CreateLocationTest(requestTimeout, location, HttpStatusCode.OK);
+```csharp
+//is sitemap populated
+```
 
-      34:             }
+```csharp
+yield return CreateSitemapHasNodesTest(sitemapUri, locations);
+```
 
-      35:             
+```csharp
 
-      36:             // check that robots.txt is present
 
-      37:             Uri robotstxtUri = new Uri(sitemapUri, "/robots.txt");
 
-      38:             yield return CreateLocationTest(requestTimeout, robotstxtUri.ToString(), HttpStatusCode.OK);
+```csharp
+//are all reference urls valid
+```
 
-      39:             //finally, let's check that a deliberately incorrect url
+```csharp
+foreach (string location in locations)
+```
 
-      40:             Uri nonExistantUri = new Uri(sitemapUri, "/nonexistantfileonserver/");
+```csharp
+{
+```
 
-      41:             yield return CreateLocationTest(requestTimeout, nonExistantUri.ToString(), HttpStatusCode.NotFound);
+```csharp
+yield return CreateLocationTest(requestTimeout, location, HttpStatusCode.OK);
+```
 
-      42:             
+```csharp
+}
+```
 
-      43:         }
+```csharp
 
-      44:  
 
-      45:         /// 
 
-      47:         /// 
+```csharp
+// check that robots.txt is present
+```
 
-      48:         /// The sitemap URI.
+```csharp
+Uri robotstxtUri = new Uri(sitemapUri, "/robots.txt");
+```
 
-      49:         /// The locations.
+```csharp
+yield return CreateLocationTest(requestTimeout, robotstxtUri.ToString(), HttpStatusCode.OK);
+```
 
-      50:         /// A test that checks the sitemap has nodes
+```csharp
+//finally, let's check that a deliberately incorrect url
+```
 
-      51:         private static TestCase CreateSitemapHasNodesTest(Uri sitemapUri, IEnumerablestring> locations)
+```csharp
+Uri nonExistantUri = new Uri(sitemapUri, "/nonexistantfileonserver/");
+```
 
-      52:         {
+```csharp
+yield return CreateLocationTest(requestTimeout, nonExistantUri.ToString(), HttpStatusCode.NotFound);
+```
 
-      53:             return new TestCase(string.Format(CultureInfo.InvariantCulture, "{0} - Sitemap Has Entries", sitemapUri), () =>
+```csharp
 
-      54:             {
 
-      55:                 Assert.IsTrue(locations.Any());
 
-      56:             });
+```csharp
+}
+```
 
-      57:         }
+```csharp
 
-      58:  
 
-      59:         /// 
 
-      60:         /// Creates the location test.
+```csharp
+/// 
+```
 
-      61:         /// 
+```csharp
+/// 
+```
 
-      62:         /// The request timeout.
+```csharp
+/// The sitemap URI.
+```
 
-      63:         /// The location.
+```csharp
+/// The locations.
+```
 
-      64:         /// A unique test for a sitemap location
+```csharp
+/// A test that checks the sitemap has nodes
+```
 
-      65:         private static TestCase CreateLocationTest(int requestTimeout, string location, HttpStatusCode expectedResult)
+```csharp
+private static TestCase CreateSitemapHasNodesTest(Uri sitemapUri, IEnumerablestring> locations)
+```
 
-      66:         {
+```csharp
+{
+```
 
-      67:             return new TestCase(location, () =>
+```csharp
+return new TestCase(string.Format(CultureInfo.InvariantCulture, "{0} - Sitemap Has Entries", sitemapUri), () =>
+```
 
-      68:             {
+```csharp
+{
+```
 
-      69:                 HttpWebRequest wrq = HttpWebRequest.Create(location) as HttpWebRequest;
+```csharp
+Assert.IsTrue(locations.Any());
+```
 
-      70:                 wrq.UserAgent = "Googlebot/2.1 (+http://www.google.com/bot.html)"; // appear to be google to escape any custom error handling
+```csharp
+});
+```
 
-      71:                 wrq.Timeout = requestTimeout;
+```csharp
+}
+```
 
-      72:                 HttpWebResponse wrp = null;
+```csharp
 
-      73:                 try
 
-      74:                 {
 
-      75:                     wrp = GetResponse(wrq);
+```csharp
+/// 
+```
 
-      76:                     Assert.AreEqual(expectedResult, wrp.StatusCode);
+```csharp
+/// Creates the location test.
+```
 
-      77:                 }
+```csharp
+/// 
+```
 
-      78:                 finally
+```csharp
+/// The request timeout.
+```
 
-      79:                 {
+```csharp
+/// The location.
+```
 
-      80:                     if (wrp != null) wrp.Close();
+```csharp
+/// A unique test for a sitemap location
+```
 
-      81:                 }
+```csharp
+private static TestCase CreateLocationTest(int requestTimeout, string location, HttpStatusCode expectedResult)
+```
 
-      82:             });
+```csharp
+{
+```
 
-      83:         }
+```csharp
+return new TestCase(location, () =>
+```
 
-      84:  
+```csharp
+{
+```
 
-      85:         #region Helper Methods
+```csharp
+HttpWebRequest wrq = HttpWebRequest.Create(location) as HttpWebRequest;
+```
 
-      86:  
+```csharp
+wrq.UserAgent = "Googlebot/2.1 (+http://www.google.com/bot.html)"; // appear to be google to escape any custom error handling
+```
 
-      87:         /// 
+```csharp
+wrq.Timeout = requestTimeout;
+```
 
-      88:         /// Gets the sitemap locations.
+```csharp
+HttpWebResponse wrp = null;
+```
 
-      89:         /// 
+```csharp
+try
+```
 
-      90:         /// The sitemap URI.
+```csharp
+{
+```
 
-      91:         /// A list of locations referenced within the sitemap
+```csharp
+wrp = GetResponse(wrq);
+```
 
-      92:         private static IEnumerablestring> GetSitemapLocations(Uri sitemapUri)
+```csharp
+Assert.AreEqual(expectedResult, wrp.StatusCode);
+```
 
-      93:         {
+```csharp
+}
+```
 
-      94:             XNamespace xn = XNamespace.Get(@"http://www.sitemaps.org/schemas/sitemap/0.9");
+```csharp
+finally
+```
 
-      95:             XDocument xdoc = XDocument.Load(sitemapUri.ToString(), LoadOptions.PreserveWhitespace);
+```csharp
+{
+```
 
-      96:             return from loc in xdoc.Descendants(xn + "loc")
+```csharp
+if (wrp != null) wrp.Close();
+```
 
-      97:                             select loc.Value;
+```csharp
+}
+```
 
-      98:         }
+```csharp
+});
+```
 
-      99:    
+```csharp
+}
+```
 
-     100:         /// 
+```csharp
 
-     101:         /// Gets the response object and handles any protocol exceptions
 
-     102:         /// 
 
-     103:         /// The request.
+```csharp
+#region Helper Methods
+```
 
-     104:         /// The response object if available
+```csharp
 
-     105:         private static HttpWebResponse GetResponse(HttpWebRequest request)
 
-     106:         {
 
-     107:             try
+```csharp
+/// 
+```
 
-     108:             {
+```csharp
+/// Gets the sitemap locations.
+```
 
-     109:                 return request.GetResponse() as HttpWebResponse;
+```csharp
+/// 
+```
 
-     110:             }
+```csharp
+/// The sitemap URI.
+```
 
-     111:             catch (WebException wex)
+```csharp
+/// A list of locations referenced within the sitemap
+```
 
-     112:             {
+```csharp
+private static IEnumerablestring> GetSitemapLocations(Uri sitemapUri)
+```
 
-     113:                 if (wex.Status == WebExceptionStatus.ProtocolError)
+```csharp
+{
+```
 
-     114:                 {
+```csharp
+XNamespace xn = XNamespace.Get(@"http://www.sitemaps.org/schemas/sitemap/0.9");
+```
 
-     115:                     return wex.Response as HttpWebResponse;
+```csharp
+XDocument xdoc = XDocument.Load(sitemapUri.ToString(), LoadOptions.PreserveWhitespace);
+```
 
-     116:                 }
+```csharp
+return from loc in xdoc.Descendants(xn + "loc")
+```
 
-     117:                 else
+```csharp
+select loc.Value;
+```
 
-     118:                 {
+```csharp
+}
+```
 
-     119:                     throw;
+```csharp
 
-     120:                 }
 
-     121:             }
 
-     122:         }
+```csharp
+/// 
+```
 
-     123:  
+```csharp
+/// Gets the response object and handles any protocol exceptions
+```
 
-     124:         #endregion
+```csharp
+/// 
+```
 
-     125:  
+```csharp
+/// The request.
+```
 
-     126:     }
+```csharp
+/// The response object if available
+```
 
-     127: }
+```csharp
+private static HttpWebResponse GetResponse(HttpWebRequest request)
+```
+
+```csharp
+{
+```
+
+```csharp
+try
+```
+
+```csharp
+{
+```
+
+```csharp
+return request.GetResponse() as HttpWebResponse;
+```
+
+```csharp
+}
+```
+
+```csharp
+catch (WebException wex)
+```
+
+```csharp
+{
+```
+
+```csharp
+if (wex.Status == WebExceptionStatus.ProtocolError)
+```
+
+```csharp
+{
+```
+
+```csharp
+return wex.Response as HttpWebResponse;
+```
+
+```csharp
+}
+```
+
+```csharp
+else
+```
+
+```csharp
+{
+```
+
+```csharp
+throw;
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+#endregion
+```
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 **Attachment: [Visual Studio Project](http://bit.ly/djjX5u)**

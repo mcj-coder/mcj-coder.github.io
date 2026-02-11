@@ -31,98 +31,189 @@ One of our larger client Ektron sites has had a history of poor performance that
 
      * Delete all Catalogs from the Indexing Service (via Indexing Service Manager)     * Stop the Indexing Service     * Ensure that QLXFilter.dll is properly registered.  Open a command prompt and execute      regsvr32 c:\Windows\System32\QLXFilter.dll       * Locate your ‘FriendlyNamesDefinition.txt (check the ‘DefaultColumnFile’ property value of the ‘[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\ContentIndexCommon]’ key) and remove any of the non-standard  columns (indexed smart form fields, etc).             A list of standard column definitions is:                                           1: [Names]
 
-             2: DateCreated (VT_FILETIME) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktDateCreated
+```csharp
+DateCreated (VT_FILETIME) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktDateCreated
+```
 
-             3: DateModified (VT_FILETIME) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktDateModified
+```csharp
+DateModified (VT_FILETIME) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktDateModified
+```
 
-             4: GoLiveDate (VT_FILETIME) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktGoLiveDate
+```csharp
+GoLiveDate (VT_FILETIME) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktGoLiveDate
+```
 
-             5: ExpiryDate (VT_FILETIME) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktExpiryDate
+```csharp
+ExpiryDate (VT_FILETIME) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktExpiryDate
+```
 
-             6: ExpiryType (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktExpiryType
+```csharp
+ExpiryType (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktExpiryType
+```
 
-             7: TaxCategory (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktTaxCategory
+```csharp
+TaxCategory (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktTaxCategory
+```
 
-             8: ContentID (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktContentID
+```csharp
+ContentID (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktContentID
+```
 
-             9: ContentLanguage (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktContentLanguage
+```csharp
+ContentLanguage (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktContentLanguage
+```
 
-            10: ContentType (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktContentType 
+```csharp
+ContentType (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktContentType 
+```
 
-            11: FolderId (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktFolderId
+```csharp
+FolderId (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktFolderId
+```
 
-            12: QuickLink (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktQuickLink
+```csharp
+QuickLink (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktQuickLink
+```
 
-            13: FolderName (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktFolderName 
+```csharp
+FolderName (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktFolderName 
+```
 
-            14: MapLongitude (DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktLongitude 
+```csharp
+MapLongitude (DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktLongitude 
+```
 
-            15: MapLatitude (DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktLatitude 
+```csharp
+MapLatitude (DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktLatitude 
+```
 
-            16: MapAddress (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktAddress 
+```csharp
+MapAddress (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktAddress 
+```
 
-            17: EDescription (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktEDescription 
+```csharp
+EDescription (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktEDescription 
+```
 
-            18: Keywords (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktKeywords 
+```csharp
+Keywords (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktKeywords 
+```
 
-            19: Title (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktTitle 
+```csharp
+Title (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktTitle 
+```
 
-            20: MetaInfo (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktMetaInfo
+```csharp
+MetaInfo (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktMetaInfo
+```
 
-            21: CMSPath (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktCMSPath
+```csharp
+CMSPath (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktCMSPath
+```
 
-            22: CMSSize (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktCMSSize
+```csharp
+CMSSize (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktCMSSize
+```
 
-            23: InPerm (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktInPerm
+```csharp
+InPerm (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktInPerm
+```
 
-            24: Searchable (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktSearchable
+```csharp
+Searchable (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktSearchable
+```
 
-            25: description  (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae  Ektdescription
+```csharp
+description  (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae  Ektdescription
+```
 
-            26: MapDate (VT_FILETIME) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktMapDate
+```csharp
+MapDate (VT_FILETIME) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktMapDate
+```
 
-            27: ContentID64 (DBTYPE_I8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktContentID64
+```csharp
+ContentID64 (DBTYPE_I8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktContentID64
+```
 
-            28: FolderId64 (DBTYPE_I8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktFolderId64
+```csharp
+FolderId64 (DBTYPE_I8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktFolderId64
+```
 
-            29: EProductType (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktProductType
+```csharp
+EProductType (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktProductType
+```
 
-            30: ESkuNumber(DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktSkuNumber
+```csharp
+ESkuNumber(DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktSkuNumber
+```
 
-            31: ESizeMeasure (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktSizeMeasure
+```csharp
+ESizeMeasure (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktSizeMeasure
+```
 
-            32: EHeight(DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktHeight
+```csharp
+EHeight(DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktHeight
+```
 
-            33: EWidth(DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktWidth
+```csharp
+EWidth(DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktWidth
+```
 
-            34: ELength(DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktLength
+```csharp
+ELength(DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktLength
+```
 
-            35: EWeight(DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktWeight
+```csharp
+EWeight(DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktWeight
+```
 
-            36: EWeightMeasure (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktWeightMeasure
+```csharp
+EWeightMeasure (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktWeightMeasure
+```
 
-            37: EUnitsInStock (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktUnitsInStock
+```csharp
+EUnitsInStock (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktUnitsInStock
+```
 
-            38: EUnitsOnOrder (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktUnitsOnOrder
+```csharp
+EUnitsOnOrder (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktUnitsOnOrder
+```
 
-            39: EReorderLevel (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktReorderLevel
+```csharp
+EReorderLevel (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktReorderLevel
+```
 
-            40: EPurchased (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktPurchased
+```csharp
+EPurchased (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktPurchased
+```
 
-            41: EImage(DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktImage 
+```csharp
+EImage(DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktImage 
+```
 
-            42: ECurrencyId (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktCurrencyId 
+```csharp
+ECurrencyId (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktCurrencyId 
+```
 
-            43: EListPrice (DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktListPrice 
+```csharp
+EListPrice (DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktListPrice 
+```
 
-            44: ESalePrice (DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktSalePrice 
+```csharp
+ESalePrice (DBTYPE_R8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktSalePrice 
+```
 
-            45: EBuyable (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktBuyable 
+```csharp
+EBuyable (DBTYPE_I4) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktBuyable 
+```
 
-            46: xmlconfigid (DBTYPE_I8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae Ektxmlconfigid
+```csharp
+xmlconfigid (DBTYPE_I8) = d5cdd505-2e9c-101b-9397-08002b2cf9ae Ektxmlconfigid
+```
 
-            47: DisabledTaxCategory (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktDisabledTaxCategory
-
+```csharp
+DisabledTaxCategory (DBTYPE_WSTR | DBTYPE_BYREF) = d5cdd505-2e9c-101b-9397-08002b2cf9ae EktDisabledTaxCategory
+```
       
     
   

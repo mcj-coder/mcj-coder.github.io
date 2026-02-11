@@ -11,8 +11,9 @@ When content is created on an [Ektron](http://bit.ly/d0YHh7) with a large conten
 
   For example if a new content item has an id of 6442451035 it will actually be indexed with a contentid of 2147483739.  This is because the original id is larger than an unsigned integer can hold.                   1: long contentId = 6442451035;
 
-         2: Console.WriteLine((uint)contentId); //2147483739
-
+```csharp
+Console.WriteLine((uint)contentId); //2147483739
+```
   
 
 You can then query your public index to see if content has been misindexed by running a query to find your content

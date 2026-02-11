@@ -15,40 +15,72 @@ One of the features of [Ektron](http://bit.ly/d0YHh7) is tight office integratio
 ## The Manual Fix (Ektron Supported)
   Edit /workarea/edit.aspx and comment out the following lines (~line 2110):
 
-             1: var isOffice = document.getElementById("isOfficeDoc");
+```csharp
+var isOffice = document.getElementById("isOfficeDoc");
+```
 
-       2:  
+```csharp
 
-       3: if ((isOffice != null) && (isOffice.value == "true") && (ShowMultipleUpload() || !IsBrowserIE()))
 
-       4: {
 
-       5:     g_initialPaneToShow = 'dvSummary';
+```csharp
+if ((isOffice != null) && (isOffice.value == "true") && (ShowMultipleUpload() || !IsBrowserIE()))
+```
 
-       6:     var contentTabHeader = document.getElementById("dvContent");
+```csharp
+{
+```
 
-       7:     var contentTabContent = document.getElementById("_dvContent");
+```csharp
+g_initialPaneToShow = 'dvSummary';
+```
 
-       8:     if (contentTabHeader != null)
+```csharp
+var contentTabHeader = document.getElementById("dvContent");
+```
 
-       9:        contentTabHeader.style.display="none";
+```csharp
+var contentTabContent = document.getElementById("_dvContent");
+```
 
-      10:     if (contentTabContent != null)
+```csharp
+if (contentTabHeader != null)
+```
 
-      11:        contentTabContent.style.display="none";
+```csharp
+contentTabHeader.style.display="none";
+```
 
-      12: }
+```csharp
+if (contentTabContent != null)
+```
+
+```csharp
+contentTabContent.style.display="none";
+```
+
+```csharp
+}
+```
 
 Also, comment out the following lines of /workarea/edit.aspx.vb  (~line 1945)
 
   
-       1: If (isOfficeDoc.Value = "true") Then
+```csharp
+If (isOfficeDoc.Value = "true") Then
+```
 
-       2:     phContent.Visible = False
+```csharp
+phContent.Visible = False
+```
 
-       3:     phEditContent.Visible = False
+```csharp
+phEditContent.Visible = False
+```
 
-       4: End If
+```csharp
+End If
+```
 
 The workarea will now treat office files in the same manner as PDF DMS Assets.
 
@@ -57,206 +89,408 @@ The workarea will now treat office files in the same manner as PDF DMS Assets.
 Looking at what the official fix achieves does, it all hangs on the value of the “isOffice” hidden field being ‘true’.  Realising this it’s an (almost) trivial task to create an HttpModule to manipulate the control tree of the edit page to get the same effect.  The major advantage of this is that it won’t require modification of Ektron files and can be disabled by simply unregistering the module within the web.config.
 
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2: using System.Reflection;
+```csharp
+using System.Reflection;
+```
 
-       3: using System.Web;
+```csharp
+using System.Web;
+```
 
-       4: using System.Web.UI;
+```csharp
+using System.Web.UI;
+```
 
-       5: using System.Web.UI.HtmlControls;
+```csharp
+using System.Web.UI.HtmlControls;
+```
 
-       6:  
+```csharp
 
-       7: namespace MartinOnDotNet.Support
 
-       8: {
 
-       9:     /// 
+```csharp
+namespace MartinOnDotNet.Support
+```
 
-      10:     /// Force OfficeDocuments to be treated as normal DMS Assets
+```csharp
+{
+```
 
-      11:     /// 
+```csharp
+/// 
+```
 
-      12:     public class OfficeDocumentFixModule : IHttpModule
+```csharp
+/// Force OfficeDocuments to be treated as normal DMS Assets
+```
 
-      13:     {
+```csharp
+/// 
+```
 
-      14:  
+```csharp
+public class OfficeDocumentFixModule : IHttpModule
+```
 
-      15:         /// 
+```csharp
+{
+```
 
-      16:         /// Initializes a module and prepares it to handle requests.
+```csharp
 
-      17:         /// 
 
-      18:         /// An  that provides access to the methods, properties, and events common to all application objects within an ASP.NET application
 
-      19:         public void Init(HttpApplication context)
+```csharp
+/// 
+```
 
-      20:         {
+```csharp
+/// Initializes a module and prepares it to handle requests.
+```
 
-      21:             if (context == null) throw new ArgumentNullException("context");
+```csharp
+/// 
+```
 
-      22:             context.PreRequestHandlerExecute += new EventHandler(OnPreRequestHandlerExecute);
+```csharp
+/// An  that provides access to the methods, properties, and events common to all application objects within an ASP.NET application
+```
 
-      23:         }
+```csharp
+public void Init(HttpApplication context)
+```
 
-      24:  
+```csharp
+{
+```
 
-      25:         private void OnPreRequestHandlerExecute(object sender, EventArgs e)
+```csharp
+if (context == null) throw new ArgumentNullException("context");
+```
 
-      26:         {
+```csharp
+context.PreRequestHandlerExecute += new EventHandler(OnPreRequestHandlerExecute);
+```
 
-      27:             HttpContext current = HttpContext.Current;
+```csharp
+}
+```
 
-      28:             if (current == null
+```csharp
 
-      29:                 || current.Handler == null
 
-      30:                 || current.Request == null
 
-      31:                 || !current.Request.Url.AbsolutePath.EndsWith("/workarea/edit.aspx", StringComparison.OrdinalIgnoreCase)) return;
+```csharp
+private void OnPreRequestHandlerExecute(object sender, EventArgs e)
+```
 
-      32:  
+```csharp
+{
+```
 
-      33:             Page page = current.Handler as Page;
+```csharp
+HttpContext current = HttpContext.Current;
+```
 
-      34:             page.PreInit += new EventHandler(OnPreInit);
+```csharp
+if (current == null
+```
 
-      35:  
+```csharp
+|| current.Handler == null
+```
 
-      36:         }
+```csharp
+|| current.Request == null
+```
 
-      37:  
+```csharp
+|| !current.Request.Url.AbsolutePath.EndsWith("/workarea/edit.aspx", StringComparison.OrdinalIgnoreCase)) return;
+```
 
-      38:         /// 
+```csharp
 
-      39:         /// Always return false regardless of actual value
 
-      40:         /// 
 
-      41:         public class AlwaysFalseHiddenField : System.Web.UI.HtmlControls.HtmlInputHidden
+```csharp
+Page page = current.Handler as Page;
+```
 
-      42:         {
+```csharp
+page.PreInit += new EventHandler(OnPreInit);
+```
 
-      43:             /// 
+```csharp
 
-      44:             /// Gets or sets the value associated with the  control.
 
-      45:             /// 
 
-      46:             /// 
+```csharp
+}
+```
 
-      47:             /// 
+```csharp
 
-      48:             /// The value associated with the .
 
-      49:             /// 
 
-      50:             public override string Value
+```csharp
+/// 
+```
 
-      51:             {
+```csharp
+/// Always return false regardless of actual value
+```
 
-      52:                 get
+```csharp
+/// 
+```
 
-      53:                 {
+```csharp
+public class AlwaysFalseHiddenField : System.Web.UI.HtmlControls.HtmlInputHidden
+```
 
-      54:                     return "false";
+```csharp
+{
+```
 
-      55:                 }
+```csharp
+/// 
+```
 
-      56:                 set
+```csharp
+/// Gets or sets the value associated with the  control.
+```
 
-      57:                 {
+```csharp
+/// 
+```
 
-      58:                     base.Value = value;
+```csharp
+/// 
+```
 
-      59:                 }
+```csharp
+/// 
+```
 
-      60:             }
+```csharp
+/// The value associated with the .
+```
 
-      61:         }
+```csharp
+/// 
+```
 
-      62:  
+```csharp
+public override string Value
+```
 
-      63:  
+```csharp
+{
+```
 
-      64:  
+```csharp
+get
+```
 
-      65:         /// 
+```csharp
+{
+```
 
-      66:         /// Called when the Page load event fires
+```csharp
+return "false";
+```
 
-      67:         /// 
+```csharp
+}
+```
 
-      68:         /// The sender.
+```csharp
+set
+```
 
-      69:         /// The  instance containing the event data.
+```csharp
+{
+```
 
-      70:         private void OnPreInit(object sender, EventArgs e)
+```csharp
+base.Value = value;
+```
 
-      71:         {
+```csharp
+}
+```
 
-      72:             Page page = sender as Page;
+```csharp
+}
+```
 
-      73:             if (page == null) return;
+```csharp
+}
+```
 
-      74:             PropertyInfo officeDocProperty = page.GetType().GetProperty("isOfficeDoc", BindingFlags.Instance | BindingFlags.NonPublic);
+```csharp
 
-      75:             if (officeDocProperty == null) return;
 
-      76:  
 
-      77:             HtmlInputHidden hil = officeDocProperty.GetValue(page, null) as HtmlInputHidden;
+```csharp
 
-      78:             AlwaysFalseHiddenField fhil = new AlwaysFalseHiddenField();
 
-      79:             fhil.ID = hil.ID;
 
-      80:             fhil.Name = hil.Name;
+```csharp
 
-      81:             fhil.Value="false";
 
-      82:             page.PreRenderComplete += (s, ea) =>
 
-      83:                 {
+```csharp
+/// 
+```
 
-      84:                     hil.Value = "false";
+```csharp
+/// Called when the Page load event fires
+```
 
-      85:                 };
+```csharp
+/// 
+```
 
-      86:             officeDocProperty.SetValue(page, fhil, null);
+```csharp
+/// The sender.
+```
 
-      87:  
+```csharp
+/// The  instance containing the event data.
+```
 
-      88:         }
+```csharp
+private void OnPreInit(object sender, EventArgs e)
+```
 
-      89:  
+```csharp
+{
+```
 
-      90:  
+```csharp
+Page page = sender as Page;
+```
 
-      91:         /// 
+```csharp
+if (page == null) return;
+```
 
-      92:         /// Disposes of the resources (other than memory) used by the module that implements .
+```csharp
+PropertyInfo officeDocProperty = page.GetType().GetProperty("isOfficeDoc", BindingFlags.Instance | BindingFlags.NonPublic);
+```
 
-      93:         /// 
+```csharp
+if (officeDocProperty == null) return;
+```
 
-      94:         public void Dispose()
+```csharp
 
-      95:         {
 
-      96:             //throw new NotImplementedException();
 
-      97:         }
+```csharp
+HtmlInputHidden hil = officeDocProperty.GetValue(page, null) as HtmlInputHidden;
+```
 
-      98:  
+```csharp
+AlwaysFalseHiddenField fhil = new AlwaysFalseHiddenField();
+```
 
-      99:  
+```csharp
+fhil.ID = hil.ID;
+```
 
-     100:     }
+```csharp
+fhil.Name = hil.Name;
+```
 
-     101: }
+```csharp
+fhil.Value="false";
+```
+
+```csharp
+page.PreRenderComplete += (s, ea) =>
+```
+
+```csharp
+{
+```
+
+```csharp
+hil.Value = "false";
+```
+
+```csharp
+};
+```
+
+```csharp
+officeDocProperty.SetValue(page, fhil, null);
+```
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+
+
+
+```csharp
+/// 
+```
+
+```csharp
+/// Disposes of the resources (other than memory) used by the module that implements .
+```
+
+```csharp
+/// 
+```
+
+```csharp
+public void Dispose()
+```
+
+```csharp
+{
+```
+
+```csharp
+//throw new NotImplementedException();
+```
+
+```csharp
+}
+```
+
+```csharp
+
+
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 Simply wire up the module in web.config and job’s a good ‘un.

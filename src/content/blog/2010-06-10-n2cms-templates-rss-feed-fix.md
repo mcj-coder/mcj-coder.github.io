@@ -13,88 +13,168 @@ originalUrl: "https://martinondotnet.blogspot.com/"
 ## *Cannot use filters when using MaxResults, sorry.*
   Fortunately a fix can be found the N2.Templates.Mvc project, you just need to replace the following functions in N2.Templates.Items.RssFeed :
 
-             1: public virtual IEnumerable GetItems()
+```csharp
+public virtual IEnumerable GetItems()
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     foreach (ISyndicatable item in N2.Find.Items
+```csharp
+foreach (ISyndicatable item in N2.Find.Items
+```
 
-       4:         .Where.Detail(SyndicatableDefinitionAppender.SyndicatableDetailName).Eq(true)
+```csharp
+.Where.Detail(SyndicatableDefinitionAppender.SyndicatableDetailName).Eq(true)
+```
 
-       5:         .Filters(GetFilters())
+```csharp
+.Filters(GetFilters())
+```
 
-       6:         .MaxResults(NumberOfItems)
+```csharp
+.MaxResults(NumberOfItems)
+```
 
-       7:         .OrderBy.Published.Desc
+```csharp
+.OrderBy.Published.Desc
+```
 
-       8:         .Select())
+```csharp
+.Select())
+```
 
-       9:     {
+```csharp
+{
+```
 
-      10:         yield return item;
+```csharp
+yield return item;
+```
 
-      11:     }
+```csharp
+}
+```
 
-      12: }
+```csharp
+}
+```
 
-      13:  
+```csharp
 
-      14: private ItemFilter[] GetFilters()
 
-      15: {
 
-      16:     ItemFilter[] filters;
+```csharp
+private ItemFilter[] GetFilters()
+```
 
-      17:     if (FeedRoot != null)
+```csharp
+{
+```
 
-      18:         filters = new ItemFilter[] { new TypeFilter(typeof(ISyndicatable)), new AccessFilter(), new ParentFilter(FeedRoot) };
+```csharp
+ItemFilter[] filters;
+```
 
-      19:     else
+```csharp
+if (FeedRoot != null)
+```
 
-      20:         filters = new ItemFilter[] { new TypeFilter(typeof(ISyndicatable)), new AccessFilter() };
+```csharp
+filters = new ItemFilter[] { new TypeFilter(typeof(ISyndicatable)), new AccessFilter(), new ParentFilter(FeedRoot) };
+```
 
-      21:     return filters;
+```csharp
+else
+```
 
-      22: }
+```csharp
+filters = new ItemFilter[] { new TypeFilter(typeof(ISyndicatable)), new AccessFilter() };
+```
+
+```csharp
+return filters;
+```
+
+```csharp
+}
+```
 
 With:
 
   
-       1: public virtual IEnumerable GetItems()
+```csharp
+public virtual IEnumerable GetItems()
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     var filter = new AccessFilter();
+```csharp
+var filter = new AccessFilter();
+```
 
-       4:     var q = N2.Find.Items.Where.Detail(SyndicatableDefinitionAppender.SyndicatableDetailName).Eq(true);
+```csharp
+var q = N2.Find.Items.Where.Detail(SyndicatableDefinitionAppender.SyndicatableDetailName).Eq(true);
+```
 
-       5:     if (FeedRoot != null)
+```csharp
+if (FeedRoot != null)
+```
 
-       6:         q = q.And.AncestralTrail.Like(Utility.GetTrail(FeedRoot) + "%");
+```csharp
+q = q.And.AncestralTrail.Like(Utility.GetTrail(FeedRoot) + "%");
+```
 
-       7:  
+```csharp
 
-       8:     foreach (ContentItem item in q
 
-       9:             .OrderBy.Published.Desc
 
-      10:             .Select().Take(NumberOfItems))
+```csharp
+foreach (ContentItem item in q
+```
 
-      11:     {
+```csharp
+.OrderBy.Published.Desc
+```
 
-      12:         var syndicatable = item as ISyndicatable;
+```csharp
+.Select().Take(NumberOfItems))
+```
 
-      13:         if (syndicatable != null && filter.Match(item))
+```csharp
+{
+```
 
-      14:         {
+```csharp
+var syndicatable = item as ISyndicatable;
+```
 
-      15:             yield return syndicatable;
+```csharp
+if (syndicatable != null && filter.Match(item))
+```
 
-      16:         }
+```csharp
+{
+```
 
-      17:     }
+```csharp
+yield return syndicatable;
+```
 
-      18: }
+```csharp
+}
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 And add ‘using System.Linq’ to the top of the file.
 

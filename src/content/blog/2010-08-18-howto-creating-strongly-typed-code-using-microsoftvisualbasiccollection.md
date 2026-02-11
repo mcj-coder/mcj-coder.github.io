@@ -17,98 +17,186 @@ One of the 3rd Party CMS’s that I frequently work with ([Ektron](http://bit.ly
 
   My preferred method for this is an Extension Method, but a static method will work just as well:
 
-             1: private static FieldInfo KeyNodeHash = typeof(Microsoft.VisualBasic.Collection).GetField("m_KeyedNodesHash", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase);
+```csharp
+private static FieldInfo KeyNodeHash = typeof(Microsoft.VisualBasic.Collection).GetField("m_KeyedNodesHash", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase);
+```
 
-       2:  
+```csharp
 
-       3: /// 
 
-       4: /// Converts the  instance to a Dictionary
 
-       5: /// 
+```csharp
+/// 
+```
 
-       6: /// The collection.
+```csharp
+/// Converts the  instance to a Dictionary
+```
 
-       7: /// 
+```csharp
+/// 
+```
 
-       8: public static IDictionarystring, object> ToDictionary(this Microsoft.VisualBasic.Collection collection)
+```csharp
+/// The collection.
+```
 
-       9: {
+```csharp
+/// 
+```
 
-      10:    if (collection == null) throw new ArgumentNullException("collection");
+```csharp
+public static IDictionarystring, object> ToDictionary(this Microsoft.VisualBasic.Collection collection)
+```
 
-      11:    if (KeyNodeHash == null) throw new NotSupportedException("Expected to find private field m_KeyedNodesHash within Collection implementation");
+```csharp
+{
+```
 
-      12:    IDictionary internalDictionary = KeyNodeHash.GetValue(collection) as IDictionary;
+```csharp
+if (collection == null) throw new ArgumentNullException("collection");
+```
 
-      13:    if (internalDictionary == null) throw new NotSupportedException("Expected private field m_KeyedNodesHash to implement IDictionary");
+```csharp
+if (KeyNodeHash == null) throw new NotSupportedException("Expected to find private field m_KeyedNodesHash within Collection implementation");
+```
 
-      14:    Dictionarystring, object> mapped = new Dictionarystring, object>();
+```csharp
+IDictionary internalDictionary = KeyNodeHash.GetValue(collection) as IDictionary;
+```
 
-      15:    foreach (string key in internalDictionary.Keys)
+```csharp
+if (internalDictionary == null) throw new NotSupportedException("Expected private field m_KeyedNodesHash to implement IDictionary");
+```
 
-      16:    {
+```csharp
+Dictionarystring, object> mapped = new Dictionarystring, object>();
+```
 
-      17:        object value = internalDictionary[key];
+```csharp
+foreach (string key in internalDictionary.Keys)
+```
 
-      18:        if (value == null)
+```csharp
+{
+```
 
-      19:        {
+```csharp
+object value = internalDictionary[key];
+```
 
-      20:            mapped[key] = null;
+```csharp
+if (value == null)
+```
 
-      21:        }
+```csharp
+{
+```
 
-      22:        else
+```csharp
+mapped[key] = null;
+```
 
-      23:        {
+```csharp
+}
+```
 
-      24:            mapped[key] = value.GetType()
+```csharp
+else
+```
 
-      25:                .GetField("m_Value", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase)
+```csharp
+{
+```
 
-      26:                .GetValue(value);
+```csharp
+mapped[key] = value.GetType()
+```
 
-      27:        }
+```csharp
+.GetField("m_Value", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase)
+```
 
-      28:    }
+```csharp
+.GetValue(value);
+```
 
-      29:    return mapped;
+```csharp
+}
+```
 
-      30:  
+```csharp
+}
+```
 
-      31: }
+```csharp
+return mapped;
+```
 
-      32:  
+```csharp
 
-      33: /* You'll need the following using statements
 
-      34: using System;
 
-      35: using System.Collections;
+```csharp
+}
+```
 
-      36: using System.Collections.Generic;
+```csharp
 
-      37: using System.Reflection;
 
-      38: */
+
+```csharp
+/* You'll need the following using statements
+```
+
+```csharp
+using System;
+```
+
+```csharp
+using System.Collections;
+```
+
+```csharp
+using System.Collections.Generic;
+```
+
+```csharp
+using System.Reflection;
+```
+
+```csharp
+*/
+```
 
 **Word of Warning**: this technique relies on the internal implementation of the Collection class remaining the same as in .Net 3.5.  Future (or Past) versions of .Net may need amending – [*Reflector*](http://bit.ly/cUbyio)* is your friend*.
 
 To use the code simply make sure the Extension’s hosting class (Non-Generic and static) is included in the available namespaces for your code, and call:
 
   
-       1: Microsoft.VisualBasic.Collection coll = GetCollectionFromSomewhere();
+```csharp
+Microsoft.VisualBasic.Collection coll = GetCollectionFromSomewhere();
+```
 
-       2: IDictionarystring, object> dict = coll.ToDictionary();
+```csharp
+IDictionarystring, object> dict = coll.ToDictionary();
+```
 
-       3: foreach (string key in dict.Keys)
+```csharp
+foreach (string key in dict.Keys)
+```
 
-       4: {
+```csharp
+{
+```
 
-       5:     System.Diagnostics.Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "@{0} = '{1}'", key,dict[key]));
+```csharp
+System.Diagnostics.Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "@{0} = '{1}'", key,dict[key]));
+```
 
-       6: }
+```csharp
+}
+```
 
 ## Casting Call
 
@@ -119,324 +207,627 @@ The secret is to create a Custom Attribute which you can use to decorate your en
 The required Custom Attribute is pretty simple:
 
   
-       1: using System;
+```csharp
+using System;
+```
 
-       2:  
+```csharp
 
-       3: namespace MartinOnDotNet.Helpers.Ektron
 
-       4: {
 
-       5:     /// 
+```csharp
+namespace MartinOnDotNet.Helpers.Ektron
+```
 
-       6:     /// Allows DTO's to be tagged up with the Collection Key
+```csharp
+{
+```
 
-       7:     /// 
+```csharp
+/// 
+```
 
-       8:     [AttributeUsage(AttributeTargets.Property)]
+```csharp
+/// Allows DTO's to be tagged up with the Collection Key
+```
 
-       9:     public sealed class CollectionItemAttribute : System.Attribute
+```csharp
+/// 
+```
 
-      10:     {
+```csharp
+[AttributeUsage(AttributeTargets.Property)]
+```
 
-      11:         /// 
+```csharp
+public sealed class CollectionItemAttribute : System.Attribute
+```
 
-      12:         /// Initializes a new instance of the  class.
+```csharp
+{
+```
 
-      13:         /// 
+```csharp
+/// 
+```
 
-      14:         /// The collection key.
+```csharp
+/// Initializes a new instance of the  class.
+```
 
-      15:         public CollectionItemAttribute(string collectionKey):this(collectionKey,null,false)
+```csharp
+/// 
+```
 
-      16:         {}
+```csharp
+/// The collection key.
+```
 
-      17:  
+```csharp
+public CollectionItemAttribute(string collectionKey):this(collectionKey,null,false)
+```
 
-      18:         /// 
+```csharp
+{}
+```
 
-      19:         /// Initializes a new instance of the  class.
+```csharp
 
-      20:         /// 
 
-      21:         /// The collection key.
 
-      22:         /// The default value.
+```csharp
+/// 
+```
 
-      23:         public CollectionItemAttribute(string collectionKey, object defaultValue)
+```csharp
+/// Initializes a new instance of the  class.
+```
 
-      24:             : this(collectionKey, defaultValue, false)
+```csharp
+/// 
+```
 
-      25:         { }
+```csharp
+/// The collection key.
+```
 
-      26:  
+```csharp
+/// The default value.
+```
 
-      27:         /// 
+```csharp
+public CollectionItemAttribute(string collectionKey, object defaultValue)
+```
 
-      28:         /// Initializes a new instance of the  class.
+```csharp
+: this(collectionKey, defaultValue, false)
+```
 
-      29:         /// 
+```csharp
+{ }
+```
 
-      30:         /// The collection key.
+```csharp
 
-      31:         /// The default value.
 
-      32:         /// if set to true [suppress if null].
 
-      33:         public CollectionItemAttribute(string collectionKey, object defaultValue, bool suppressIfNull)
+```csharp
+/// 
+```
 
-      34:         {
+```csharp
+/// Initializes a new instance of the  class.
+```
 
-      35:             CollectionKey = collectionKey;
+```csharp
+/// 
+```
 
-      36:             DefaultValue = defaultValue;
+```csharp
+/// The collection key.
+```
 
-      37:             SuppressItemIfNull = suppressIfNull;
+```csharp
+/// The default value.
+```
 
-      38:         }
+```csharp
+/// if set to true [suppress if null].
+```
 
-      39:  
+```csharp
+public CollectionItemAttribute(string collectionKey, object defaultValue, bool suppressIfNull)
+```
 
-      40:  
+```csharp
+{
+```
 
-      41:         /// 
+```csharp
+CollectionKey = collectionKey;
+```
 
-      42:         /// Gets or sets the default.
+```csharp
+DefaultValue = defaultValue;
+```
 
-      43:         /// 
+```csharp
+SuppressItemIfNull = suppressIfNull;
+```
 
-      44:         /// The default.
+```csharp
+}
+```
 
-      45:         public object DefaultValue { get; set; }
+```csharp
 
-      46:  
 
-      47:         /// 
 
-      48:         /// Gets or sets the collection key.
+```csharp
 
-      49:         /// 
 
-      50:         /// The collection key.
 
-      51:         public string CollectionKey { get; set; }
+```csharp
+/// 
+```
 
-      52:  
+```csharp
+/// Gets or sets the default.
+```
 
-      53:         /// 
+```csharp
+/// 
+```
 
-      54:         /// Gets or sets a value indicating whether [suppress item if null].
+```csharp
+/// The default.
+```
 
-      55:         /// 
+```csharp
+public object DefaultValue { get; set; }
+```
 
-      56:         /// true if [suppress item if null]; otherwise, false.
+```csharp
 
-      57:         public bool SuppressItemIfNull { get; set; }
 
-      58:  
 
-      59:     }
+```csharp
+/// 
+```
 
-      60: }
+```csharp
+/// Gets or sets the collection key.
+```
+
+```csharp
+/// 
+```
+
+```csharp
+/// The collection key.
+```
+
+```csharp
+public string CollectionKey { get; set; }
+```
+
+```csharp
+
+
+
+```csharp
+/// 
+```
+
+```csharp
+/// Gets or sets a value indicating whether [suppress item if null].
+```
+
+```csharp
+/// 
+```
+
+```csharp
+/// true if [suppress item if null]; otherwise, false.
+```
+
+```csharp
+public bool SuppressItemIfNull { get; set; }
+```
+
+```csharp
+
+
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 *Note the AttributeUsage attribute on the class which limits its scope to properties.*
 
 This can be added to your entities simply as:
 
   
-       1: [CollectionItem("MetaTypeName")]
+```csharp
+[CollectionItem("MetaTypeName")]
+```
 
-       2: public string Name { get; set; }
+```csharp
+public string Name { get; set; }
+```
 
 If you need to do some fancy type conversions on the item then an internal/private property can be used:
 
   
-       1: public MetadataTagType TagType { get; set; } //Custom enum of valid values
+```csharp
+public MetadataTagType TagType { get; set; } //Custom enum of valid values
+```
 
-       2:  
+```csharp
 
-       3: [CollectionItem("MetaTagType")]
 
-       4: private long EkTagType
 
-       5: {
+```csharp
+[CollectionItem("MetaTagType")]
+```
 
-       6:     get
+```csharp
+private long EkTagType
+```
 
-       7:     {
+```csharp
+{
+```
 
-       8:         return (long)TagType;
+```csharp
+get
+```
 
-       9:     }
+```csharp
+{
+```
 
-      10:     set
+```csharp
+return (long)TagType;
+```
 
-      11:     {
+```csharp
+}
+```
 
-      12:         TagType = (MetadataTagType)value;
+```csharp
+set
+```
 
-      13:     }
+```csharp
+{
+```
 
-      14: }
+```csharp
+TagType = (MetadataTagType)value;
+```
+
+```csharp
+}
+```
+
+```csharp
+}
+```
 
 The mapping magic is done using reflection (again with the Extension Methods!):
 
   
-       1: /// 
+```csharp
+/// 
+```
 
-       2: /// Creates the collection.
+```csharp
+/// Creates the collection.
+```
 
-       3: /// 
+```csharp
+/// 
+```
 
-       4: /// The entity.
+```csharp
+/// The entity.
+```
 
-       5: /// 
+```csharp
+/// 
+```
 
-       6: public static Microsoft.VisualBasic.Collection CreateCollection(this object entity)
+```csharp
+public static Microsoft.VisualBasic.Collection CreateCollection(this object entity)
+```
 
-       7: {
+```csharp
+{
+```
 
-       8:     if (entity == null) throw new ArgumentNullException("entity");
+```csharp
+if (entity == null) throw new ArgumentNullException("entity");
+```
 
-       9:     Microsoft.VisualBasic.Collection collection = new Microsoft.VisualBasic.Collection();
+```csharp
+Microsoft.VisualBasic.Collection collection = new Microsoft.VisualBasic.Collection();
+```
 
-      10:     foreach (PropertyInfo pi in entity.GetType()
+```csharp
+foreach (PropertyInfo pi in entity.GetType()
+```
 
-      11:         .GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+```csharp
+.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+```
 
-      12:     {
+```csharp
+{
+```
 
-      13:         foreach (CollectionItemAttribute ia in pi.GetCustomAttributes(typeof(CollectionItemAttribute), true)
+```csharp
+foreach (CollectionItemAttribute ia in pi.GetCustomAttributes(typeof(CollectionItemAttribute), true)
+```
 
-      14:             .OfType().Take(1))
+```csharp
+.OfType().Take(1))
+```
 
-      15:         {
+```csharp
+{
+```
 
-      16:             object value = pi.GetValue(entity, null);
+```csharp
+object value = pi.GetValue(entity, null);
+```
 
-      17:             if (value != null || !ia.SuppressItemIfNull)
+```csharp
+if (value != null || !ia.SuppressItemIfNull)
+```
 
-      18:             {
+```csharp
+{
+```
 
-      19:                 value = value ?? ia.DefaultValue;
+```csharp
+value = value ?? ia.DefaultValue;
+```
 
-      20:                 collection.Add(value, ia.CollectionKey, null, null);
+```csharp
+collection.Add(value, ia.CollectionKey, null, null);
+```
 
-      21:             }
+```csharp
+}
+```
 
-      22:         }
+```csharp
+}
+```
 
-      23:     }
+```csharp
+}
+```
 
-      24:     return collection;
+```csharp
+return collection;
+```
 
-      25:  
+```csharp
 
-      26: }
 
-      27:  
 
-      28: /// 
+```csharp
+}
+```
 
-      29: /// Creates from collection.
+```csharp
 
-      30: /// 
 
-      31: /// 
 
-      32: /// The collection.
+```csharp
+/// 
+```
 
-      33: /// 
+```csharp
+/// Creates from collection.
+```
 
-      34: public static T CreateFromCollection(this Microsoft.VisualBasic.Collection collection) where T : class, new()
+```csharp
+/// 
+```
 
-      35: {
+```csharp
+/// 
+```
 
-      36:     if (collection == null) throw new ArgumentNullException("collection");
+```csharp
+/// The collection.
+```
 
-      37:     T newT = new T();
+```csharp
+/// 
+```
 
-      38:  
+```csharp
+public static T CreateFromCollection(this Microsoft.VisualBasic.Collection collection) where T : class, new()
+```
 
-      39:     foreach (PropertyInfo pi in typeof(T)
+```csharp
+{
+```
 
-      40:         .GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+```csharp
+if (collection == null) throw new ArgumentNullException("collection");
+```
 
-      41:     {
+```csharp
+T newT = new T();
+```
 
-      42:         foreach (CollectionItemAttribute ia in pi.GetCustomAttributes(typeof(CollectionItemAttribute), true)
+```csharp
 
-      43:             .OfType().Take(1))
 
-      44:         {
 
-      45:             if (collection.Contains(ia.CollectionKey))
+```csharp
+foreach (PropertyInfo pi in typeof(T)
+```
 
-      46:             {
+```csharp
+.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+```
 
-      47:                 pi.SetValue(newT, collection[ia.CollectionKey], null);
+```csharp
+{
+```
 
-      48:             }
+```csharp
+foreach (CollectionItemAttribute ia in pi.GetCustomAttributes(typeof(CollectionItemAttribute), true)
+```
 
-      49:             else
+```csharp
+.OfType().Take(1))
+```
 
-      50:             {
+```csharp
+{
+```
 
-      51:                 System.Diagnostics.Trace.TraceWarning("Expected Collection to Contain key '{0}'", ia.CollectionKey);
+```csharp
+if (collection.Contains(ia.CollectionKey))
+```
 
-      52:             }
+```csharp
+{
+```
 
-      53:         }
+```csharp
+pi.SetValue(newT, collection[ia.CollectionKey], null);
+```
 
-      54:     }
+```csharp
+}
+```
 
-      55:     return newT;
+```csharp
+else
+```
 
-      56: }
+```csharp
+{
+```
 
-      57:  
+```csharp
+System.Diagnostics.Trace.TraceWarning("Expected Collection to Contain key '{0}'", ia.CollectionKey);
+```
 
-      58: /* Required using statements:
+```csharp
+}
+```
 
-      59: using System;
+```csharp
+}
+```
 
-      60: using System.Collections;
+```csharp
+}
+```
 
-      61: using System.Collections.Generic;
+```csharp
+return newT;
+```
 
-      62: using System.Linq;
+```csharp
+}
+```
 
-      63: using System.Reflection;
+```csharp
 
-      64: */
+
+
+```csharp
+/* Required using statements:
+```
+
+```csharp
+using System;
+```
+
+```csharp
+using System.Collections;
+```
+
+```csharp
+using System.Collections.Generic;
+```
+
+```csharp
+using System.Linq;
+```
+
+```csharp
+using System.Reflection;
+```
+
+```csharp
+*/
+```
 
 These thinly veiled factory methods can be called inline whenever the 3rd Party API exposes (or requires) a Collection object and converts it into a strongly typed entity with a minimal amount of mapping code:
 
   
-       1: public EktronMetadata GetMetadataType(long id, int cultureLcid)
+```csharp
+public EktronMetadata GetMetadataType(long id, int cultureLcid)
+```
 
-       2: {
+```csharp
+{
+```
 
-       3:     global::Ektron.Cms.ContentAPI api = new global::Ektron.Cms.ContentAPI();
+```csharp
+global::Ektron.Cms.ContentAPI api = new global::Ektron.Cms.ContentAPI();
+```
 
-       4:     using (new ElevatedPermissionScope(api))
+```csharp
+using (new ElevatedPermissionScope(api))
+```
 
-       5:     {
+```csharp
+{
+```
 
-       6:         api.ContentLanguage = cultureLcid;
+```csharp
+api.ContentLanguage = cultureLcid;
+```
 
-       7:         return api.EkContentRef.GetMetadataTypeByID(id)
+```csharp
+return api.EkContentRef.GetMetadataTypeByID(id)
+```
 
-       8:             .CreateFromCollection();
+```csharp
+.CreateFromCollection();
+```
 
-       9:     }
+```csharp
+}
+```
 
-      10: }
-
+```csharp
+}
+```
   
-       1: Microsoft.VisualBasic.Collection menuCollection = updatedMenu.CreateCollection(); //replaces ~30 lines of mapping code!
+```csharp
+Microsoft.VisualBasic.Collection menuCollection = updatedMenu.CreateCollection(); //replaces ~30 lines of mapping code!
+```
 
-       2: api.EkContentRef.UpdateMenu(menuCollection);
+```csharp
+api.EkContentRef.UpdateMenu(menuCollection);
+```
 
 Much Neater.
 
@@ -445,82 +836,162 @@ Much Neater.
 Of course, if you don’t want/need to map to entity classes then some simpler Extension Methods can be used:
 
   
-       1: /// 
+```csharp
+/// 
+```
 
-       2: /// Adds the specified item to the collection.
+```csharp
+/// Adds the specified item to the collection.
+```
 
-       3: /// 
+```csharp
+/// 
+```
 
-       4: /// 
+```csharp
+/// 
+```
 
-       5: /// The collection.
+```csharp
+/// The collection.
+```
 
-       6: /// The key.
+```csharp
+/// The key.
+```
 
-       7: /// The value.
+```csharp
+/// The value.
+```
 
-       8: public static void Add(this Microsoft.VisualBasic.Collection collection, string key, T value)
+```csharp
+public static void Add(this Microsoft.VisualBasic.Collection collection, string key, T value)
+```
 
-       9: {
+```csharp
+{
+```
 
-      10:    if (collection == null) throw new ArgumentNullException("collection");
+```csharp
+if (collection == null) throw new ArgumentNullException("collection");
+```
 
-      11:    if (string.IsNullOrEmpty(key)) throw new ArgumentNullException("key");
+```csharp
+if (string.IsNullOrEmpty(key)) throw new ArgumentNullException("key");
+```
 
-      12:    collection.Add(value, key, null, null);
+```csharp
+collection.Add(value, key, null, null);
+```
 
-      13: }
+```csharp
+}
+```
 
-      14:  
+```csharp
 
-      15: /// 
 
-      16: /// Gets the specified value from the collection.
 
-      17: /// 
+```csharp
+/// 
+```
 
-      18: /// 
+```csharp
+/// Gets the specified value from the collection.
+```
 
-      19: /// The collection.
+```csharp
+/// 
+```
 
-      20: /// The key.
+```csharp
+/// 
+```
 
-      21: /// 
+```csharp
+/// The collection.
+```
 
-      22: public static T Get(this Microsoft.VisualBasic.Collection collection, string key)
+```csharp
+/// The key.
+```
 
-      23: {
+```csharp
+/// 
+```
 
-      24:    if (collection == null) throw new ArgumentNullException("collection");
+```csharp
+public static T Get(this Microsoft.VisualBasic.Collection collection, string key)
+```
 
-      25:    if (string.IsNullOrEmpty(key)) throw new ArgumentNullException("key");
+```csharp
+{
+```
 
-      26:    return (T)collection[key];
+```csharp
+if (collection == null) throw new ArgumentNullException("collection");
+```
 
-      27: }
+```csharp
+if (string.IsNullOrEmpty(key)) throw new ArgumentNullException("key");
+```
 
-      28:  
+```csharp
+return (T)collection[key];
+```
 
-      29: /// 
+```csharp
+}
+```
 
-      30: /// Removes the specified item from the collection.
+```csharp
 
-      31: /// 
 
-      32: /// The collection.
 
-      33: /// The key.
+```csharp
+/// 
+```
 
-      34: public static void Remove(this Microsoft.VisualBasic.Collection collection, string key)
+```csharp
+/// Removes the specified item from the collection.
+```
 
-      35: {
+```csharp
+/// 
+```
 
-      36:    if (collection == null) throw new ArgumentNullException("collection");
+```csharp
+/// The collection.
+```
 
-      37:    if (string.IsNullOrEmpty(key)) throw new ArgumentNullException("key");
+```csharp
+/// The key.
+```
 
-      38:    if (collection.Contains(key))
+```csharp
+public static void Remove(this Microsoft.VisualBasic.Collection collection, string key)
+```
 
-      39:        collection.Remove(key);
+```csharp
+{
+```
 
-      40: }
+```csharp
+if (collection == null) throw new ArgumentNullException("collection");
+```
+
+```csharp
+if (string.IsNullOrEmpty(key)) throw new ArgumentNullException("key");
+```
+
+```csharp
+if (collection.Contains(key))
+```
+
+```csharp
+collection.Remove(key);
+```
+
+```csharp
+}
+```

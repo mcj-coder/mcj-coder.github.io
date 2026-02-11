@@ -15,50 +15,90 @@ After recently updating a 7.65 based website to 8.0 we recently found that parts
 
   Clearly this mechanism was working for aspx files as the frontend website worked as well as bits of the workearea.  After a bit of investigation, it appears that html and htm files are also being precompiled using the standard PageBuildProvider:
 
-             1: compilation debug="false">
+```csharp
+compilation debug="false">
+```
 
-       2:     buildProviders>
+```csharp
+buildProviders>
+```
 
-       3:         add extension=".htm"
+```csharp
+add extension=".htm"
+```
 
-       4:                  type="System.Web.Compilation.PageBuildProvider" />
+```csharp
+type="System.Web.Compilation.PageBuildProvider" />
+```
 
-       5:         add extension=".html"
+```csharp
+add extension=".html"
+```
 
-       6:                  type="System.Web.Compilation.PageBuildProvider" />
+```csharp
+type="System.Web.Compilation.PageBuildProvider" />
+```
 
-       7:     buildProviders>
+```csharp
+buildProviders>
+```
 
-       8: compilation>
+```csharp
+compilation>
+```
 
 ## The Fix
 
 In the web.config ensure the following handler mappings  are added to configuration/system.webServer/handlers:
 
   
-       1: 
+```csharp
 
-       2: Add Under the aspx mapping for Integrated Mode 
 
-       3: 
 
-       4:  -->
+```csharp
+Add Under the aspx mapping for Integrated Mode 
+```
 
-       5: add name="Html-Integrated" path="*.html" verb="GET,HEAD,POST,DEBUG" type="System.Web.UI.PageHandlerFactory" preCondition="integratedMode"/>
+```csharp
 
-       6: add name="Htm-Integrated" path="*.htm" verb="GET,HEAD,POST,DEBUG" type="System.Web.UI.PageHandlerFactory" preCondition="integratedMode"/>
 
-       7: 
 
-       8: 
+```csharp
+-->
+```
 
-       9: -->
+```csharp
+add name="Html-Integrated" path="*.html" verb="GET,HEAD,POST,DEBUG" type="System.Web.UI.PageHandlerFactory" preCondition="integratedMode"/>
+```
 
-      10: add name="Html-ISAPI-2.0" path="*.html" verb="GET,HEAD,POST,DEBUG" modules="IsapiModule" scriptProcessor="%windir%\Microsoft.NET\Framework\v2.0.50727\aspnet_isapi.dll" preCondition="classicMode,runtimeVersionv2.0,bitness32" responseBufferLimit="0"/>
+```csharp
+add name="Htm-Integrated" path="*.htm" verb="GET,HEAD,POST,DEBUG" type="System.Web.UI.PageHandlerFactory" preCondition="integratedMode"/>
+```
 
-      11: add name="Htm-ISAPI-2.0" path="*.htm" verb="GET,HEAD,POST,DEBUG" modules="IsapiModule" scriptProcessor="%windir%\Microsoft.NET\Framework\v2.0.50727\aspnet_isapi.dll" preCondition="classicMode,runtimeVersionv2.0,bitness32" responseBufferLimit="0"/>
+```csharp
 
-      12:  
+
+
+```csharp
+
+
+
+```csharp
+-->
+```
+
+```csharp
+add name="Html-ISAPI-2.0" path="*.html" verb="GET,HEAD,POST,DEBUG" modules="IsapiModule" scriptProcessor="%windir%\Microsoft.NET\Framework\v2.0.50727\aspnet_isapi.dll" preCondition="classicMode,runtimeVersionv2.0,bitness32" responseBufferLimit="0"/>
+```
+
+```csharp
+add name="Htm-ISAPI-2.0" path="*.htm" verb="GET,HEAD,POST,DEBUG" modules="IsapiModule" scriptProcessor="%windir%\Microsoft.NET\Framework\v2.0.50727\aspnet_isapi.dll" preCondition="classicMode,runtimeVersionv2.0,bitness32" responseBufferLimit="0"/>
+```
+
+```csharp
+
+
 
 The lines above are for IIS 7, if the same issue occurs on an earlier version then it should be trivial to add appropriate entries to configuration/system.web/httpHandlers.
 
