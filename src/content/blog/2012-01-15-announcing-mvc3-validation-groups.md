@@ -3,7 +3,8 @@ title: Announcing MVC3 Validation Groups
 description: ""
 pubDate: 2012-01-15
 updatedDate: 2012-01-17
-heroImage: ../../assets/blog/hero-images/2012-01-15-announcing-mvc3-validation-groups.jpg
+heroImage: ../../assets/blog/hero-images/network-switch.jpg
+
 
 tags: ["project"]
 source: hugo

@@ -2,7 +2,8 @@
 title: RPi Cluster (Part 1) - Assembly
 description: ""
 pubDate: 2020-02-16
-heroImage: ../../assets/blog/hero-images/2020-02-16-building-a-rpi-k8s-cluster.jpg
+heroImage: ../../assets/blog/hero-images/rpi-hardware.jpg
+
 
 tags: ["rpi"]
 source: hugo

@@ -2,7 +2,8 @@
 title: RPi Cluster (Part 3) - Networking
 description: ""
 pubDate: 2020-02-18
-heroImage: ../../assets/blog/hero-images/2020-02-18-configuring-the-rpi-cluster-network.jpg
+heroImage: ../../assets/blog/hero-images/network-config.jpg
+
 
 tags: ["rpi"]
 source: hugo

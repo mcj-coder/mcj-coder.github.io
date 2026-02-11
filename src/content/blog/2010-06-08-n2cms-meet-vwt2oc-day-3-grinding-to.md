@@ -3,7 +3,8 @@ title: "N2CMS Meet VWT2OC: Day 3 \u2013 Grinding to a Halt!"
 description: ""
 pubDate: 2010-06-08
 updatedDate: 2010-06-09
-heroImage: ../../assets/blog/hero-images/2010-06-08-n2cms-meet-vwt2oc-day-3-grinding-to.jpg
+heroImage: ../../assets/blog/hero-images/dotnet-class.jpg
+
 
 tags: ["n2cms"]
 source: hugo

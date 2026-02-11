@@ -3,7 +3,8 @@ title: Ektron and Web Application Projects (Part 2)
 description: ""
 pubDate: 2010-03-24
 updatedDate: 2010-03-29
-heroImage: ../../assets/blog/hero-images/2010-03-24-ektron-and-web-application-projects.jpg
+heroImage: ../../assets/blog/hero-images/code-syntax.jpg
+
 
 tags: ["ektron"]
 source: hugo
