@@ -2,7 +2,7 @@
 title: Rebooting the Blog
 description: ""
 pubDate: 2020-02-10
-heroImage: ../../assets/blog/rebooting-the-blog-netlify-github.png
+heroImage: ../../assets/blog/hero-images/ai/hugo-netlify.jpg
 tags: ["hugo"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2020-02-10-rebooting-the-blog/"

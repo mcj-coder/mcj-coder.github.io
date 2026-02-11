@@ -3,7 +3,7 @@ title: "Ektron: Finding \u201cMissing\u201d Content in the Index on 64bit Window
 description: ""
 pubDate: 2011-11-01
 updatedDate: 2012-02-02
-heroImage: ../../assets/blog/hero-images/ai/cms-admin.jpg
+heroImage: ../../assets/blog/hero-images/ai/network-config.jpg
 tags: ["ektron", "troubleshooting"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2011-11-01-ektron-finding-missing-content-in-index/"

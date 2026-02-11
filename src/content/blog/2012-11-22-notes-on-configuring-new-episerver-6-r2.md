@@ -2,7 +2,7 @@
 title: Notes on Configuring a New EPiServer 6 R2 Website for Continuous Integration
 description: ""
 pubDate: 2012-11-22
-heroImage: ../../assets/blog/notes-on-configuring-new-episerver-6-r2-image_thumb1.png
+heroImage: ../../assets/blog/hero-images/ai/rpi-cluster.jpg
 tags: ["episerver"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2012-11-22-notes-on-configuring-new-episerver-6-r2/"

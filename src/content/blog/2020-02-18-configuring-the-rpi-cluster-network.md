@@ -2,7 +2,7 @@
 title: RPi Cluster (Part 3) - Networking
 description: ""
 pubDate: 2020-02-18
-heroImage: ../../assets/blog/configuring-the-rpi-cluster-network-simple-network.jpg
+heroImage: ../../assets/blog/hero-images/ai/k8s-kubeadm.jpg
 tags: ["rpi"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2020-02-18-configuring-the-rpi-cluster-network/"

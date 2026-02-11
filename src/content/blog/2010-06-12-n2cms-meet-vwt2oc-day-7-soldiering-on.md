@@ -2,7 +2,7 @@
 title: "N2CMS Meet VWT2OC: Day 7 \u2013 Soldiering On"
 description: ""
 pubDate: 2010-06-12
-heroImage: ../../assets/blog/n2cms-meet-vwt2oc-day-7-soldiering-on-image_thumb.png
+heroImage: ../../assets/blog/hero-images/ai/code-syntax.jpg
 tags: ["n2cms"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2010-06-12-n2cms-meet-vwt2oc-day-7-soldiering-on/"

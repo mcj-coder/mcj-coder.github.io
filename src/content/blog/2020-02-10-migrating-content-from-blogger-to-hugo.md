@@ -2,7 +2,7 @@
 title: Migrating Content from Blogger to Hugo
 description: ""
 pubDate: 2020-02-10
-heroImage: ../../assets/blog/migrating-content-from-blogger-to-hugo-migrated-page-bundle.png
+heroImage: ../../assets/blog/hero-images/ai/rpi-config.jpg
 tags: ["hugo"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2020-02-10-migrating-content-from-blogger-to-hugo/"

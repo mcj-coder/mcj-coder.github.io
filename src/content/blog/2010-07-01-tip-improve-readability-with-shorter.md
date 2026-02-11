@@ -2,7 +2,7 @@
 title: "TIP: Improve Readability with Shorter String.Format Statements"
 description: ""
 pubDate: 2010-07-01
-heroImage: ../../assets/blog/tip-improve-readability-with-shorter-image_thumb.png
+heroImage: ../../assets/blog/hero-images/ai/agile-scrum.jpg
 tags: ["tips"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2010-07-01-tip-improve-readability-with-shorter/"

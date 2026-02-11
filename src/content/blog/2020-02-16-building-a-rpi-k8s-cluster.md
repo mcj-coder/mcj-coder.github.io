@@ -2,7 +2,7 @@
 title: RPi Cluster (Part 1) - Assembly
 description: ""
 pubDate: 2020-02-16
-heroImage: ../../assets/blog/building-a-rpi-k8s-cluster-rpi-wires.jpg
+heroImage: ../../assets/blog/hero-images/ai/rpi-hardware.jpg
 tags: ["rpi"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2020-02-16-building-a-rpi-k8s-cluster/"

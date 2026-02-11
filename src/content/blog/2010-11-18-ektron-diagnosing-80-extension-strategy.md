@@ -2,7 +2,7 @@
 title: "EKTRON: Diagnosing 8.0 Extension Strategy Loading Failures"
 description: ""
 pubDate: 2010-11-18
-heroImage: ../../assets/blog/ektron-diagnosing-80-extension-strategy-image_thumb.png
+heroImage: ../../assets/blog/hero-images/ai/sql-perf.jpg
 tags: ["ektron", "troubleshooting"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2010-11-18-ektron-diagnosing-80-extension-strategy/"
