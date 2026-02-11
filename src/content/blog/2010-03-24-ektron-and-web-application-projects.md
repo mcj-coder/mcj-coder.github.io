@@ -3,7 +3,7 @@ title: Ektron and Web Application Projects (Part 2)
 description: ""
 pubDate: 2010-03-24
 updatedDate: 2010-03-29
-heroImage: "../../assets/blog/ektron-and-web-application-projects-image_thumb[4].png"
+heroImage: ../../assets/blog/hero-images/2010-03-24-ektron-and-web-application-projects-hero.svg
 tags: ["ektron"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2010-03-24-ektron-and-web-application-projects/"

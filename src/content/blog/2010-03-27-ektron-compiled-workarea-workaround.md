@@ -3,7 +3,7 @@ title: Ektron and Web Application Projects (Part 3)
 description: ""
 pubDate: 2010-03-27
 updatedDate: 2010-03-29
-heroImage: "../../assets/blog/ektron-compiled-workarea-workaround-image_thumb[1].png"
+heroImage: ../../assets/blog/hero-images/2010-03-27-ektron-compiled-workarea-workaround-hero.svg
 tags: ["ektron"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2010-03-27-ektron-compiled-workarea-workaround/"

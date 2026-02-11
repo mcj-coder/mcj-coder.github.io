@@ -2,7 +2,7 @@
 title: "Ektron: High Indexing Service Processor Usage (Potential) Fix"
 description: ""
 pubDate: 2010-12-16
-heroImage: "../../assets/blog/ektron-high-indexing-service-processor-image_thumb[1].png"
+heroImage: ../../assets/blog/hero-images/2010-12-16-ektron-high-indexing-service-processor-hero.svg
 tags: ["ektron", "troubleshooting"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2010-12-16-ektron-high-indexing-service-processor/"
