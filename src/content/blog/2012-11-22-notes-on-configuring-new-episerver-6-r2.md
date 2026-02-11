@@ -2,7 +2,8 @@
 title: Notes on Configuring a New EPiServer 6 R2 Website for Continuous Integration
 description: ""
 pubDate: 2012-11-22
-heroImage: ../../assets/blog/hero-images/post-00-hero.svg
+heroImage: ../../assets/blog/hero-images/2012-11-22-notes-on-configuring-new-episerver-6-r2.jpg
+
 
 
 

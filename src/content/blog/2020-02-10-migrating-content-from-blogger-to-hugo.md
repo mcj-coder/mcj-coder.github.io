@@ -2,7 +2,8 @@
 title: Migrating Content from Blogger to Hugo
 description: ""
 pubDate: 2020-02-10
-heroImage: ../../assets/blog/hero-images/post-00-hero.svg
+heroImage: ../../assets/blog/hero-images/2020-02-10-migrating-content-from-blogger-to-hugo.jpg
+
 
 
 

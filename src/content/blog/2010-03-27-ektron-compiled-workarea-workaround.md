@@ -3,7 +3,8 @@ title: Ektron and Web Application Projects (Part 3)
 description: ""
 pubDate: 2010-03-27
 updatedDate: 2010-03-29
-heroImage: ../../assets/blog/hero-images/post-00-hero.svg
+heroImage: ../../assets/blog/hero-images/2010-03-27-ektron-compiled-workarea-workaround.jpg
+
 
 
 
