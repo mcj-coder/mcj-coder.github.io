@@ -2,7 +2,7 @@
 title: "N2CMS Meet VWT2OC: Day 1 \u2013 Project Setup"
 description: ""
 pubDate: 2010-06-06
-heroImage: ../../assets/blog/hero-images/2010-06-06-n2cms-meet-vwt2oc-day-1-project-setup-hero.svg
+heroImage: ../../assets/blog/hero-images/ai/episerver.jpg
 tags: ["n2cms"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2010-06-06-n2cms-meet-vwt2oc-day-1-project-setup/"
