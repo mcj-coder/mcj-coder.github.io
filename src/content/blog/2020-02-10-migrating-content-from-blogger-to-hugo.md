@@ -2,7 +2,8 @@
 title: Migrating Content from Blogger to Hugo
 description: ""
 pubDate: 2020-02-10
-heroImage: ../../assets/blog/hero-images/hugo-netlify.jpg
+heroImage: ../../assets/blog/hero-images/post-00-hero.svg
+
 
 
 tags: ["hugo"]

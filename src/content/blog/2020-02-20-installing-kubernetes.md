@@ -2,7 +2,8 @@
 title: RPi Cluster (Part 4) - Installing Kubernetes
 description: ""
 pubDate: 2020-02-20
-heroImage: ../../assets/blog/hero-images/k8s-kubeadm.jpg
+heroImage: ../../assets/blog/hero-images/post-00-hero.svg
+
 
 
 tags: ["rpi"]

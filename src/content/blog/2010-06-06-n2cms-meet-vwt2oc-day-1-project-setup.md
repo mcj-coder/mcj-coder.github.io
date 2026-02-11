@@ -2,7 +2,8 @@
 title: "N2CMS Meet VWT2OC: Day 1 \u2013 Project Setup"
 description: ""
 pubDate: 2010-06-06
-heroImage: ../../assets/blog/hero-images/k8s-dashboard.jpg
+heroImage: ../../assets/blog/hero-images/post-00-hero.svg
+
 
 
 tags: ["n2cms"]

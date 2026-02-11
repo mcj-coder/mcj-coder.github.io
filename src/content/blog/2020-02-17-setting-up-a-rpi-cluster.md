@@ -2,7 +2,8 @@
 title: RPi Cluster (Part 2) - Basic Configuration
 description: ""
 pubDate: 2020-02-17
-heroImage: ../../assets/blog/hero-images/rpi-config.jpg
+heroImage: ../../assets/blog/hero-images/post-00-hero.svg
+
 
 
 tags: ["rpi"]
