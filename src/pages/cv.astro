@@ -1,0 +1,212 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`CV - ${SITE_TITLE}`} description="Martin Jarvis - Curriculum Vitae" />
+	</head>
+	<body>
+		<Header />
+		<main class="container">
+			<div class="cv-header">
+				<h1>Martin Jarvis</h1>
+				<p class="contact-info">
+					<a href="mailto:m.c.j@live.co.uk">m.c.j@live.co.uk</a> •
+					<a href="https://github.com/mcj-coder" target="_blank" rel="noopener">github.com/mcj-coder</a> •
+					United Kingdom
+				</p>
+				<p><a href="/cv.pdf" class="download-link">Download PDF</a></p>
+			</div>
+
+			<section class="cv-section">
+				<h2>Professional Summary</h2>
+				<p>
+					Principal Consultant with extensive experience in software architecture, cloud technologies, and DevOps practices. Specializing in .NET/C#, Azure, AWS, and Kubernetes. Passionate about developer tooling, automation, and exploring AI-powered workflows.
+				</p>
+			</section>
+
+			<section class="cv-section">
+				<h2>Experience</h2>
+
+				<div class="experience-item">
+					<div class="experience-header">
+						<h3>Principal Consultant</h3>
+						<span class="date">April 2020 - Present</span>
+					</div>
+					<p class="company">PA Consulting</p>
+					<ul>
+						li>Leading technical delivery and architecture for client projects</li>
+						<li>Cloud migration and modernization initiatives</li>
+						<li>DevOps transformation and CI/CD pipeline implementation</li>
+						<li>Mentoring junior developers and technical teams</li>
+					</ul>
+				</div>
+
+				<div class="experience-item">
+					<div class="experience-header">
+						<h3>Previous Roles</h3>
+					</div>
+					<p>Detailed experience available upon request. Worked across various industries including finance, healthcare, and public sector.</p>
+				</div>
+			</section>
+
+			<section class="cv-section">
+				<h2>Technical Skills</h2>
+				<div class="skills-grid">
+					<div class="skill-category">
+						<h3>Languages</h3>
+						<p>C#, .NET, TypeScript, JavaScript, Python, SQL</p>
+					</div>
+					<div class="skill-category">
+						<h3>Cloud</h3>
+						<p>Azure, AWS, Kubernetes, Docker, Terraform</p>
+					</div>
+					<div class="skill-category">
+						<h3>Databases</h3>
+						<p>SQL Server, PostgreSQL, MongoDB, Redis</p>
+					</div>
+					<div class="skill-category">
+						<h3>Tools & Practices</h3>
+						<p>Git, CI/CD, TDD, Agile, Scrum</p>
+					</div>
+				</div>
+			</section>
+
+			<section class="cv-section">
+				<h2>Certifications</h2>
+				<ul>
+					<li>Azure Solutions Architect Expert</li>
+					<li>AWS Solutions Architect Professional</li>
+				</ul>
+			</section>
+
+			<section class="cv-section">
+				<h2>Education</h2>
+				<div class="education-item">
+					<div class="education-header">
+						<h3>MPhys Physics with Astrophysics</h3>
+						<span class="date">University of Sussex</span>
+					</div>
+				</div>
+			</section>
+
+			<section class="cv-section">
+				<h2>Open Source & Projects</h2>
+				<p>Active contributor to open source projects. Recent work includes AI-powered developer tools and automation utilities.</p>
+				<p>See <a href="/projects">Projects</a> and <a href="https://github.com/mcj-coder" target="_blank" rel="noopener">GitHub</a> for more details.</p>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.container {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 2rem;
+	}
+
+	.cv-header {
+		text-align: center;
+		margin-bottom: 3rem;
+		padding-bottom: 2rem;
+		border-bottom: 2px solid #e5e7eb;
+	}
+
+	.cv-header h1 {
+		margin-bottom: 0.5rem;
+	}
+
+	.contact-info {
+		color: #666;
+		margin-bottom: 1rem;
+	}
+
+	.contact-info a {
+		color: #2563eb;
+		text-decoration: none;
+	}
+
+	.download-link {
+		display: inline-block;
+		padding: 0.5rem 1rem;
+		background: #f3f4f6;
+		border-radius: 4px;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.cv-section {
+		margin-bottom: 2.5rem;
+	}
+
+	.cv-section h2 {
+		border-bottom: 1px solid #e5e7eb;
+		padding-bottom: 0.5rem;
+		margin-bottom: 1rem;
+	}
+
+	.experience-item, .education-item {
+		margin-bottom: 1.5rem;
+	}
+
+	.experience-header, .education-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.experience-header h3, .education-header h3 {
+		margin: 0;
+	}
+
+	.date {
+		color: #666;
+		font-size: 0.875rem;
+	}
+
+	.company {
+		color: #666;
+		margin-bottom: 0.5rem;
+	}
+
+	.experience-item ul {
+		padding-left: 1.5rem;
+	}
+
+	.experience-item li {
+		margin-bottom: 0.25rem;
+	}
+
+	.skills-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 1rem;
+	}
+
+	.skill-category h3 {
+		margin-bottom: 0.25rem;
+		font-size: 1rem;
+	}
+
+	.skill-category p {
+		color: #666;
+	}
+
+	a {
+		color: #2563eb;
+		text-decoration: none;
+	}
+
+	a:hover {
+		text-decoration: underline;
+	}
+</style>

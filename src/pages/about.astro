@@ -1,0 +1,109 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`About - ${SITE_TITLE}`} description="About Martin Jarvis" />
+	</head>
+	<body>
+		<Header />
+		<main class="container">
+			<h1>About</h1>
+
+			<section class="bio">
+				<p>
+					Hi! I'm Martin, a Principal Consultant and developer based in the UK. I specialize in building scalable applications with .NET/C#, Azure, and modern cloud technologies.
+				</p>
+				<p>
+					Currently, I'm exploring AI-powered development workflows, creating tools to enhance developer productivity, and contributing to open source projects.
+				</p>
+			</section>
+
+			<section class="interests">
+				<h2>Current Focus</h2>
+				<ul>
+					<li><strong>AI-Assisted Development</strong> - Building tools and workflows that leverage AI for code generation, refactoring, and automation</li>
+					<li><strong>Developer Tooling</strong> - Creating utilities that improve the development experience</li>
+					<li><strong>Cloud Architecture</strong> - Designing and implementing scalable cloud solutions on Azure and AWS</li>
+					<li><strong>DevOps Practices</strong> - CI/CD, infrastructure as code, and container orchestration with Kubernetes</li>
+				</ul>
+			</section>
+
+			<section class="background">
+				<h2>Background</h2>
+				<p>
+					I've been working in software development for over 15 years, starting with .NET in its early days and evolving through the full stack to modern cloud-native architectures.
+				</p>
+				<p>
+					My experience spans multiple industries including finance, healthcare, and public sector. I've led teams, architected systems, and shipped products used by millions.
+				</p>
+			</section>
+
+			<section class="contact">
+				<h2>Get in Touch</h2>
+				<p>
+					Feel free to reach out via <a href="mailto:m.c.j@live.co.uk">email</a> or connect on <a href="https://github.com/mcj-coder" target="_blank" rel="noopener">GitHub</a>.
+				</p>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.container {
+		max-width: 700px;
+		margin: 0 auto;
+		padding: 2rem;
+	}
+
+	h1 {
+		font-size: 2.5rem;
+		margin-bottom: 2rem;
+	}
+
+	section {
+		margin-bottom: 3rem;
+	}
+
+	h2 {
+		margin-bottom: 1rem;
+	}
+
+	p {
+		line-height: 1.7;
+		margin-bottom: 1rem;
+	}
+
+	.interests ul {
+		list-style: none;
+		padding: 0;
+	}
+
+	.interests li {
+		margin-bottom: 1rem;
+		padding-left: 1.5rem;
+		position: relative;
+	}
+
+	.interests li::before {
+		content: "→";
+		position: absolute;
+		left: 0;
+		color: #2563eb;
+	}
+
+	a {
+		color: #2563eb;
+		text-decoration: none;
+	}
+
+	a:hover {
+		text-decoration: underline;
+	}
+</style>

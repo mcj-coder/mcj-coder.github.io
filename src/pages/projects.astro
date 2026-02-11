@@ -1,0 +1,139 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+
+const allShowcases = (await getCollection('showcase')).sort(
+	(a, b) => b.data.published.valueOf() - a.data.published.valueOf()
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Projects - ${SITE_TITLE}`} description="Martin Jarvis - Projects and Open Source Work" />
+	</head>
+	<body>
+		<Header />
+		<main class="container">
+			<h1>Projects</h1>
+			<p class="subtitle">Open source projects and experiments</p>
+
+			<div class="grid">
+				{allShowcases.map(post => (
+					<article class="card">
+						<h3>{post.data.title}</h3>
+						<p class="description">{post.data.description}</p>
+						<div class="meta">
+							<span class="date">
+								{post.data.published.toLocaleDateString('en-US', {
+									year: 'numeric',
+									month: 'short'
+								})}
+							</span>
+							{post.data.featured && <span class="featured-badge">Featured</span>}
+						</div>
+						<div class="tags">
+							{post.data.technologies.map(tag => (
+								<span class="tag">{tag}</span>
+							))}
+						</div>
+						<a href={post.data.repo} class="card-link" target="_blank" rel="noopener">View on GitHub →</a>
+					</article>
+				))}
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.container {
+		max-width: 900px;
+		margin: 0 auto;
+		padding: 2rem;
+	}
+
+	h1 {
+		font-size: 2.5rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.subtitle {
+		color: #666;
+		margin-bottom: 3rem;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.card {
+		border: 1px solid #e5e7eb;
+		border-radius: 8px;
+		padding: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		transition: box-shadow 0.2s;
+	}
+
+	.card:hover {
+		box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+	}
+
+	.card h3 {
+		margin-top: 0;
+		margin-bottom: 0.5rem;
+	}
+
+	.description {
+		color: #666;
+		flex-grow: 1;
+		margin-bottom: 1rem;
+	}
+
+	.meta {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+
+	.date {
+		color: #666;
+		font-size: 0.875rem;
+	}
+
+	.featured-badge {
+		background: #fef3c7;
+		color: #92400e;
+		padding: 0.25rem 0.5rem;
+		border-radius: 4px;
+		font-size: 0.75rem;
+		font-weight: 500;
+	}
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 1rem;
+	}
+
+	.tag {
+		background: #f3f4f6;
+		padding: 0.25rem 0.5rem;
+		border-radius: 4px;
+		font-size: 0.875rem;
+	}
+
+	.card-link {
+		color: #2563eb;
+		text-decoration: none;
+		font-weight: 500;
+	}
+</style>

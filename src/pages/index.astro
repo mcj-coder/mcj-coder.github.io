@@ -1,0 +1,195 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+
+const allPosts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const recentPosts = allPosts.slice(0, 3);
+
+const allShowcases = (await getCollection('showcase')).sort(
+	(a, b) => b.data.published.valueOf() - a.data.published.valueOf()
+);
+const featuredShowcases = allShowcases.filter(s => s.data.featured);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main class="container">
+			<section class="hero">
+				<h1>Hi, I'm Martin</h1>
+				<p class="subtitle">Principal Consultant & Developer</p>
+				<p>
+					Experienced technology professional specializing in <strong>C#/.NET</strong>, <strong>Azure</strong>, <strong>AWS</strong>, and <strong>Kubernetes</strong>. Currently exploring AI-powered workflows and developer tooling.
+				</p>
+				<p>
+					<a href="/cv" class="cta-button">View CV</a>
+					<a href="https://github.com/mcj-coder" target="_blank" rel="noopener">GitHub</a>
+				</p>
+			</section>
+
+			<section class="showcases">
+				<h2>Featured Projects</h2>
+				<div class="grid">
+					{featuredShowcases.map(post => (
+						<article class="card">
+							<h3>{post.data.title}</h3>
+							<p>{post.data.description}</p>
+							<div class="tags">
+								{post.data.technologies.slice(0, 4).map(tag => (
+									<span class="tag">{tag}</span>
+								))}
+							</div>
+							<a href={post.data.repo} class="card-link" target="_blank" rel="noopener">View Project →</a>
+						</article>
+					))}
+				</div>
+				<p><a href="/projects">View all projects →</a></p>
+			</section>
+
+			<section class="blog">
+				<h2>Recent Writing</h2>
+				<ul>
+					{recentPosts.map(post => (
+						<li>
+							<a href={`/blog/${post.slug}/`}>
+								<span class="post-title">{post.data.title}</span>
+								<span class="post-date">
+									{post.data.pubDate.toLocaleDateString('en-US', {
+										year: 'numeric',
+										month: 'short',
+										day: 'numeric'
+									})}
+								</span>
+							</a>
+						</li>
+					))}
+				</ul>
+				<p><a href="/blog/">View all posts →</a></p>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.container {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 2rem;
+	}
+
+	.hero {
+		padding: 4rem 0;
+		text-align: center;
+	}
+
+	.hero h1 {
+		font-size: 3rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.subtitle {
+		font-size: 1.5rem;
+		color: #666;
+		margin-bottom: 1.5rem;
+	}
+
+	.cta-button {
+		display: inline-block;
+		padding: 0.75rem 1.5rem;
+		background: #2563eb;
+		color: white;
+		text-decoration: none;
+		border-radius: 4px;
+		margin-right: 1rem;
+	}
+
+	section {
+		margin: 4rem 0;
+	}
+
+	section h2 {
+		margin-bottom: 1.5rem;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.card {
+		border: 1px solid #e5e7eb;
+		border-radius: 8px;
+		padding: 1.5rem;
+		transition: box-shadow 0.2s;
+	}
+
+	.card:hover {
+		box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+	}
+
+	.card h3 {
+		margin-top: 0;
+		margin-bottom: 0.5rem;
+	}
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin: 1rem 0;
+	}
+
+	.tag {
+		background: #f3f4f6;
+		padding: 0.25rem 0.5rem;
+		border-radius: 4px;
+		font-size: 0.875rem;
+	}
+
+	.card-link {
+		color: #2563eb;
+		text-decoration: none;
+		font-weight: 500;
+	}
+
+	.blog ul {
+		list-style: none;
+		padding: 0;
+	}
+
+	.blog li {
+		margin-bottom: 1rem;
+	}
+
+	.blog a {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.blog a:hover {
+		color: #2563eb;
+	}
+
+	.post-title {
+		font-weight: 500;
+	}
+
+	.post-date {
+		color: #666;
+		font-size: 0.875rem;
+	}
+</style>
