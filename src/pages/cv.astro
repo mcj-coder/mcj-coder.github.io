@@ -3,6 +3,11 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_TITLE } from '../consts';
+
+// Obfuscate email to prevent scraping
+const emailUser = 'm.c.j';
+const emailDomain = 'live.co.uk';
+const emailDisplay = 'm.c.j at live.co.uk';
 ---
 
 <!doctype html>
@@ -16,7 +21,7 @@ import { SITE_TITLE } from '../consts';
 			<div class="cv-header">
 				<h1>Martin Jarvis</h1>
 				<p class="contact-info">
-					<a href="mailto:m.c.j@live.co.uk">m.c.j@live.co.uk</a> •
+					<a href="javascript:void(0)" data-email-user={emailUser} data-email-domain={emailDomain} class="email-link" id="contact-email">Email</a> •
 					<a href="https://github.com/mcj-coder" target="_blank" rel="noopener">github.com/mcj-coder</a> •
 					United Kingdom
 				</p>
@@ -40,7 +45,7 @@ import { SITE_TITLE } from '../consts';
 					</div>
 					<p class="company">PA Consulting</p>
 					<ul>
-						li>Leading technical delivery and architecture for client projects</li>
+						<li>Leading technical delivery and architecture for client projects</li>
 						<li>Cloud migration and modernization initiatives</li>
 						<li>DevOps transformation and CI/CD pipeline implementation</li>
 						<li>Mentoring junior developers and technical teams</li>
@@ -102,6 +107,15 @@ import { SITE_TITLE } from '../consts';
 			</section>
 		</main>
 		<Footer />
+		<script define:vars={{ emailUser, emailDomain }}>
+			document.addEventListener('DOMContentLoaded', () => {
+				const emailLink = document.getElementById('contact-email');
+				if (emailLink) {
+					emailLink.textContent = `${emailUser}@${emailDomain}`;
+					emailLink.href = `mailto:${emailUser}@${emailDomain}`;
+				}
+			});
+		</script>
 	</body>
 </html>
 

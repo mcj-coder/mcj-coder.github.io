@@ -3,6 +3,10 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_TITLE } from '../consts';
+
+const emailUser = 'm.c.j';
+const emailDomain = 'live.co.uk';
+const linkedInUrl = 'https://www.linkedin.com/in/martincjarvis/';
 ---
 
 <!doctype html>
@@ -47,7 +51,7 @@ import { SITE_TITLE } from '../consts';
 			<section class="contact">
 				<h2>Get in Touch</h2>
 				<p>
-					Feel free to reach out via <a href="mailto:m.c.j@live.co.uk">email</a> or connect on <a href="https://github.com/mcj-coder" target="_blank" rel="noopener">GitHub</a>.
+					Let's connect on <a href={linkedInUrl} target="_blank" rel="noopener">LinkedIn</a> or check out my work on <a href="https://github.com/mcj-coder" target="_blank" rel="noopener">GitHub</a>.
 				</p>
 			</section>
 		</main>
