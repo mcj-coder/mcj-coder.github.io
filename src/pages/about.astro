@@ -4,9 +4,9 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_TITLE } from '../consts';
 
-const emailUser = 'm.c.j';
-const emailDomain = 'live.co.uk';
 const linkedInUrl = 'https://www.linkedin.com/in/martincjarvis/';
+const stravaUrl = 'https://www.strava.com/athletes/2427091';
+const stravaActivityUrl = 'https://www.strava.com/activities/9327479766';
 ---
 
 <!doctype html>
@@ -48,10 +48,32 @@ const linkedInUrl = 'https://www.linkedin.com/in/martincjarvis/';
 				</p>
 			</section>
 
+			<section class="achievements">
+				<h2>Beyond the Keyboard</h2>
+				<p>
+					When I'm not coding, you'll likely find me running or cycling. I believe physical challenges and mental challenges go hand in hand—both require discipline, persistence, and the ability to push through when things get difficult.
+				</p>
+				<div class="achievement">
+					<h3>South Downs Way 100</h3>
+					<p class="achievement-meta">
+						<a href={stravaActivityUrl} target="_blank" rel="noopener">View activity on Strava →</a>
+					</p>
+					<p>
+						Completed the 100-mile ultramarathon along the South Downs Way—a point-to-point trail from Eastbourne to Winchester. It's a race that tests not just physical endurance but mental resilience, with 12,000ft of elevation gain and a 30-hour cutoff.
+					</p>
+					<p>
+						The experience taught me lessons that directly apply to software development: proper preparation matters, pace yourself for the long game, and sometimes you just need to put one foot in front of the other and keep going.
+					</p>
+				</div>
+			</section>
+
 			<section class="contact">
 				<h2>Get in Touch</h2>
 				<p>
 					Let's connect on <a href={linkedInUrl} target="_blank" rel="noopener">LinkedIn</a> or check out my work on <a href="https://github.com/mcj-coder" target="_blank" rel="noopener">GitHub</a>.
+				</p>
+				<p>
+					You can also find me on <a href={stravaUrl} target="_blank" rel="noopener">Strava</a> if you want to see what I'm up to when I'm away from the computer.
 				</p>
 			</section>
 		</main>
@@ -79,6 +101,10 @@ const linkedInUrl = 'https://www.linkedin.com/in/martincjarvis/';
 		margin-bottom: 1rem;
 	}
 
+	h3 {
+		margin-bottom: 0.5rem;
+	}
+
 	p {
 		line-height: 1.7;
 		margin-bottom: 1rem;
@@ -100,6 +126,31 @@ const linkedInUrl = 'https://www.linkedin.com/in/martincjarvis/';
 		position: absolute;
 		left: 0;
 		color: #2563eb;
+	}
+
+	.achievement {
+		background: #f9fafb;
+		padding: 1.5rem;
+		border-radius: 8px;
+		margin-top: 1.5rem;
+	}
+
+	.achievement h3 {
+		margin-top: 0;
+		color: #1f2937;
+	}
+
+	.achievement-meta {
+		margin-bottom: 1rem;
+	}
+
+	.achievement-meta a {
+		font-size: 0.875rem;
+		color: #2563eb;
+	}
+
+	.achievement p + p {
+		margin-top: 1rem;
 	}
 
 	a {
