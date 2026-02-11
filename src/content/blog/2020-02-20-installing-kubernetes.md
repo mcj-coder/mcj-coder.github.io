@@ -2,7 +2,8 @@
 title: RPi Cluster (Part 4) - Installing Kubernetes
 description: ""
 pubDate: 2020-02-20
-heroImage: ../../assets/blog/hero-images/ai/ci-cd.jpg
+heroImage: ../../assets/blog/hero-images/2020-02-20-installing-kubernetes.jpg
+
 tags: ["rpi"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2020-02-20-installing-kubernetes/"

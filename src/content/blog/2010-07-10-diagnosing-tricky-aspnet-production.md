@@ -2,7 +2,8 @@
 title: Diagnosing Tricky ASP.Net Production Issues with DebugDiag and winDbg
 description: ""
 pubDate: 2010-07-10
-heroImage: ../../assets/blog/hero-images/ai/win-debug.jpg
+heroImage: ../../assets/blog/hero-images/2010-07-10-diagnosing-tricky-aspnet-production.jpg
+
 tags: ["troubleshooting"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2010-07-10-diagnosing-tricky-aspnet-production/"

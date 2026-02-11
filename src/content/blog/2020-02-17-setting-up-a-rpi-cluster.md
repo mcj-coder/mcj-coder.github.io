@@ -2,7 +2,8 @@
 title: RPi Cluster (Part 2) - Basic Configuration
 description: ""
 pubDate: 2020-02-17
-heroImage: ../../assets/blog/hero-images/ai/episerver.jpg
+heroImage: ../../assets/blog/hero-images/2020-02-17-setting-up-a-rpi-cluster.jpg
+
 tags: ["rpi"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2020-02-17-setting-up-a-rpi-cluster/"

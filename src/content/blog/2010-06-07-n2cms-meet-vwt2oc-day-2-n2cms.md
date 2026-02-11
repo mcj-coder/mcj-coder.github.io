@@ -3,7 +3,8 @@ title: "N2CMS Meet VWT2OC: Day 2 \u2013 N2CMS Configuration"
 description: ""
 pubDate: 2010-06-07
 updatedDate: 2010-06-08
-heroImage: ../../assets/blog/hero-images/ai/cms-admin.jpg
+heroImage: ../../assets/blog/hero-images/2010-06-07-n2cms-meet-vwt2oc-day-2-n2cms.jpg
+
 tags: ["n2cms"]
 source: hugo
 originalUrl: "https://codifice.dev/posts/2010-06-07-n2cms-meet-vwt2oc-day-2-n2cms/"
