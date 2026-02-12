@@ -74,6 +74,19 @@ Replace:
 - `<<SUBJECT>>` - The blog post subject (e.g., "ASP.NET error pages", "WCF services")
 - `[SLUG]` - The blog post's slug/filename (e.g., `2010-03-20-aspnet-and-custom-error-pages-seo`)
 
+### Hero Image Quality Assurance
+
+**Invoke the `hero-images` skill for generating and validating hero images.**
+
+The skill handles:
+
+- Pollinations.ai generation with nanobanana model
+- OCR validation using `mcp__4_5v_mcp__analyze_image`
+- CDN caching workaround using unique filenames
+- Known model hallucinations and workarounds
+
+Usage: `/hero-images` or invoke via Skill tool when generating or validating hero images.
+
 ## Repository Policies
 
 **DO NOT commit the following to this repository:**
