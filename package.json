@@ -28,6 +28,7 @@
     "@commitlint/cli": "^19.6.1",
     "@commitlint/config-conventional": "^19.6.0",
     "@secretlint/secretlint-rule-preset-recommend": "^11.3.1",
+    "cspell": "^9.6.4",
     "husky": "^9.1.7",
     "lint-staged": "^15.3.0",
     "markdownlint-cli2": "^0.20.0",
@@ -37,6 +38,7 @@
   "lint-staged": {
     "*.{md,mdx}": [
       "prettier --write",
+      "cspell --no-must-find-unknown-flag-color",
       "markdownlint-cli2 --fix"
     ],
     "*.{json,yml,yaml,js,ts,mjs,cjs}": [
