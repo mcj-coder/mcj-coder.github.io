@@ -36,4 +36,35 @@ npm run preview       # Preview build locally
 
 ## Image Assets
 
-Hero images are stored in `src/assets/blog/hero-images/` and referenced via `../../assets/blog/hero-images/[slug].jpg` in blog post frontmatter. Images are generated using Pollinations.ai with a consistent steampunk techno wizard character theme.
+Hero images are stored in `src/assets/blog/hero-images/` and referenced via `../../assets/blog/hero-images/[slug].jpg` in blog post frontmatter.
+
+**Generating Hero Images:**
+
+The hero images use a consistent steampunk techno wizard character (grey goatee, dark hair, rectangular rim-less glasses) performing actions relevant to each blog post.
+
+**Method 1: Pollinations.ai API (Recommended)**
+
+```bash
+# Using the download script in scripts/
+bash scripts/download-wizard-hero-images.cjs
+```
+
+Each image is 1024x512px JPEG. The prompt format:
+```
+steampunk pixelart wizard grey goatee glasses <<ACTION>> to the subject of <<SUBJECT>>
+```
+
+**Method 2: Direct curl (for single images)**
+
+```bash
+# Prompt must be URL-encoded
+curl -s "https://gen.pollinations.ai/image/steampunk%20pixelart%20wizard%20grey%20goatee%20glasses%20<<ACTION>>%20to%20subject%20of%20<<SUBJECT>>?model=nanobanana&width=1024&height=512&nologo=true" \
+  --header "Accept: */*" \
+  --header "Authorization: Bearer ${POLLINATIONS_API_KEY}" \
+  -o "src/assets/blog/hero-images/[SLUG].jpg"
+```
+
+Replace:
+- `<<ACTION>>` - The wizard's action (e.g., "casting SEO spell", "crafting proxy construct")
+- `<<SUBJECT>>` - The blog post subject (e.g., "ASP.NET error pages", "WCF services")
+- `[SLUG]` - The blog post's slug/filename (e.g., `2010-03-20-aspnet-and-custom-error-pages-seo`)
