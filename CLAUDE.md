@@ -60,7 +60,7 @@ steampunk pixelart wizard grey goatee glasses <<ACTION>> to the subject of <<SUB
 # Prompt must be URL-encoded
 curl -s "https://gen.pollinations.ai/image/steampunk%20pixelart%20wizard%20grey%20goatee%20glasses%20<<ACTION>>%20to%20subject%20of%20<<SUBJECT>>?model=nanobanana&width=1024&height=512&nologo=true" \
   --header "Accept: */*" \
-  --header "Authorization: Bearer ${POLLINATIONS_API_KEY}" \
+  --header "Authorization: Bearer ${ANTHROPIC_API_KEY}" \
   -o "src/assets/blog/hero-images/[SLUG].jpg"
 ```
 
