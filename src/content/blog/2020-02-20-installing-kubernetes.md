@@ -1,17 +1,13 @@
 ---
 title: RPi Cluster (Part 4) - Installing Kubernetes
-description: ""
+description: ''
 pubDate: 2020-02-20
 heroImage: ../../assets/blog/hero-images/2020-02-20-installing-kubernetes.jpg
 
-
-
-
-tags: ["rpi"]
+tags: ['rpi']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2020-02-20-installing-kubernetes/"
+originalUrl: 'https://codifice.dev/posts/2020-02-20-installing-kubernetes/'
 ---
-
 
 Now the RPi Cluster is assembled, set up and has its network correctly configured we can install Kubernetes!
 
@@ -59,12 +55,12 @@ kube-scheduler-master            1/1     Running   0          10m
 weave-net-h6d7s                  2/2     Running   0          7m21s
 ```
 
->  You can also double check that Kubernetes is using the docker cache, by checking the `weaveworks/*` images are stored in the cache:
+> You can also double check that Kubernetes is using the docker cache, by checking the `weaveworks/*` images are stored in the cache:
+>
 > ```bash
 > pi@master:~ $ curl http://cache:5000/v2/_catalog
 > {"repositories":["library/hello-world","library/redis","weaveworks/weave-kube","weaveworks/weave-npc"]}
 > ```
-
 
 ## Join Worker Nodes
 
@@ -73,7 +69,7 @@ SSH onto each node and execute the join command provided previously:
 ```bash
 sudo kubeadm join 10.0.1.2:6443 --token hqrwwd.zia49kiu5096aq0p \
     --discovery-token-ca-cert-hash sha256:2b22b8c62774bdfd051720326ccb49970457140a19ec9f425c28727ef4b4dae9
-sudo sysctl net.bridge.bridge-nf-call-iptables=1    
+sudo sysctl net.bridge.bridge-nf-call-iptables=1
 ```
 
 You can monitor the status of the node via:
@@ -102,10 +98,10 @@ As it stands the Kubernetes cluster is only available on the clusters network `1
 
 ## Gateway
 
-First we want to makesure the gateway has the tools to admin the K8S cluster, as this will be the easiest box to SSH onto from a new host network.  To do this we need to copy the config from `master` on to RPi and check that connectivity works as expected.  Fortunately, this should be as simple as copying the `.kube` folder between the machines:
-
+First we want to makesure the gateway has the tools to admin the K8S cluster, as this will be the easiest box to SSH onto from a new host network. To do this we need to copy the config from `master` on to RPi and check that connectivity works as expected. Fortunately, this should be as simple as copying the `.kube` folder between the machines:
 
 From the gateway RPi:
+
 ```bash
 scp -r pi@master:~/.kube ~/
 kubectl get nodes
@@ -125,7 +121,7 @@ Using WSL, we can copy the `.kube` folder in a similar way to the gateway:
 ```bash
 scp -r pi@<gateway-ip>:~/.kube ~/
 ```
- 
+
 > If you've configured `~/.ssh/config` with the SSH Proxy settings you can use `scp -r pi@master:~/.kube ~/` the same as on the Gateway RPi
 
 To use windows based tooling copy the `.kube/config` into the appropriate profile location:
@@ -138,11 +134,13 @@ cp ~/.kube/config /mnt/c/users/<username>/.kube/config
 You will also need to add a routing rule so that all the `10.0.1.x` traffic is routed through your Gateway RPi.
 
 On Windows (will be picked up by WSL):
+
 ```powershell
 route ADD 10.0.1.0 MASK 255.255.255.0 <gateway-ip>
 ```
 
 You can install the kubernetes tools for WSL using:
+
 ```bash
 echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 wget -qO - https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
@@ -151,13 +149,14 @@ sudo apt-get install -qy kubeadm
 ```
 
 or for windows (using chocolatey):
+
 ```powershell
 choco install kubernetes-cli
 ```
 
 However, executing `kubectl get nodes` will result in an error as the Gateway RPi is not forwarding the appropriate traffic.
 
-To enable the kubernetes tools access from host network we need to enable port forwarding off `6443`, `ssh` on the the Gateway RPi and configure the following:  
+To enable the kubernetes tools access from host network we need to enable port forwarding off `6443`, `ssh` on the the Gateway RPi and configure the following:
 
 ```bash
 # Prepare port forwarding of eth1 traffic on 6443 to master (10.0.1.2)
@@ -171,6 +170,6 @@ sudo iptables  -t nat -A POSTROUTING -o 10.0.1.1 -j SNAT --to-source 10.0.1.2
 sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
 ```
 
-You machine on the host network should now be able to access kubernetes via the tooling.  For example, the VS Code Kubernetes extension should automatically pick up the configuration and allow you to browse the RPi Kubernetes cluster:
+You machine on the host network should now be able to access kubernetes via the tooling. For example, the VS Code Kubernetes extension should automatically pick up the configuration and allow you to browse the RPi Kubernetes cluster:
 
 ![vscode-kubernetes](/images/blog/installing-kubernetes-vscode-kubernetes.jpg)

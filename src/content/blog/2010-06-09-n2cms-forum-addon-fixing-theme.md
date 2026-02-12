@@ -1,14 +1,15 @@
 ---
-title: "N2CMS Forum Addon: Fixing the Theme"
-description: ""
+title: 'N2CMS Forum Addon: Fixing the Theme'
+description: ''
 pubDate: 2010-06-09
-tags: ["n2cms"]
+tags: ['n2cms']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2010-06-09-n2cms-forum-addon-fixing-theme/"
+originalUrl: 'https://codifice.dev/posts/2010-06-09-n2cms-forum-addon-fixing-theme/'
 heroImage: ../../assets/blog/hero-images/2010-06-09-n2cms-forum-addon-fixing-theme.jpg
 ---
 
 ---
+
 title: "N2CMS Forum Addon: Fixing the Theme"
 date: 2010-06-09
 lastmod: 2010-06-09
@@ -17,7 +18,7 @@ comments: true
 thumbnail: "/coding-gallery"
 series: ["n2cms"]
 authors: ["martincjarvis"]
----*My work on the VWT2OC site is on hiatus at the moment due to hosting issues so I thought I’d blog a useful fix that I’ve found.*
+---_My work on the VWT2OC site is on hiatus at the moment due to hosting issues so I thought I’d blog a useful fix that I’ve found._
 
 I’ve noticed a bug with the Forum Addon.  The first page would be correctly themed but any subsequent pages were not when running against a build of the latest N2CMS.
 
@@ -35,7 +36,8 @@ Looking into the N2.Templates.dll that comes the the Forum Addon, it looks like 
 
 So, the fix is to make the forum page take the theme from the start page, without affecting other page types…..tricky whilst maintaining separation of concerns…hmm.
 
-#### 
+####
+
 The Fix
 The fix has to belong with the forum addon so that the change in behaviour doesn’t knacker the standard [n2cms](http://bit.ly/aco4m4) features.  N2CMS populates the CurrentItem property based on the current url and as the Forum Plugin is generating links directly to it’s core template (/Forum/UI/Views/Forum.aspx) this is causing a problem.
 

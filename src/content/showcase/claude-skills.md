@@ -1,9 +1,9 @@
 ---
-title: "Claude Skills"
+title: 'Claude Skills'
 published: 2026-01-29
-description: "Shared Claude Code skills for reuse - whiteboarding, session-aware workflows, and more"
-repo: "https://github.com/mcj-coder-org/claude-skills"
-technologies: ["TypeScript", "Claude Code", "Skills", "Developer Tools"]
+description: 'Shared Claude Code skills for reuse - whiteboarding, session-aware workflows, and more'
+repo: 'https://github.com/mcj-coder-org/claude-skills'
+technologies: ['TypeScript', 'Claude Code', 'Skills', 'Developer Tools']
 featured: false
 ---
 

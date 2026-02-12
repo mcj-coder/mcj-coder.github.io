@@ -1,9 +1,9 @@
 ---
-title: "Agent Coordinator"
+title: 'Agent Coordinator'
 published: 2026-02-09
-description: "Git-based parallel AI agent coordinator for orchestrating multi-agent workflows"
-repo: "https://github.com/mcj-coder-org/agent-coordinator"
-technologies: ["Git", "Python", "Claude API", "Multi-Agent", "Orchestration"]
+description: 'Git-based parallel AI agent coordinator for orchestrating multi-agent workflows'
+repo: 'https://github.com/mcj-coder-org/agent-coordinator'
+technologies: ['Git', 'Python', 'Claude API', 'Multi-Agent', 'Orchestration']
 featured: true
 ---
 
@@ -20,6 +20,7 @@ A novel approach to coordinating multiple AI agents using Git as the coordinatio
 ## Architecture
 
 The coordinator leverages Git's branching and merging capabilities to:
+
 - Create isolated workspaces for each agent
 - Track agent outputs as commits
 - Merge results back to main branch

@@ -1,9 +1,9 @@
 ---
-title: "Claude Auto Resume"
+title: 'Claude Auto Resume'
 published: 2025-01-09
-description: "A cross-platform dotnet tool to trigger the automatic resumption of headless and interactive claude sessions when session limits are hit"
-repo: "https://github.com/mcj-coder-org/claude-auto-resume"
-technologies: ["C#", ".NET 10", "Claude API", "Cross-platform", "CLI"]
+description: 'A cross-platform dotnet tool to trigger the automatic resumption of headless and interactive claude sessions when session limits are hit'
+repo: 'https://github.com/mcj-coder-org/claude-auto-resume'
+technologies: ['C#', '.NET 10', 'Claude API', 'Cross-platform', 'CLI']
 featured: true
 ---
 

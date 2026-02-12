@@ -1,0 +1,42 @@
+#!/bin/bash
+# Pre-push hook: Quality gate for content and build validation
+set -e
+
+echo "🔍 Pre-push quality checks..."
+
+# Check for secrets
+echo "🔒 Checking for secrets..."
+if ! npm run lint:secrets; then
+    echo "❌ Secrets detected. Remove credentials before pushing."
+    exit 1
+fi
+
+# Run format check
+echo "📝 Checking code formatting..."
+if ! npm run lint:format; then
+    echo "❌ Code formatting check failed. Run 'npm run format' to fix."
+    exit 1
+fi
+
+# Run markdown lint
+echo "📝 Checking markdown files..."
+if ! npm run lint:md; then
+    echo "❌ Markdown lint failed. Run 'npm run format:md' to auto-fix issues."
+    exit 1
+fi
+
+# Validate assets
+echo "🖼️  Validating assets..."
+if ! npm run lint:assets; then
+    echo "❌ Asset validation failed. Check for missing or orphaned images."
+    exit 1
+fi
+
+# Run build to ensure site compiles
+echo "🔨 Building site..."
+if ! npm run build; then
+    echo "❌ Build failed. Fix errors before pushing."
+    exit 1
+fi
+
+echo "✅ All checks passed!"

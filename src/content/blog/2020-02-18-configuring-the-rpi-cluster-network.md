@@ -1,15 +1,12 @@
 ---
 title: RPi Cluster (Part 3) - Networking
-description: ""
+description: ''
 pubDate: 2020-02-18
 heroImage: ../../assets/blog/hero-images/2020-02-18-configuring-the-rpi-cluster-network.jpg
 
-
-
-
-tags: ["rpi"]
+tags: ['rpi']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2020-02-18-configuring-the-rpi-cluster-network/"
+originalUrl: 'https://codifice.dev/posts/2020-02-18-configuring-the-rpi-cluster-network/'
 ---
 
 # Configuring the RPi Cluster Network
@@ -18,7 +15,7 @@ Now the that the cluster is configured and all the RPi's are up and running, it'
 
 ![simple-network](/images/blog/configuring-the-rpi-cluster-network-simple-network.jpg)
 
-We're going to configure the gateway RPi (which is doing double duty as the cache RPi in my case) to be a DHCP server using `dnsmasq` for all the devices connected to the 5 Port Switch which is serving as our backplane.  We'll also need a second ethernet port to be our "hotplug" network port which will get it's IP Address assigned by the host networks DHCP server, and similarly with the RPi's built-in WIFI.  All the other RPi's on the cluster will have their WiFi interfaces disabled.
+We're going to configure the gateway RPi (which is doing double duty as the cache RPi in my case) to be a DHCP server using `dnsmasq` for all the devices connected to the 5 Port Switch which is serving as our backplane. We'll also need a second ethernet port to be our "hotplug" network port which will get it's IP Address assigned by the host networks DHCP server, and similarly with the RPi's built-in WIFI. All the other RPi's on the cluster will have their WiFi interfaces disabled.
 
 ## Steps to Configure
 
@@ -66,7 +63,7 @@ dhcp-option=option:router,10.0.1.1
 dhcp-host=master,10.0.1.2
 ```
 
-> The last line will assign a static IP of 10.0.1.2 to any host named `master` 
+> The last line will assign a static IP of 10.0.1.2 to any host named `master`
 
 We also need to update the RPi `/etc/hosts` to use the static IP address for the cluster/gateway/cache RPis
 
@@ -74,7 +71,7 @@ We also need to update the RPi `/etc/hosts` to use the static IP address for the
 
 ```plain
 
-# replace 127.0.1.1 with 10.0.1.1 (static IP for `cache` RPi) 
+# replace 127.0.1.1 with 10.0.1.1 (static IP for `cache` RPi)
 
 10.0.1.1        cluster cache gateway
 ```
@@ -160,9 +157,9 @@ You should now be able to SSH onto any of the RPi's and ping an existing domain/
 
 If you SSH onto one of the cluster RPi's (master, node1-3) and run `ifconfig` you'll see three adapters:
 
-* `eth0` - wired ethernet
-* `lo` - loop back (essentially 127.0.0.1)
-* `wlan0` - Wifi
+- `eth0` - wired ethernet
+- `lo` - loop back (essentially 127.0.0.1)
+- `wlan0` - Wifi
 
 ```bash
 pi@node1:~ $ ifconfig
@@ -194,7 +191,7 @@ wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 
-We need to disable the WiFi adapter to isolate the cluster RPi's...but if we do that we can no longer SSH onto the box directly.  
+We need to disable the WiFi adapter to isolate the cluster RPi's...but if we do that we can no longer SSH onto the box directly.
 
 So before we disable the adapter we will need to SSH into the node via the gateway RPi as a jumpbox:
 
@@ -202,11 +199,11 @@ So before we disable the adapter we will need to SSH into the node via the gatew
 ssh -J pi@<gateway-ip> pi@master
 ```
 
-> For Windows users, try using `Windows Subsystem for Linux` (WSL) to use linux SSH tools.  However, if for `putty` instructions see [putty/plink config](https://jamesd3142.wordpress.com/2018/02/05/jump-box-config-for-putty/)
+> For Windows users, try using `Windows Subsystem for Linux` (WSL) to use linux SSH tools. However, if for `putty` instructions see [putty/plink config](https://jamesd3142.wordpress.com/2018/02/05/jump-box-config-for-putty/)
 
 You will need to enter the SSH Passwords first for the Jumpbox, and then for `master`.
 
-If you a WSL/Linux/Mac you can configure SSH to automatically use the jumpbox so that you don't need to enter the `-J pi@<gateway-ip>` each time.  Edit your local `~/.ssh/config` file and add entries similar to:
+If you a WSL/Linux/Mac you can configure SSH to automatically use the jumpbox so that you don't need to enter the `-J pi@<gateway-ip>` each time. Edit your local `~/.ssh/config` file and add entries similar to:
 
 ```plain
 Host master
@@ -246,7 +243,7 @@ To double-check connectivity try `ping www.google.com`
 
 ## Shutting down the cluster cleanly
 
-Up until now, we've had to shut down the Raspberry PI cluster by logging onto each machine and running `sudo shutdown -h now` or `sudo poweroff`.  If we configure [SSH Key Authentication](https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server) with the private key on the cache/gateway RPi and install the public key on each of the other nodes (in `~/.ssh/authorized_keys`) we can parse the DHCP Leases file and shutdown each node in turn and finally the cache/gateway RPi.
+Up until now, we've had to shut down the Raspberry PI cluster by logging onto each machine and running `sudo shutdown -h now` or `sudo poweroff`. If we configure [SSH Key Authentication](https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server) with the private key on the cache/gateway RPi and install the public key on each of the other nodes (in `~/.ssh/authorized_keys`) we can parse the DHCP Leases file and shutdown each node in turn and finally the cache/gateway RPi.
 
 ```bash
 #!/bin/bash
@@ -278,4 +275,4 @@ Connection to node3 closed by remote host.
 
 ## Summary
 
-We've now configured the RPi cluster network to isolate the RPi's behind a single gateway and enable the cluster-as-an appliance network isolation.  We can add the cluster to a network by either joining the gateway RPi to the host WIFI network or by patching in via the `eth1` port and DHCP on the host network will assign the cluster an IP address which can be used to SSH into the gateway RPi or use it as a jump box to the internal RPi's.
+We've now configured the RPi cluster network to isolate the RPi's behind a single gateway and enable the cluster-as-an appliance network isolation. We can add the cluster to a network by either joining the gateway RPi to the host WIFI network or by patching in via the `eth1` port and DHCP on the host network will assign the cluster an IP address which can be used to SSH into the gateway RPi or use it as a jump box to the internal RPi's.

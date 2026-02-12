@@ -1,0 +1,47 @@
+name: Quality Gate
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    name: Quality Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check code formatting
+        run: npm run lint:format
+
+      - name: Lint markdown
+        run: npm run lint:md
+
+      - name: Validate assets
+        run: npm run lint:assets
+
+      - name: Check for secrets
+        run: npm run lint:secrets
+
+      - name: Build site
+        run: npm run build
+
+      - name: Check for broken links
+        run: |
+          npm install -g markdown-link-check
+          find src/content/blog -name "*.md" -exec markdown-link-check {} \; || true
+        continue-on-error: true

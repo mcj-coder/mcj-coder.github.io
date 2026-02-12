@@ -1,30 +1,30 @@
 ---
-title: "HowTo: Creating Strongly Typed Code Using Microsoft.VisualBasic.Collection"
-description: ""
+title: 'HowTo: Creating Strongly Typed Code Using Microsoft.VisualBasic.Collection'
+description: ''
 pubDate: 2010-08-18
 updatedDate: 2010-08-20
-tags: ["ektron", "tips"]
+tags: ['ektron', 'tips']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2010-08-18-howto-creating-strongly-typed-code/"
+originalUrl: 'https://codifice.dev/posts/2010-08-18-howto-creating-strongly-typed-code/'
 heroImage: ../../assets/blog/hero-images/2010-08-18-howto-creating-strongly-typed-code.jpg
 ---
 
 One of the 3rd Party CMS’s that I frequently work with (Ektron) has a lot of legacy API code that uses Microsoft.VisualBasic.Collections ( from hereon referred to as ***C***ollection) to pass data into the database.  These API’s methods are slowly being replaced with strongly typed entity style methods, but the most stable and reliable methods use Collections.
 
-  There are many reasons to dislike Collections, but my top ones are:
+There are many reasons to dislike Collections, but my top ones are:
 
-     * You can’t see the key’s of the values inside – this often leads to Exception led logic 
-    * Weakly Typed 
-   #### What’s in the Box?  Not being able to see what keys are in a collection is a killer fault, but it’s not too hard to workaround.   Since the Collection class is simply a wrapper for a generic Dictionary (and a couple of ArrayLists – which I’m not particularly bothered about), we can simply use Reflection to crack open the shell and access the sweet Dictionary goodness inside.  
+     * You can’t see the key’s of the values inside – this often leads to Exception led logic
+    * Weakly Typed
 
-  My preferred method for this is an Extension Method, but a static method will work just as well:
+#### What’s in the Box? Not being able to see what keys are in a collection is a killer fault, but it’s not too hard to workaround.   Since the Collection class is simply a wrapper for a generic Dictionary (and a couple of ArrayLists – which I’m not particularly bothered about), we can simply use Reflection to crack open the shell and access the sweet Dictionary goodness inside.
 
-  
+My preferred method for this is an Extension Method, but a static method will work just as well:
+
 ```
  
 ```
 
-**Word of Warning**: this technique relies on the internal implementation of the Collection class remaining the same as in .Net 3.5.  Future (or Past) versions of .Net may need amending – *Reflector** is your friend*.
+**Word of Warning**: this technique relies on the internal implementation of the Collection class remaining the same as in .Net 3.5.  Future (or Past) versions of .Net may need amending – _Reflector\*\* is your friend_.
 
 To use the code simply make sure the Extension’s hosting class (Non-Generic and static) is included in the available namespaces for your code, and call:
 
@@ -44,7 +44,7 @@ The required Custom Attribute is pretty simple:
  
 ```
 
-*Note the AttributeUsage attribute on the class which limits its scope to properties.*
+_Note the AttributeUsage attribute on the class which limits its scope to properties._
 
 This can be added to your entities simply as:
 

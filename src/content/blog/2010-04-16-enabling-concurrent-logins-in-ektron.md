@@ -1,21 +1,20 @@
 ---
 title: Enabling Concurrent Logins in Ektron
-description: ""
+description: ''
 pubDate: 2010-04-16
 updatedDate: 2010-04-19
-tags: ["ektron"]
+tags: ['ektron']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2010-04-16-enabling-concurrent-logins-in-ektron/"
+originalUrl: 'https://codifice.dev/posts/2010-04-16-enabling-concurrent-logins-in-ektron/'
 heroImage: ../../assets/blog/hero-images/2010-04-16-enabling-concurrent-logins-in-ektron.jpg
 ---
 
 For one of our major clients we needed a semi-secure area – you needed credentials to view the content within, but there was only one set of credentials.   This meant that multiple users could access the site concurrently with the same credentials and this is a bit of a problem for the Ektron security model as it’s based around a one session per login model.
 
-  This model is enforced by a unique integer that is generated on login and persisted in the database (in ***[dbo].[users].[login_identification]*** schema fans) with the user account and also stored within a cookie (***‘ecm’***) that is returned to the client.  When an authenticated request comes in, Ektron checks the unique id in the cookie matches the value in the database and if not, your permission checks fail (*but doesn’t log you out – irritatingly you can be browse the site in a semi-authenticated state!*)
+This model is enforced by a unique integer that is generated on login and persisted in the database (in **_[dbo].[users].[login_identification]_** schema fans) with the user account and also stored within a cookie (**_‘ecm’_**) that is returned to the client.  When an authenticated request comes in, Ektron checks the unique id in the cookie matches the value in the database and if not, your permission checks fail (_but doesn’t log you out – irritatingly you can be browse the site in a semi-authenticated state!_)
 
-  #### The Fix  To get around this we decided to fool the Ektron API into thinking that everyone using the credentials are in fact the same user by hijacking the ‘***ecm***’ cookie and updating the unique id for the provided user id using a HttpModule (*class definition and event wiring omitted for brevity*) : 
+#### The Fix To get around this we decided to fool the Ektron API into thinking that everyone using the credentials are in fact the same user by hijacking the ‘**_ecm_**’ cookie and updating the unique id for the provided user id using a HttpModule (_class definition and event wiring omitted for brevity_)
 
-  
 ```
 private const string IsMembershipUserKey = "isMembershipUser";
 ```
@@ -26,7 +25,7 @@ This approach doesn’t impact the level of security offered by Ektron as the se
 
 Whilst the above approach worked, it’s not particularly scalable as it adds additional database traffic to every authenticated request.  As this was expected to be a high-usage feature we need to balance keeping track of the latest login id with keeping additional database queries to a minimum.
 
-To do this we’ve taken advantage of the ASP.NET 2.0/SQL Server 2005 SqlCacheDependency (in System.Web.Caching namespace) feature to allow us to cache the latest login id per user and have it evicted whenever it changes (when someone new logs in).  
+To do this we’ve taken advantage of the ASP.NET 2.0/SQL Server 2005 SqlCacheDependency (in System.Web.Caching namespace) feature to allow us to cache the latest login id per user and have it evicted whenever it changes (when someone new logs in).
 
 Fortunately, this is fairly simple to.
 
@@ -48,7 +47,7 @@ We could then amend our ‘GetLoginId’ method to implement the caching:
 {
 ```
 
-Job’s a good ‘un. (*Until Ektron change the membership user login mechanism*)  
+Job’s a good ‘un. (_Until Ektron change the membership user login mechanism_)
 
 #### Preventing Account Lockouts
 
