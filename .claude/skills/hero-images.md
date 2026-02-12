@@ -36,7 +36,7 @@ Copy and track:
 - [ ] Generate ONE seed with unique filename (append seed)
 - [ ] Upload unique file to CDN via Read tool
 - [ ] OCR with mcp__4_5v_mcp__analyze_image
-- [ ] Validate spelling against blog content
+- [ ] Validate text is appropriate to blog content (not exact match)
 - [ ] If typo: regenerate with NEW single seed, repeat from step 1
 - [ ] Copy valid image to final filename
 - [ ] Delete temporary unique files
