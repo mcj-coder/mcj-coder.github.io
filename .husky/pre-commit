@@ -1,0 +1,17 @@
+#!/bin/sh
+# Prevent commits directly to main — use feature branches
+branch="$(git rev-parse --abbrev-ref HEAD)"
+if [ "$branch" = "main" ]; then
+  echo "❌ Direct commits to main are not allowed. Use a feature branch."
+  exit 1
+fi
+
+# Check for secrets before committing
+echo "Checking for secrets..."
+npx secretlint '**/*' || {
+  echo "❌ Secrets detected! Remove API keys, credentials, or secrets before committing."
+  exit 1
+}
+
+# Lint staged files (markdown, json, yaml, astro, js)
+npx lint-staged

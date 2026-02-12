@@ -1,16 +1,15 @@
 ---
-title: "Tip: Constructing Private Types"
-description: ""
+title: 'Tip: Constructing Private Types'
+description: ''
 pubDate: 2010-06-16
-tags: ["tips"]
+tags: ['tips']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2010-06-16-tip-constructing-private-types/"
+originalUrl: 'https://codifice.dev/posts/2010-06-16-tip-constructing-private-types/'
 heroImage: ../../assets/blog/hero-images/2010-06-16-tip-constructing-private-types.jpg
 ---
 
 I recently needed to create an instance of the System.Web.StaticFileHandler.  This is a bit difficult as the class is internal so reflection must be used:
 
-  
 ```
  
 ```

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Commitlint hook to enforce conventional commits
+npx --yes commitlint --edit "$1"

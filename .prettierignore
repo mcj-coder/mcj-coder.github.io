@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Git
+.git/
+
+# Package lock files (optional, can be formatted if desired)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock

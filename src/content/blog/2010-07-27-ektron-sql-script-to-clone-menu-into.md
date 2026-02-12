@@ -1,18 +1,17 @@
 ---
-title: "Ektron: SQL Script To Clone A Menu into Multiple Languages"
-description: ""
+title: 'Ektron: SQL Script To Clone A Menu into Multiple Languages'
+description: ''
 pubDate: 2010-07-27
-tags: ["ektron"]
+tags: ['ektron']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2010-07-27-ektron-sql-script-to-clone-menu-into/"
+originalUrl: 'https://codifice.dev/posts/2010-07-27-ektron-sql-script-to-clone-menu-into/'
 heroImage: ../../assets/blog/hero-images/2010-07-27-ektron-sql-script-to-clone-menu-into.jpg
 ---
 
 I’ve recently needed to have a multilingual menu where the id for each menu item is the same across all languages, this is a bit of a tall order using the workarea as only the root menu item will share the id.
 
-  So I’ve knocked out a quick’n’dirty TSQL script to clone a menu across across several languages whilst maintaining the relevant ids.
+So I’ve knocked out a quick’n’dirty TSQL script to clone a menu across across several languages whilst maintaining the relevant ids.
 
-  
 ```
  
 ```

@@ -1,9 +1,9 @@
 ---
-title: "WSL2 Migration"
+title: 'WSL2 Migration'
 published: 2026-02-05
-description: "Automated, idempotent WSL2 bootstrap system for complete development environment setup"
-repo: "https://github.com/mcj-coder/wsl2-migration"
-technologies: ["Bash", "WSL2", "DevOps", "Automation", "Bootstrap"]
+description: 'Automated, idempotent WSL2 bootstrap system for complete development environment setup'
+repo: 'https://github.com/mcj-coder/wsl2-migration'
+technologies: ['Bash', 'WSL2', 'DevOps', 'Automation', 'Bootstrap']
 featured: false
 ---
 

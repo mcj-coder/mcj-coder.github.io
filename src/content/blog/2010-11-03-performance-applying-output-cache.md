@@ -1,31 +1,31 @@
 ---
-title: "Performance: Applying Output Cache Policies to a User Controls"
-description: ""
+title: 'Performance: Applying Output Cache Policies to a User Controls'
+description: ''
 pubDate: 2010-11-03
-tags: ["performance"]
+tags: ['performance']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2010-11-03-performance-applying-output-cache/"
+originalUrl: 'https://codifice.dev/posts/2010-11-03-performance-applying-output-cache/'
 heroImage: ../../assets/blog/hero-images/2010-11-03-performance-applying-output-cache.jpg
 ---
 
 One of the great features in ASP.NET is the rich caching framework.  I particularly like being able to:
 
-     * Define caching policies in the configuration file and then assigning those policies to groups of pages (via the @@OutputCache directive). 
-    * Cache User Control output for reuse on multiple pages (Partial Page Caching) 
-   What I** don’t** like is the fact that you can’t combine the two!  You have to hard code your user control cache directives either in the mark-up (as @@OutputCache directive) or by applying an attribute (System.Web.UI.PartialCaching) to the code behind, both of which require at least the duration to be hardcoded.
+     * Define caching policies in the configuration file and then assigning those policies to groups of pages (via the @@OutputCache directive).
+    * Cache User Control output for reuse on multiple pages (Partial Page Caching)
 
-  This is a massive oversight, as best-practise ASP.Net dictates precompiling websites prior to production which means caching rules can’t be tweaked without frequent rebuild/deployment cycles.
+What I**don’t** like is the fact that you can’t combine the two!  You have to hard code your user control cache directives either in the mark-up (as @@OutputCache directive) or by applying an attribute (System.Web.UI.PartialCaching) to the code behind, both of which require at least the duration to be hardcoded.
 
-  Fortunately, we can work around the issue!
+This is a massive oversight, as best-practise ASP.Net dictates precompiling websites prior to production which means caching rules can’t be tweaked without frequent rebuild/deployment cycles.
 
-  As with most of my workarounds, the trick is a new Extension Method to dynamically alter the UserControls Cache Policy:
+Fortunately, we can work around the issue!
 
-  
+As with most of my workarounds, the trick is a new Extension Method to dynamically alter the UserControls Cache Policy:
+
 ```
 using System.Linq;
 ```
 
-To use it each user control will need to have a line added to the OnInit override in the codebehind (*.ascx.cs):
+To use it each user control will need to have a line added to the OnInit override in the codebehind (\*.ascx.cs):
 
 ```
 using MartinOnDotNet.Helpers.UI;

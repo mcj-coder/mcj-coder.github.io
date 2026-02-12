@@ -1,18 +1,17 @@
 ---
 title: "Ektron 8.01: PlatformNotSupportedException \u2013 Tracking Down and Fixing Another Multilingual Gotcha!"
-description: ""
+description: ''
 pubDate: 2010-06-15
-tags: ["ektron", "troubleshooting"]
+tags: ['ektron', 'troubleshooting']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2010-06-15-ektron-801-platformnotsupportedexceptio/"
+originalUrl: 'https://codifice.dev/posts/2010-06-15-ektron-801-platformnotsupportedexceptio/'
 heroImage: ../../assets/blog/hero-images/2010-06-15-ektron-801-platformnotsupportedexceptio.jpg
 ---
 
 I’m still tracing though issues after upgrading to 8.01, this time looking at why requests for static files are return 500 - Internal Server Errors when French is selected, but not English. Hmm.
 
-  Looking at the Event Logs shows lots of errors like this:
+Looking at the Event Logs shows lots of errors like this:
 
-  
 ```
  
 ```

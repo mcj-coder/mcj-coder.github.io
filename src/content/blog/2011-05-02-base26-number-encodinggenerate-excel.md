@@ -1,16 +1,15 @@
 ---
 title: Base26 Number Encoding/Generate Excel Columns
-description: ""
+description: ''
 pubDate: 2011-05-02
-tags: ["tips"]
+tags: ['tips']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2011-05-02-base26-number-encodinggenerate-excel/"
+originalUrl: 'https://codifice.dev/posts/2011-05-02-base26-number-encodinggenerate-excel/'
 heroImage: ../../assets/blog/hero-images/2011-05-02-base26-number-encodinggenerate-excel.jpg
 ---
 
 Ever needed to convert an Excel Column Letter to a number or vice versa?  Here’s a couple of extension methods to do it:
 
-  
 ```
 {
 ```

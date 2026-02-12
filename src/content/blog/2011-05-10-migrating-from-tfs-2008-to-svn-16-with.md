@@ -1,16 +1,16 @@
 ---
 title: Migrating from TFS 2008 to SVN 1.6 with tfs2svn
-description: ""
+description: ''
 pubDate: 2011-05-10
-tags: ["devops"]
+tags: ['devops']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2011-05-10-migrating-from-tfs-2008-to-svn-16-with/"
+originalUrl: 'https://codifice.dev/posts/2011-05-10-migrating-from-tfs-2008-to-svn-16-with/'
 heroImage: ../../assets/blog/hero-images/2011-05-10-migrating-from-tfs-2008-to-svn-16-with.jpg
 ---
 
-This is tricky because [tfs2svn](http://bit.ly/jQElgA) stopped being updated when subversion 1.4 ruled the roost.  
+This is tricky because [tfs2svn](http://bit.ly/jQElgA) stopped being updated when subversion 1.4 ruled the roost.
 
-  Here are the steps that I took:
+Here are the steps that I took:
 
      * Have a subversion repository ready to receive the project (including ‘pre-revprop-change’ hook – mine is a simple ‘exit 0’ batch file)
     * Install TortoiseSVN 1.6
@@ -23,4 +23,5 @@ This is tricky because [tfs2svn](http://bit.ly/jQElgA) stopped being updated whe
     * Open the tfs2svn.sln from trunk (upgrading the solution if using VS2008)
     * Build ‘tfs2svn.WinForms’ and copy the output over the contents of ‘C:\Program Files (x86)\Kevin Colyar\tfs2svn’ *apart from the ‘libs’ folder*.
     * Launch tfs2svn and fill in the fairly straightforward form and hit convert!
-   tfs2svn should now spin through your TFS repository and migrate each changeset to subversion (keeping the history).  The few errors that I encountered (after applying the patch!) were easy to fix as they were missing folder (from svn) issues when a changeset included a branch or merge operation.  Simply creating and committing the missing folder  allowed the migration to continue.
+
+tfs2svn should now spin through your TFS repository and migrate each changeset to subversion (keeping the history).  The few errors that I encountered (after applying the patch!) were easy to fix as they were missing folder (from svn) issues when a changeset included a branch or merge operation.  Simply creating and committing the missing folder  allowed the migration to continue.

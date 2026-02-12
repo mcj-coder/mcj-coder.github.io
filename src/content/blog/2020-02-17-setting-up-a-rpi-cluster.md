@@ -1,43 +1,40 @@
 ---
 title: RPi Cluster (Part 2) - Basic Configuration
-description: ""
+description: ''
 pubDate: 2020-02-17
 heroImage: ../../assets/blog/hero-images/2020-02-17-setting-up-a-rpi-cluster.jpg
 
-
-
-
-tags: ["rpi"]
+tags: ['rpi']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2020-02-17-setting-up-a-rpi-cluster/"
+originalUrl: 'https://codifice.dev/posts/2020-02-17-setting-up-a-rpi-cluster/'
 ---
 
 # Basic Installation and Configuration
 
-Before I get going on the Kubernetes proper I wanted to make sure all the PI's are essentially configured and update to date.  There are lots of guides out there for providing more detail, but the steps I'm running through are:
+Before I get going on the Kubernetes proper I wanted to make sure all the PI's are essentially configured and update to date. There are lots of guides out there for providing more detail, but the steps I'm running through are:
 
-* Write the latest Raspbian Lite image to the MicroSD Cards ([Official Guide](https://www.raspberrypi.org/documentation/installation/installing-images/README.md))
-* Enable headless install by enabling SSH access and providing WIFI details so RPi's can boot and be available on network ([Offical Guide](https://www.raspberrypi.org/documentation/configuration/wireless/headless.md))
-* Use DHCP (but with assigned IP's from router)
+- Write the latest Raspbian Lite image to the MicroSD Cards ([Official Guide](https://www.raspberrypi.org/documentation/installation/installing-images/README.md))
+- Enable headless install by enabling SSH access and providing WIFI details so RPi's can boot and be available on network ([Offical Guide](https://www.raspberrypi.org/documentation/configuration/wireless/headless.md))
+- Use DHCP (but with assigned IP's from router)
 
 From this basic connectivity setup, will continue onto:
 
-* Configure hostnames
-* Configure the Gateway/Cache RPi to act as an `apt` caching using [`apt-cacher-ng`](https://geekflare.com/create-apt-proxy-on-raspberrypi/)
-* Configure all RPi's Apt clients to use the `apt-cacher-ng` service
-* Configure all RPi's to log to ram by default ([Log2Ram](https://github.com/azlux/log2ram))
-* Bring all the RPi's up to date
-* Mount USB Drive
+- Configure hostnames
+- Configure the Gateway/Cache RPi to act as an `apt` caching using [`apt-cacher-ng`](https://geekflare.com/create-apt-proxy-on-raspberrypi/)
+- Configure all RPi's Apt clients to use the `apt-cacher-ng` service
+- Configure all RPi's to log to ram by default ([Log2Ram](https://github.com/azlux/log2ram))
+- Bring all the RPi's up to date
+- Mount USB Drive
 
-At this point, I'll have all the RPi's communicating and up to date, but on my WIFI.  This is great for the intial setup as I can connect to each RPi and configure in isolation.  Ideally, I want the cluster to be on it's own network segment and with Ethernet connectivity between the nodes.
+At this point, I'll have all the RPi's communicating and up to date, but on my WIFI. This is great for the intial setup as I can connect to each RPi and configure in isolation. Ideally, I want the cluster to be on it's own network segment and with Ethernet connectivity between the nodes.
 
-* Switch cluster from WIFI to Ethernet with local switch
-* Configure RPi 3b to act as gateway/firewall
-* Deploy kubernetes
+- Switch cluster from WIFI to Ethernet with local switch
+- Configure RPi 3b to act as gateway/firewall
+- Deploy kubernetes
 
 # Basic Customisation
 
-After the RPi's have been flashed and are on the WiFi network, discover the assigned IP address of the RPi and connect using `ssh pi@<ip>` ( or [Putty](https://www.putty.org)).  Expect to get a warning asking if you want to continue, this is a one off and after you accept you won't be prompted again
+After the RPi's have been flashed and are on the WiFi network, discover the assigned IP address of the RPi and connect using `ssh pi@<ip>` ( or [Putty](https://www.putty.org)). Expect to get a warning asking if you want to continue, this is a one off and after you accept you won't be prompted again
 
 ```plain
 The authenticity of host '<ip> (<ip>)' can't be established.
@@ -45,13 +42,13 @@ ECDSA key fingerprint is SHA256:sSbB1s3IpXMon5yZTE2tIV/IdwuwYc0hDQaRKZhQXbM.
 Are you sure you want to continue connecting (yes/no)?
 ```
 
-First thing to do is to update the default password (`passwd`)/create a new user and disable the default `pi` login. 
+First thing to do is to update the default password (`passwd`)/create a new user and disable the default `pi` login.
 
 > It's also a great idea to use key based authentication rather than a password... [instructions](https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server)
 
 ## Configure Basic Node Setting
 
-Next, we need to to change the default hostname from `raspberrypi` to something more distinctive.  We'll need to change this in two places:
+Next, we need to to change the default hostname from `raspberrypi` to something more distinctive. We'll need to change this in two places:
 
 ```bash
 sudo nano /etc/hostname
@@ -62,20 +59,21 @@ In both files replace `raspberrypi` with your chosen name.
 
 > in my case, I am to use the same RPi for caching and as a gateway so for that RPi I've updated the line in `/etc/hosts` to be:
 >
->```plain
->127.0.1.1       gateway cache
->```
+> ```plain
+> 127.0.1.1       gateway cache
+> ```
 >
->This will mean it will resolve both `gateway` and >`cache` to the local machine.
+> This will mean it will resolve both `gateway` and >`cache` to the local machine.
 >
->For every other node append the line to `/etc/hosts`:
->```plain
-><cache-ip>       gateway cache
->```
+> For every other node append the line to `/etc/hosts`:
 >
->This means that we can easily introduce a new gateway RPi if required later.
- 
- Reboot using `sudo reboot`.  Within a few seconds you should be able to reconnect with your updated credentials.
+> ```plain
+> <cache-ip>       gateway cache
+> ```
+>
+> This means that we can easily introduce a new gateway RPi if required later.
+
+Reboot using `sudo reboot`. Within a few seconds you should be able to reconnect with your updated credentials.
 
 If alls worked the prompt should now reflect your new hostname and you should be able to get successful ping response:
 
@@ -95,21 +93,27 @@ PING <new-hostname> (<ip>) 56(84) bytes of data.
 
 ## Configure APT Cache
 
-We now need to configure `apt` to use our cache RPi.  To do this modifiy:
+We now need to configure `apt` to use our cache RPi. To do this modifiy:
+
 ```bash
 sudo nano /etc/apt/sources.list
 ```
+
 and all files in `/etc/apt/sources.list.d` (should just be `raspi.list`) to redirect the requests to the cache server by adding `cache:3142/` after the `http://` for each uncommented line :
 
 So
+
 ```plain
 deb http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi
 ```
+
 becomes:
+
 ```plain
 deb http://cache:3142/raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi
 ```
-You should now see the calls to the cache RPi when you run `sudo apt update`. 
+
+You should now see the calls to the cache RPi when you run `sudo apt update`.
 
 ```plain
 pi@node3:~ $ sudo apt update
@@ -141,7 +145,8 @@ wget -qO - https://azlux.fr/repo.gpg.key | sudo apt-key add -
 sudo apt update
 sudo apt install log2ram
 ```
-Reboot the RPi with `sudo reboot` and reconnect.  Execute `df` and you should see a line similar to:
+
+Reboot the RPi with `sudo reboot` and reconnect. Execute `df` and you should see a line similar to:
 
 ```plain
 Filesystem     1K-blocks    Used Available Use% Mounted on
@@ -154,8 +159,9 @@ log2ram            40960     756     40204   2% /var/log
 
 To keep the cluster stable we want to avoid avoid churning of data of the SD Card, so to this end we're going to mount a USB stick for the RPi to use.
 
-* Plug in the stick
-* Check you can see the new drive by `ls -l /dev/disk/by-uuid/`.  It should be assigned as `sda*` (probably 1)
+- Plug in the stick
+- Check you can see the new drive by `ls -l /dev/disk/by-uuid/`. It should be assigned as `sda*` (probably 1)
+
 ```plain
 total 0
 lrwxrwxrwx 1 root root 15 Feb 17 13:19 2ab3f8e1-7dc6-43f5-b0db-dd5759d51d4e -> ../../mmcblk0p2
@@ -163,29 +169,31 @@ lrwxrwxrwx 1 root root 10 Feb 17 15:17 47B0-D842 -> ../../sda1
 lrwxrwxrwx 1 root root 15 Feb 17 13:19 5203-DB74 -> ../../mmcblk0p1
 ```
 
-* Reformat the USB Stick to ext4 (FAT doesn't support permissions)
-  * `sudo fdisk /dev/sda`
-    * `d` - to delete all the existing partions
-    * `n` - to create a new partition
-    * `p` - primary partition
-    * `1` - first partion
-    * `<enter>` - accept default start sector
-    * `<enter>` - accept default end sector
-    * `w` - write changes and exit
-  * `sudo mkfs -t ext4 /dev/sda1` - format the new partition
-* Create a new folder to mount the disk to `sudo mkdir /mnt/usb`
-* Make a note of the UUID of the new partition (`sudo blkid /dev/sda1`)
-* Edit fstab (`sudo nano /etc/fstab`) and add a line similar to the one below, but replace the UUID for the new partion: 
+- Reformat the USB Stick to ext4 (FAT doesn't support permissions)
+  - `sudo fdisk /dev/sda`
+    - `d` - to delete all the existing partions
+    - `n` - to create a new partition
+    - `p` - primary partition
+    - `1` - first partion
+    - `<enter>` - accept default start sector
+    - `<enter>` - accept default end sector
+    - `w` - write changes and exit
+  - `sudo mkfs -t ext4 /dev/sda1` - format the new partition
+- Create a new folder to mount the disk to `sudo mkdir /mnt/usb`
+- Make a note of the UUID of the new partition (`sudo blkid /dev/sda1`)
+- Edit fstab (`sudo nano /etc/fstab`) and add a line similar to the one below, but replace the UUID for the new partion:
+
 ```plain
 UUID=<your-uuid> /mnt/usb ext4 defaults 0 0
 ```
-* Mount the disk `sudo mount -a`
-* Change owner from root (`sudo chown -R $USER:$USER /mnt/usb`)
-* Reboot to double check that disk mounts as expected (`sudo reboot`)
+
+- Mount the disk `sudo mount -a`
+- Change owner from root (`sudo chown -R $USER:$USER /mnt/usb`)
+- Reboot to double check that disk mounts as expected (`sudo reboot`)
 
 #### Move APT Cache to USB
 
-We can now move the APT cache over to the mounted USB Stick, we'll do this by moving the files and then creating a bind mount between the original location and new location so that we can leave config files as is.  Before you start check the contents of `/var/cache` so you can confirm all is working after the move:
+We can now move the APT cache over to the mounted USB Stick, we'll do this by moving the files and then creating a bind mount between the original location and new location so that we can leave config files as is. Before you start check the contents of `/var/cache` so you can confirm all is working after the move:
 
 ```bash
 sudo ls /var/cache -al
@@ -199,6 +207,7 @@ Then append the line:
 ```plain
 /mnt/usb/cache  /var/cache      none    bind    0 0
 ```
+
 Save the file and then:
 
 ```bash
@@ -208,7 +217,7 @@ sudo ls /var/cache -al
 
 This should then mount cache folder from the USB drive to the original location if the file tree and list the directory contents (which should match from before).
 
-Finally, test that `apt` still works as expected: with `sudo apt get update`.  There shouldn't be any errors.
+Finally, test that `apt` still works as expected: with `sudo apt get update`. There shouldn't be any errors.
 
 ## Installing Docker
 
@@ -229,12 +238,12 @@ newgrp docker
 ```
 
 > To use the non-cached official installer:
+>
 > ```bash
 > curl -sSL get.docker.com | sh && \
 > sudo usermod pi -aG docker && \
 > newgrp docker
 > ```
-
 
 You can test that docker has installed correctly by `docker --version` you should see output similar to:
 
@@ -263,13 +272,14 @@ Reboot the RPi `sudo reboot`
 
 > For more details see [Official Docs](https://docs.docker.com/registry/recipes/mirror/)
 
-SSH into the Cache RPi and verify docker is running: 
+SSH into the Cache RPi and verify docker is running:
 
 ```bash
 docker ps
 ```
 
-Create a directory to store cached docker images: 
+Create a directory to store cached docker images:
+
 ```bash
 sudo mkdir /mnt/usb/docker-cache
 ```
@@ -329,7 +339,7 @@ We need to update all the nodes to refer to the caching repo by creating `/etc/d
 
 ```json
 {
-    "registry-mirrors": ["http://cache:5000"]
+  "registry-mirrors": ["http://cache:5000"]
 }
 ```
 
@@ -369,4 +379,4 @@ So far this has gotten us to:
 
 ![step-1-diagram](/images/blog/setting-up-a-rpi-cluster-step-1-diagram.jpg)
 
-The RPi's are working with a pull through apt cache and private docker repository, but no kubernetes cluster and all network comms is over WIFI not a faster Ethernet backbone.  I'll be looking to address this next.
+The RPi's are working with a pull through apt cache and private docker repository, but no kubernetes cluster and all network comms is over WIFI not a faster Ethernet backbone. I'll be looking to address this next.

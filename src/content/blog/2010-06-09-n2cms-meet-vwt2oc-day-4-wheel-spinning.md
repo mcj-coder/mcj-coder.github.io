@@ -1,15 +1,16 @@
 ---
 title: "N2CMS Meet VWT2OC: Day 4 \u2013 Wheel Spinning"
-description: ""
+description: ''
 pubDate: 2010-06-09
 updatedDate: 2010-06-10
-tags: ["n2cms"]
+tags: ['n2cms']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2010-06-09-n2cms-meet-vwt2oc-day-4-wheel-spinning/"
+originalUrl: 'https://codifice.dev/posts/2010-06-09-n2cms-meet-vwt2oc-day-4-wheel-spinning/'
 heroImage: ../../assets/blog/hero-images/2010-06-09-n2cms-meet-vwt2oc-day-4-wheel-spinning.jpg
 ---
 
 ---
+
 title: "N2CMS Meet VWT2OC: Day 4 – Wheel Spinning"
 date: 2010-06-09
 lastmod: 2010-06-10
@@ -22,7 +23,8 @@ authors: ["martincjarvis"]
 
 I guess it’s my fault for trusting them to do all the database backups (like they’re paid to do)…..I should have been doing them myself.
 
-#### 
+####
+
 Still On The Brightside – [n2cms](http://bit.ly/aco4m4) 2.0 has been released!
 Ok, so it’s only 7 revisions from my current version so it’s unlikely to have any game changing fixes of features but it does give me an opportunity to test my N2CMS upgrade and deployment mechanism that I devised on [Day 1](http://martinondotnet.blogspot.com/2010/06/n2cms-meet-vwt2oc-day-1-project-setup.html).
 

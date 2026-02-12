@@ -3,10 +3,19 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "prepare": "husky",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "npm run lint:format && npm run lint:md && npm run lint:assets && npm run lint:secrets",
+    "lint:format": "prettier --check .",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#.astro\"",
+    "lint:assets": "bash scripts/validate-assets.sh",
+    "lint:secrets": "secretlint '**/*' '!node_modules' '!dist' '!.astro'",
+    "format": "npm run format:code && npm run format:md",
+    "format:code": "prettier --write .",
+    "format:md": "markdownlint-cli2 --fix \"**/*.md\" \"#node_modules\" \"#.astro\""
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
@@ -14,5 +23,27 @@
     "@astrojs/sitemap": "^3.7.0",
     "astro": "^5.17.1",
     "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@secretlint/secretlint-rule-preset-recommend": "^11.3.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.3.0",
+    "markdownlint-cli2": "^0.20.0",
+    "prettier": "^3.4.2",
+    "secretlint": "^11.3.1"
+  },
+  "lint-staged": {
+    "*.{md,mdx}": [
+      "prettier --write",
+      "markdownlint-cli2 --fix"
+    ],
+    "*.{json,yml,yaml,js,ts,astro}": [
+      "prettier --write"
+    ]
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

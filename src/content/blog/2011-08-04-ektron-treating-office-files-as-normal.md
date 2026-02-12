@@ -1,20 +1,19 @@
 ---
-title: "Ektron: Treating Office Files as Normal DMS Assets"
-description: ""
+title: 'Ektron: Treating Office Files as Normal DMS Assets'
+description: ''
 pubDate: 2011-08-04
-tags: ["ektron"]
+tags: ['ektron']
 source: hugo
-originalUrl: "https://codifice.dev/posts/2011-08-04-ektron-treating-office-files-as-normal/"
+originalUrl: 'https://codifice.dev/posts/2011-08-04-ektron-treating-office-files-as-normal/'
 heroImage: ../../assets/blog/hero-images/2011-08-04-ektron-treating-office-files-as-normal.jpg
 ---
 
 One of the features of Ektron is tight office integration allowing the editing of office files directly from the workarea.  However, in some circumstances you may want to treat these as normal DMS assets (like PDF files) as their the end results of an offline publishing process.
 
-  The Ektron support fix for this is to modify the workarea files (detailed below), which would then need to be re-applyed with every upgrade.  This is easy enough to do (if you remember to do it with each upgrade), but I would prefer a more unobtrusive fix which is applied via configuration.
+The Ektron support fix for this is to modify the workarea files (detailed below), which would then need to be re-applyed with every upgrade.  This is easy enough to do (if you remember to do it with each upgrade), but I would prefer a more unobtrusive fix which is applied via configuration.
 
-  #### The Manual Fix (Ektron Supported)  Edit /workarea/edit.aspx and comment out the following lines (~line 2110):
+#### The Manual Fix (Ektron Supported) Edit /workarea/edit.aspx and comment out the following lines (~line 2110)
 
-  
 ```
  
 ```
