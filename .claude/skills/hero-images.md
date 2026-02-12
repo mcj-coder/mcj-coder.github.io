@@ -33,14 +33,23 @@ Steampunk techno wizard: grey goatee, dark hair, rectangular rim-less glasses. A
 Copy and track:
 
 ```
-- [ ] Generate with unique filename (append timestamp/seed)
+- [ ] Generate ONE seed with unique filename (append seed)
 - [ ] Upload unique file to CDN via Read tool
 - [ ] OCR with mcp__4_5v_mcp__analyze_image
 - [ ] Validate spelling against blog content
-- [ ] If typo: regenerate with new seed, repeat from step 1
+- [ ] If typo: regenerate with NEW single seed, repeat from step 1
 - [ ] Copy valid image to final filename
 - [ ] Delete temporary unique files
 ```
+
+### Critical: Single Seed Generation
+
+**Only generate ONE seed at a time.** Parallel generation:
+
+- Wastes API credits when you find a good image on the first try
+- May trigger rate limiting
+
+Generate → OCR validate → if wrong, THEN try next seed.
 
 ### Critical: CDN Cache Bypass
 
@@ -49,9 +58,9 @@ The Read tool's CDN caches by filename. Same filename = cached image = stale OCR
 **Always use unique filenames during validation:**
 
 ```bash
-TIMESTAMP=$(date +%s)
-curl -s "..." -o "src/assets/blog/hero-images/[SLUG]_${TIMESTAMP}.jpg"
-# Read the _${TIMESTAMP} file for fresh CDN upload
+# Use seed as unique identifier
+curl -s "..." -o "src/assets/blog/hero-images/[SLUG]_${SEED}.jpg"
+# Read the _${SEED} file for fresh CDN upload
 # OCR validates → then cp to original filename
 ```
 
