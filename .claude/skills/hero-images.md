@@ -13,11 +13,11 @@ Steampunk techno wizard: grey goatee, dark hair, rectangular rim-less glasses. A
 
 ## Quick Reference
 
-| Task           | Command                                                                                                                                                                                                                         |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Generate**   | `curl -s "https://gen.pollinations.ai/image/steampunk%20pixelart%20wizard%20grey%20goatee%20glasses%20<<ACTION>>?model=nanobanana&width=1024&height=512&nologo=true&seed=<<SEED>>" -o "src/assets/blog/hero-images/[SLUG].jpg"` |
-| **Validate**   | Read unique file → OCR with `mcp__4_5v_mcp__analyze_image` → Check spelling                                                                                                                                                     |
-| **Regenerate** | Change seed, use unique filename, re-OCR                                                                                                                                                                                        |
+| Task           | Command                                                                                                                                                                                                                                                                                             |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Generate**   | `curl -s "https://gen.pollinations.ai/image/steampunk%20pixelart%20wizard%20grey%20goatee%20glasses%20<<ACTION>>?model=nanobanana&width=1024&height=512&nologo=true&seed=<<SEED>>&image=https://mcj-coder.github.io/_astro/martin-jarvis.DLkCWo3V.jpg" -o "src/assets/blog/hero-images/[SLUG].jpg"` |
+| **Validate**   | Read unique file → OCR with `mcp__4_5v_mcp__analyze_image` → Check spelling                                                                                                                                                                                                                         |
+| **Regenerate** | Change seed, use unique filename, re-OCR                                                                                                                                                                                                                                                            |
 
 ## Known Hallucinations (use synonyms)
 
@@ -58,8 +58,8 @@ curl -s "..." -o "src/assets/blog/hero-images/[SLUG]_${TIMESTAMP}.jpg"
 ### Example
 
 ```bash
-# Generate with seed
-curl -s "https://gen.pollinations.ai/image/steampunk%20pixelart%20wizard%20grey%20goatee%20glasses%20holding%20golden%20key?model=nanobanana&width=1024&height=512&nologo=true&seed=1234" \
+# Generate with seed and reference image
+curl -s "https://gen.pollinations.ai/image/steampunk%20pixelart%20wizard%20grey%20goatee%20glasses%20holding%20golden%20key?model=nanobanana&width=1024&height=512&nologo=true&seed=1234&image=https://mcj-coder.github.io/_astro/martin-jarvis.DLkCWo3V.jpg" \
   --header "Authorization: Bearer ${POLLINATIONS_API_KEY}" \
   -o "src/assets/blog/hero-images/my-post_1234.jpg"
 
