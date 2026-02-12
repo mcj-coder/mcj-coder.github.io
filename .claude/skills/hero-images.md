@@ -13,11 +13,11 @@ Steampunk techno wizard: grey goatee, dark hair, rectangular rim-less glasses. A
 
 ## Quick Reference
 
-| Task           | Command                                                                                                                                                                                                                         |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Generate**   | `curl -s "https://gen.pollinations.ai/image/steampunk%20pixelart%20wizard%20grey%20goatee%20glasses%20<<ACTION>>?model=nanobanana&width=1024&height=512&nologo=true&seed=<<SEED>>" -o "src/assets/blog/hero-images/[SLUG].jpg"` |
-| **Validate**   | Read unique file → OCR with `mcp__4_5v_mcp__analyze_image` → Check spelling                                                                                                                                                     |
-| **Regenerate** | Change seed, use unique filename, re-OCR                                                                                                                                                                                        |
+| Task           | Command                                                                                                                                                                                                                                                                                             |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Generate**   | `curl -s "https://gen.pollinations.ai/image/steampunk%20pixelart%20wizard%20grey%20goatee%20glasses%20<<ACTION>>?model=nanobanana&width=1024&height=512&nologo=true&seed=<<SEED>>&image=https://mcj-coder.github.io/_astro/martin-jarvis.DLkCWo3V.jpg" -o "src/assets/blog/hero-images/[SLUG].jpg"` |
+| **Validate**   | Read unique file → OCR with `mcp__4_5v_mcp__analyze_image` → Check spelling                                                                                                                                                                                                                         |
+| **Regenerate** | Change seed, use unique filename, re-OCR                                                                                                                                                                                                                                                            |
 
 ## Known Hallucinations (use synonyms)
 
@@ -33,14 +33,23 @@ Steampunk techno wizard: grey goatee, dark hair, rectangular rim-less glasses. A
 Copy and track:
 
 ```
-- [ ] Generate with unique filename (append timestamp/seed)
+- [ ] Generate ONE seed with unique filename (append seed)
 - [ ] Upload unique file to CDN via Read tool
 - [ ] OCR with mcp__4_5v_mcp__analyze_image
 - [ ] Validate spelling against blog content
-- [ ] If typo: regenerate with new seed, repeat from step 1
+- [ ] If typo: regenerate with NEW single seed, repeat from step 1
 - [ ] Copy valid image to final filename
 - [ ] Delete temporary unique files
 ```
+
+### Critical: Single Seed Generation
+
+**Only generate ONE seed at a time.** Parallel generation:
+
+- Wastes API credits when you find a good image on the first try
+- May trigger rate limiting
+
+Generate → OCR validate → if wrong, THEN try next seed.
 
 ### Critical: CDN Cache Bypass
 
@@ -49,17 +58,17 @@ The Read tool's CDN caches by filename. Same filename = cached image = stale OCR
 **Always use unique filenames during validation:**
 
 ```bash
-TIMESTAMP=$(date +%s)
-curl -s "..." -o "src/assets/blog/hero-images/[SLUG]_${TIMESTAMP}.jpg"
-# Read the _${TIMESTAMP} file for fresh CDN upload
+# Use seed as unique identifier
+curl -s "..." -o "src/assets/blog/hero-images/[SLUG]_${SEED}.jpg"
+# Read the _${SEED} file for fresh CDN upload
 # OCR validates → then cp to original filename
 ```
 
 ### Example
 
 ```bash
-# Generate with seed
-curl -s "https://gen.pollinations.ai/image/steampunk%20pixelart%20wizard%20grey%20goatee%20glasses%20holding%20golden%20key?model=nanobanana&width=1024&height=512&nologo=true&seed=1234" \
+# Generate with seed and reference image
+curl -s "https://gen.pollinations.ai/image/steampunk%20pixelart%20wizard%20grey%20goatee%20glasses%20holding%20golden%20key?model=nanobanana&width=1024&height=512&nologo=true&seed=1234&image=https://mcj-coder.github.io/_astro/martin-jarvis.DLkCWo3V.jpg" \
   --header "Authorization: Bearer ${POLLINATIONS_API_KEY}" \
   -o "src/assets/blog/hero-images/my-post_1234.jpg"
 
