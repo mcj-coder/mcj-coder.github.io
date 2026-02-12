@@ -39,7 +39,7 @@
       "prettier --write",
       "markdownlint-cli2 --fix"
     ],
-    "*.{json,yml,yaml,js,ts,astro}": [
+    "*.{json,yml,yaml,js,ts,mjs,cjs}": [
       "prettier --write"
     ]
   },

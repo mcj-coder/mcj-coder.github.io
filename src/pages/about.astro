@@ -3,6 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_TITLE } from '../consts';
+import martinAvatar from '../assets/avatars/martin-jarvis.jpg';
 
 const linkedInUrl = 'https://www.linkedin.com/in/martincjarvis/';
 const stravaUrl = 'https://www.strava.com/athletes/2427091';
@@ -17,7 +18,10 @@ const coastToCoastUrl = 'https://www.strava.com/activities/9327479766';
 	<body>
 		<Header />
 		<main class="container">
-			<h1>About</h1>
+			<div class="profile-header">
+				<img src={martinAvatar.src} alt="Martin Jarvis" class="profile-image" />
+				<h1>About</h1>
+			</div>
 
 			<section class="bio">
 				<p>
@@ -88,9 +92,23 @@ const coastToCoastUrl = 'https://www.strava.com/activities/9327479766';
 		padding: 2rem;
 	}
 
+	.profile-header {
+		display: flex;
+		align-items: center;
+		gap: 2rem;
+		margin-bottom: 2rem;
+	}
+
+	.profile-image {
+		width: 120px;
+		height: 120px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+
 	h1 {
 		font-size: 2.5rem;
-		margin-bottom: 2rem;
+		margin: 0;
 	}
 
 	section {
