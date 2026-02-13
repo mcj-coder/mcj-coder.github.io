@@ -1,17 +1,15 @@
 ---
 title: Rebooting the Blog
-description: ''
+description: 'Moving the blog from Blogger to Hugo and Netlify for a developer-friendly workflow with markdown, Git version control, and branch previews.'
 pubDate: 2020-02-10
 heroImage: ../../assets/blog/hero-images/2020-02-10-rebooting-the-blog.jpg
-
 tags: ['hugo']
-source: hugo
-originalUrl: 'https://codifice.dev/posts/2020-02-10-rebooting-the-blog/'
+source: new
 ---
 
 # Rebooting the Blog
 
-It's been a while since I've looked at the blog or felt I had anything to blog about (or could blog about). But as my current contract approaches it's conclusion, I've got time to finally start contributing again - for a while at least!
+It's been a while since I've looked at the blog or felt I had anything to blog about (or could blog about). But as my current contract approaches its conclusion, I've got time to finally start contributing again - for a while at least!
 
 ## Out with the Old
 
@@ -29,7 +27,7 @@ Over the last 8(!) years, there's been a rise of static CMS systems such as [Jek
 
 There are even services such as [Netlify](https://www.netlify.com/) that augment this functionality to provide previews based on feature branches, so you can safely preview template modifications without impacting the main site. This means blogging will follow very similar flows to coding which is excellent.
 
-![netlify-github](/images/blog/rebooting-the-blog-netlify-github.png)
+![netlify-github](../../assets/blog/rebooting-the-blog-netlify-github.png)
 
 Using Markdown as the content format of choice is a no brainer, you just need a text editor and most code IDE's support previewing.
 
