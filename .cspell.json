@@ -1,5 +1,26 @@
 {
   "version": "0.6.0",
   "language": "en-GB",
-  "words": ["mbunit", "n2cms", "ektron", "raspberrypi", "vwt2oc", "hugo", "blogger", "running"]
+  "words": [
+    "aspnet",
+    "blogger",
+    "blogspot",
+    "codifice",
+    "ektron",
+    "frontmatter",
+    "googleusercontent",
+    "grouskboning",
+    "hugo",
+    "HTPS",
+    "linters",
+    "martinondotnet",
+    "mbunit",
+    "n2cms",
+    "nanobanana",
+    "PRIVILIGES",
+    "raspberrypi",
+    "running",
+    "simemap",
+    "vwt2oc"
+  ]
 }
