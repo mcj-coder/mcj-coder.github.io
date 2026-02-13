@@ -1,12 +1,10 @@
 ---
 title: RPi Cluster (Part 2) - Basic Configuration
-description: ''
+description: 'Setting up a Raspberry Pi cluster with apt caching, Log2Ram, Docker, USB storage, and Kubernetes CLI tools.'
 pubDate: 2020-02-17
 heroImage: ../../assets/blog/hero-images/2020-02-17-setting-up-a-rpi-cluster.jpg
-
 tags: ['rpi']
-source: hugo
-originalUrl: 'https://codifice.dev/posts/2020-02-17-setting-up-a-rpi-cluster/'
+source: new
 ---
 
 # Basic Installation and Configuration
@@ -14,7 +12,7 @@ originalUrl: 'https://codifice.dev/posts/2020-02-17-setting-up-a-rpi-cluster/'
 Before I get going on the Kubernetes proper I wanted to make sure all the PI's are essentially configured and update to date. There are lots of guides out there for providing more detail, but the steps I'm running through are:
 
 - Write the latest Raspbian Lite image to the MicroSD Cards ([Official Guide](https://www.raspberrypi.org/documentation/installation/installing-images/README.md))
-- Enable headless install by enabling SSH access and providing WIFI details so RPi's can boot and be available on network ([Offical Guide](https://www.raspberrypi.org/documentation/configuration/wireless/headless.md))
+- Enable headless install by enabling SSH access and providing WIFI details so RPi's can boot and be available on network ([Official Guide](https://www.raspberrypi.org/documentation/configuration/wireless/headless.md))
 - Use DHCP (but with assigned IP's from router)
 
 From this basic connectivity setup, will continue onto:
@@ -26,7 +24,7 @@ From this basic connectivity setup, will continue onto:
 - Bring all the RPi's up to date
 - Mount USB Drive
 
-At this point, I'll have all the RPi's communicating and up to date, but on my WIFI. This is great for the intial setup as I can connect to each RPi and configure in isolation. Ideally, I want the cluster to be on it's own network segment and with Ethernet connectivity between the nodes.
+At this point, I'll have all the RPi's communicating and up to date, but on my WIFI. This is great for the initial setup as I can connect to each RPi and configure in isolation. Ideally, I want the cluster to be on it's own network segment and with Ethernet connectivity between the nodes.
 
 - Switch cluster from WIFI to Ethernet with local switch
 - Configure RPi 3b to act as gateway/firewall
@@ -93,7 +91,7 @@ PING <new-hostname> (<ip>) 56(84) bytes of data.
 
 ## Configure APT Cache
 
-We now need to configure `apt` to use our cache RPi. To do this modifiy:
+We now need to configure `apt` to use our cache RPi. To do this modify:
 
 ```bash
 sudo nano /etc/apt/sources.list
@@ -171,17 +169,17 @@ lrwxrwxrwx 1 root root 15 Feb 17 13:19 5203-DB74 -> ../../mmcblk0p1
 
 - Reformat the USB Stick to ext4 (FAT doesn't support permissions)
   - `sudo fdisk /dev/sda`
-    - `d` - to delete all the existing partions
+    - `d` - to delete all the existing partitions
     - `n` - to create a new partition
     - `p` - primary partition
-    - `1` - first partion
+    - `1` - first partition
     - `<enter>` - accept default start sector
     - `<enter>` - accept default end sector
     - `w` - write changes and exit
   - `sudo mkfs -t ext4 /dev/sda1` - format the new partition
 - Create a new folder to mount the disk to `sudo mkdir /mnt/usb`
 - Make a note of the UUID of the new partition (`sudo blkid /dev/sda1`)
-- Edit fstab (`sudo nano /etc/fstab`) and add a line similar to the one below, but replace the UUID for the new partion:
+- Edit fstab (`sudo nano /etc/fstab`) and add a line similar to the one below, but replace the UUID for the new partition:
 
 ```plain
 UUID=<your-uuid> /mnt/usb ext4 defaults 0 0
@@ -260,7 +258,7 @@ sudo update-rc.d dphys-swapfile remove && \
 sudo systemctl disable dphys-swapfile.service
 ```
 
-We also need to enable the following cgroups, by appending the parameters below to `/boot/cmdline.txt` (`sudo nano /boot/cmdline.txt`) this shold all be on one line.
+We also need to enable the following cgroups, by appending the parameters below to `/boot/cmdline.txt` (`sudo nano /boot/cmdline.txt`) this should all be on one line.
 
 ```plain
 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory
@@ -377,6 +375,6 @@ sudo apt-get install -qy kubeadm
 
 So far this has gotten us to:
 
-![step-1-diagram](/images/blog/setting-up-a-rpi-cluster-step-1-diagram.jpg)
+![step-1-diagram](../../assets/blog/setting-up-a-rpi-cluster-step-1-diagram.jpg)
 
 The RPi's are working with a pull through apt cache and private docker repository, but no kubernetes cluster and all network comms is over WIFI not a faster Ethernet backbone. I'll be looking to address this next.
