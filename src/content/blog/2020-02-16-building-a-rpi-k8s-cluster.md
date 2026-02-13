@@ -1,19 +1,17 @@
 ---
 title: RPi Cluster (Part 1) - Assembly
-description: ''
+description: 'Building a portable 4-node Raspberry Pi 4B Kubernetes cluster appliance with shopping list, assembly instructions, and hot-glue engineering.'
 pubDate: 2020-02-16
 heroImage: ../../assets/blog/hero-images/2020-02-16-building-a-rpi-k8s-cluster.jpg
-
 tags: ['rpi']
-source: hugo
-originalUrl: 'https://codifice.dev/posts/2020-02-16-building-a-rpi-k8s-cluster/'
+source: new
 ---
 
-One of the great things about modern cloud developement is how quickly you can get a [kubernetes](https://kubernetes.io/) cluster up and running quickly and easily, but it hides a lot of the detail and nuts and bolts involved in the setup. So I wanted to go back to basics (but still pretty advanced) and spin up my own cluster on bare metal from the ground up. It would also be pretty cool to have a portable plug-and-play cluster which you can plugin into a network and start using it. A portable kubernetes cluster appliance as it were!
+One of the great things about modern cloud development is how quickly you can get a [kubernetes](https://kubernetes.io/) cluster up and running quickly and easily, but it hides a lot of the detail and nuts and bolts involved in the setup. So I wanted to go back to basics (but still pretty advanced) and spin up my own cluster on bare metal from the ground up. It would also be pretty cool to have a portable plug-and-play cluster which you can plugin into a network and start using it. A portable kubernetes cluster appliance as it were!
 
-My plan is to build a 4 Node cluster (RPi 4B) (1 master, 3 workers) with an additional (RPi 4B) configured as an `apt` cache to reduce the time taken to setup multiple identical Pi's. Since RPi's use an SDCard for storage I want' reduce the number of writes, so I'm going to install Log2Ram which mounts the default `/var/logs/` to a ramdisk, I'll also install a USB stick which will be mounted for storage.
+My plan is to build a 4 Node cluster (RPi 4B) (1 master, 3 workers) with an additional (RPi 4B) configured as an `apt` cache to reduce the time taken to setup multiple identical Pi's. Since RPi's use an SDCard for storage I want to reduce the number of writes, so I'm going to install Log2Ram which mounts the default `/var/logs/` to a ramdisk, I'll also install a USB stick which will be mounted for storage.
 
-![simple-network](/images/blog/building-a-rpi-k8s-cluster-simple-network.jpg)
+![simple-network](../../assets/blog/building-a-rpi-k8s-cluster-simple-network.jpg)
 
 # Shopping List
 
@@ -33,14 +31,14 @@ This a run down of the bits that I purchased, but shop around as I ended up with
 
 > I also brought a Quieter 120mm fan to replace the brightly coloured jet turbine that came with the cluster case [Noctua 120mm Silent Fan](https://amzn.to/2uMHmFu). If anyone follows suit, I needed to rewire the power headers for the fan (black => black , red=> yellow - remove the blue and green wires)
 
-![kit-pic](/images/blog/building-a-rpi-k8s-cluster-kit-pic.jpg)
+![kit-pic](../../assets/blog/building-a-rpi-k8s-cluster-kit-pic.jpg)
 
-![rpi-assembled](/images/blog/building-a-rpi-k8s-cluster-rpi-assembled.jpg)
+![rpi-assembled](../../assets/blog/building-a-rpi-k8s-cluster-rpi-assembled.jpg)
 
-Assemblig the RPi's is fairly straight forward and a few warranty-voiding minutes with a hot glue gun, I'd mounted the USB Charger and 5 Port Switch, Gateway/Cache RPi and USB ethernet adapter to the chassis. The result isn't the neatest bit of work, but it only needs a single power cable and an optional ethernet cable to "install".
+Assembling the RPi's is fairly straight forward and a few warranty-voiding minutes with a hot glue gun, I'd mounted the USB Charger and 5 Port Switch, Gateway/Cache RPi and USB ethernet adapter to the chassis. The result isn't the neatest bit of work, but it only needs a single power cable and an optional ethernet cable to "install".
 
-![rpi-wires](/images/blog/building-a-rpi-k8s-cluster-rpi-wires.jpg)
+![rpi-wires](../../assets/blog/building-a-rpi-k8s-cluster-rpi-wires.jpg)
 
-My plan is to hang the cluster from hooks under a desk by it's handle so all in the assembly was pretty easy and successful. Now comes the configuration and setup :).
+My plan is to hang the cluster from hooks under a desk by its handle so all in the assembly was pretty easy and successful. Now comes the configuration and setup :).
 
-![rpi-hung](/images/blog/building-a-rpi-k8s-cluster-rpi-hung.jpg)
+![rpi-hung](../../assets/blog/building-a-rpi-k8s-cluster-rpi-hung.jpg)
