@@ -1,12 +1,10 @@
 ---
 title: RPi Cluster (Part 4) - Installing Kubernetes
-description: ''
+description: 'Installing Kubernetes on the RPi cluster with kubeadm, Weave Net pod networking, worker node joining, and remote kubectl access via port forwarding.'
 pubDate: 2020-02-20
 heroImage: ../../assets/blog/hero-images/2020-02-20-installing-kubernetes.jpg
-
 tags: ['rpi']
-source: hugo
-originalUrl: 'https://codifice.dev/posts/2020-02-20-installing-kubernetes/'
+source: new
 ---
 
 Now the RPi Cluster is assembled, set up and has its network correctly configured we can install Kubernetes!
@@ -40,7 +38,7 @@ kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl versio
 sudo sysctl net.bridge.bridge-nf-call-iptables=1
 ```
 
-Check the pods in `kube-system` and confirm all is runing:
+Check the pods in `kube-system` and confirm all is running:
 
 ```bash
 pi@master:~ $ kubectl get pods --namespace kube-system
@@ -98,7 +96,7 @@ As it stands the Kubernetes cluster is only available on the clusters network `1
 
 ## Gateway
 
-First we want to makesure the gateway has the tools to admin the K8S cluster, as this will be the easiest box to SSH onto from a new host network. To do this we need to copy the config from `master` on to RPi and check that connectivity works as expected. Fortunately, this should be as simple as copying the `.kube` folder between the machines:
+First we want to make sure the gateway has the tools to admin the K8S cluster, as this will be the easiest box to SSH onto from a new host network. To do this we need to copy the config from `master` on to RPi and check that connectivity works as expected. Fortunately, this should be as simple as copying the `.kube` folder between the machines:
 
 From the gateway RPi:
 
@@ -172,4 +170,4 @@ sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
 
 You machine on the host network should now be able to access kubernetes via the tooling. For example, the VS Code Kubernetes extension should automatically pick up the configuration and allow you to browse the RPi Kubernetes cluster:
 
-![vscode-kubernetes](/images/blog/installing-kubernetes-vscode-kubernetes.jpg)
+![vscode-kubernetes](../../assets/blog/installing-kubernetes-vscode-kubernetes.jpg)
