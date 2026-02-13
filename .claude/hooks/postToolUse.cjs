@@ -51,20 +51,23 @@ try {
   process.exit(0);
 }
 
-// Match the file's basename against lint-staged glob patterns
-const basename = path.basename(filePath);
+// Match file's relative path against lint-staged glob patterns (mirrors lint-staged behavior)
+const relPath = path.relative(cwd, filePath);
+const binDir = path.join(cwd, 'node_modules', '.bin');
+const pathEnv = `${binDir}${path.delimiter}${process.env.PATH}`;
 const failures = [];
 
 for (const [pattern, commands] of Object.entries(config)) {
-  if (!micromatch.isMatch(basename, pattern)) continue;
+  if (!micromatch.isMatch(relPath, pattern, { basename: true })) continue;
 
   const cmds = Array.isArray(commands) ? commands : [commands];
   for (const cmd of cmds) {
     try {
-      execSync(`npx ${cmd} "${filePath}"`, {
+      execSync(`${cmd} "${filePath}"`, {
         cwd,
         stdio: 'pipe',
         timeout: 15000,
+        env: { ...process.env, PATH: pathEnv },
       });
     } catch (e) {
       const output = e.stdout?.toString().trim();
