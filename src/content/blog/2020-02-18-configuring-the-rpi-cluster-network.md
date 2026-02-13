@@ -1,19 +1,17 @@
 ---
 title: RPi Cluster (Part 3) - Networking
-description: ''
+description: 'Configuring the RPi cluster with dnsmasq DHCP, iptables gateway routing, SSH jumpbox access, and WiFi isolation for a self-contained network.'
 pubDate: 2020-02-18
 heroImage: ../../assets/blog/hero-images/2020-02-18-configuring-the-rpi-cluster-network.jpg
-
 tags: ['rpi']
-source: hugo
-originalUrl: 'https://codifice.dev/posts/2020-02-18-configuring-the-rpi-cluster-network/'
+source: new
 ---
 
 # Configuring the RPi Cluster Network
 
 Now the that the cluster is configured and all the RPi's are up and running, it's time to sort out the networking so that the cluster operates on its own, predictable network and external connectivity is through a single Gateway.
 
-![simple-network](/images/blog/configuring-the-rpi-cluster-network-simple-network.jpg)
+![simple-network](../../assets/blog/configuring-the-rpi-cluster-network-simple-network.jpg)
 
 We're going to configure the gateway RPi (which is doing double duty as the cache RPi in my case) to be a DHCP server using `dnsmasq` for all the devices connected to the 5 Port Switch which is serving as our backplane. We'll also need a second ethernet port to be our "hotplug" network port which will get it's IP Address assigned by the host networks DHCP server, and similarly with the RPi's built-in WIFI. All the other RPi's on the cluster will have their WiFi interfaces disabled.
 
@@ -107,7 +105,8 @@ PING node1 (10.0.1.119) 56(84) bytes of data.
 
 Correspondingly you can ping the gateway/cache RPi from each of the cluster nodes:
 
-```bashpi@master:~ $ ping cache
+```bash
+pi@master:~ $ ping cache
 PING cache (10.0.1.1) 56(84) bytes of data.
 64 bytes from cluster.cluster.local (10.0.1.1): icmp_seq=1 ttl=64 time=0.220 ms
 64 bytes from cluster.cluster.local (10.0.1.1): icmp_seq=2 ttl=64 time=0.212 ms
@@ -127,7 +126,7 @@ Back on the the gateway RPi to activate the IP Forwarding:
 sudo sysctl -w net.ipv4.ip_forward=1
 ```
 
-Add a masquarade rules for `eth1` and `wlan0` and then save the rules:
+Add a masquerade rules for `eth1` and `wlan0` and then save the rules:
 
 ```bash
 sudo iptables -t nat -A  POSTROUTING -o eth1 -j MASQUERADE
@@ -137,7 +136,7 @@ sudo iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
 ```
 
-To restore these settings on reboot, we need to enable IP forwarding, edit `/etc/sysctl.conf` witht `sudo nano /etc/sysctl.conf`:
+To restore these settings on reboot, we need to enable IP forwarding, edit `/etc/sysctl.conf` with `sudo nano /etc/sysctl.conf`:
 
 ```plain
 net.ipv4.ip_forward=1
