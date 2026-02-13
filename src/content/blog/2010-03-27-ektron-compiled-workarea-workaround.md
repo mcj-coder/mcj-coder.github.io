@@ -20,7 +20,7 @@ In this final part, I'll describe how to combine your code with the Ektron worka
 
 The key to the whole process is the Post-Build Event in the **_clientproject_.Website** Web Application (see Part 2). We can use this to copy your compiled code into the workarea website using a set of **_xcopy_** (or similar) commands. To edit the Post-Build event right click on the clientproject.Website project and click 'View Properties' it will be on the 'Build Events' tab. There's a handy editor that lets you know the values of various 'macros' for your project. These macros are resolved automatically before the commands are executed and mean you don't have to hard code absolute locations into your project.
 
-![Post-Build Event editor in Visual Studio](../../assets/blog/2010-03-27-ektron-compiled-workarea-workaround-post-build.png)
+_\[Original Post-Build Event editor screenshot no longer available\]_
 
 These should include any css or js that your templates need, an example entry into the Post-Build Event could be:
 

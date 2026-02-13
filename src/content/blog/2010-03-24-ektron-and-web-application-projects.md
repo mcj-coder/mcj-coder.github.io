@@ -24,7 +24,7 @@ You will need:
 
 The folder structure should look like this:
 
-![Folder structure for Ektron WAP solution](../../assets/blog/2010-03-24-ektron-and-web-application-projects-folder-structure.png)
+_\[Original folder structure screenshot no longer available\]_
 
 This may look complicated but it allows us to easily use source control (such as TFS or Subversion) to allow multiple developers to work on a solution and is Best Practice.
 
