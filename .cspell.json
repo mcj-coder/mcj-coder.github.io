@@ -6,7 +6,9 @@
     "blogger",
     "blogspot",
     "codifice",
+    "cref",
     "ektron",
+    "episerver",
     "frontmatter",
     "googleusercontent",
     "grouskboning",
@@ -21,6 +23,9 @@
     "raspberrypi",
     "running",
     "simemap",
-    "vwt2oc"
-  ]
+    "typeparam",
+    "vwt2oc",
+    "Yerrk"
+  ],
+  "ignoreRegExpList": ["/^```[\\s\\S]*?^```/gm"]
 }
