@@ -8,6 +8,7 @@
     "batchsize",
     "blogger",
     "blogspot",
+    "brainer",
     "clientproject",
     "cmslogin",
     "codebehind",
@@ -32,6 +33,7 @@
     "metaconfig",
     "n2cms",
     "nanobanana",
+    "nitty",
     "PRIVILIGES",
     "raspberrypi",
     "running",
@@ -42,6 +44,7 @@
     "updateschedulerun",
     "vwt2oc",
     "xcopy",
+    "XKCD",
     "Yerrk"
   ],
   "ignoreRegExpList": ["/^```[\\s\\S]*?^```/gm"]
