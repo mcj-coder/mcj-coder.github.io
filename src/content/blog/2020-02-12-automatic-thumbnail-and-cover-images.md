@@ -1,10 +1,9 @@
 ---
 title: Automatic Thumbnail and Cover Images
-description: ''
+description: 'Using Hugo layouts and Scratch to randomly assign stock images from themed galleries as cover and thumbnail images at publish time.'
 pubDate: 2020-02-12
 tags: ['hugo']
-source: hugo
-originalUrl: 'https://codifice.dev/posts/2020-02-12-automatic-thumbnail-and-cover-images/'
+source: new
 heroImage: ../../assets/blog/hero-images/2020-02-12-automatic-thumbnail-and-cover-images.jpg
 ---
 
@@ -12,9 +11,9 @@ heroImage: ../../assets/blog/hero-images/2020-02-12-automatic-thumbnail-and-cove
 
 In CMS terms the Cover image is a banner like image that appears towards the top of the article to provide some interest where the thumbnail image is used when linking to the article, such as the Recent Posts list on the Homepage.
 
-I prefer that these are related in someway to provide some visual context/confirmation for the user. So that if they click on a link with a picture of a flower they should see the same flower immediately upon that page loading.
+I prefer that these are related in some way to provide some visual context/confirmation for the user. So that if they click on a link with a picture of a flower they should see the same flower immediately upon that page loading.
 
-Unfortunately, most of the images that I'd be creating myself will be code related and pretty boring and I didn't want a manual chore to link specifc images. So I decided to customise the site to enable a random high quality stock image to be assigned to each page when the site is published. This image will then be the basis for an automatically generated Cover and Thumbnail image.
+Unfortunately, most of the images that I'd be creating myself will be code related and pretty boring and I didn't want a manual chore to link specific images. So I decided to customise the site to enable a random high quality stock image to be assigned to each page when the site is published. This image will then be the basis for an automatically generated Cover and Thumbnail image.
 
 ## How does it work? Layouts and Scratch
 
