@@ -2,6 +2,7 @@
   "version": "0.6.0",
   "language": "en-GB",
   "words": [
+    "ashx",
     "asmx",
     "aspnet",
     "batchsize",
@@ -9,6 +10,7 @@
     "blogspot",
     "clientproject",
     "cmslogin",
+    "codebehind",
     "codifice",
     "companydomain",
     "Configurator",
@@ -22,6 +24,7 @@
     "grouskboning",
     "hugo",
     "HTPS",
+    "iisreset",
     "linters",
     "martinondotnet",
     "mbunit",
@@ -38,6 +41,7 @@
     "typeparam",
     "updateschedulerun",
     "vwt2oc",
+    "xcopy",
     "Yerrk"
   ],
   "ignoreRegExpList": ["/^```[\\s\\S]*?^```/gm"]
